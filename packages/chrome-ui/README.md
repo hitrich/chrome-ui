@@ -1,18 +1,18 @@
-# @chrome-ui/react
+# @loreanai/chrome-ui
 
 Reactive Chrome is an opaque metal component system for React. It uses graphite for routine surfaces, silver for primary actions, cobalt for focus and progress, and enamel red for live or destructive state.
 
 ## Install
 
 ```sh
-pnpm add @chrome-ui/react
+npm install @loreanai/chrome-ui
 ```
 
 Import the library stylesheet once at the root of your application, then wrap the interface in `ChromeProvider`.
 
 ```tsx
-import { Button, ChromeProvider } from "@chrome-ui/react";
-import "@chrome-ui/react/styles.css";
+import { Button, ChromeProvider } from "@loreanai/chrome-ui";
+import "@loreanai/chrome-ui/styles.css";
 
 export function App() {
   return (

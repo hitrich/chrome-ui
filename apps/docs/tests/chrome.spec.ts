@@ -4,7 +4,7 @@ test("landing presents the approved content and routes into components", async (
   await page.goto("/");
   await expect(page).toHaveTitle(/Chrome/);
   await expect(page.getByRole("heading", { level: 1, name: "Interfaces forged from reflected color." })).toBeVisible();
-  await expect(page.getByText("pnpm add @chrome-ui/react")).toBeVisible();
+  await expect(page.getByText("npm install @loreanai/chrome-ui")).toBeVisible();
   await page.getByRole("link", { name: /Explore components/ }).click();
   await expect(page).toHaveURL(/\/components\/button/);
   await expect(page.getByRole("heading", { level: 1, name: "Button" })).toBeVisible();

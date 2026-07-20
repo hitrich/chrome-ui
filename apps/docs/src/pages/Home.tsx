@@ -6,7 +6,7 @@ import {
   Switch,
   Tabs,
   TextField
-} from "@chrome-ui/react";
+} from "@loreanai/chrome-ui";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ChromeRibbon } from "../components/ChromeRibbon";
@@ -18,7 +18,7 @@ export function Home() {
   const [copied, setCopied] = useState(false);
 
   const copyInstall = async () => {
-    await navigator.clipboard.writeText("pnpm add @chrome-ui/react");
+    await navigator.clipboard.writeText("npm install @loreanai/chrome-ui");
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1400);
   };
@@ -39,7 +39,7 @@ export function Home() {
             </Button>
             <button className="install-command" onClick={copyInstall} aria-label="Copy install command">
               <span aria-hidden="true">›_</span>
-              <code>pnpm add @chrome-ui/react</code>
+              <code>npm install @loreanai/chrome-ui</code>
               <UiIcon name={copied ? "check" : "copy"} />
             </button>
             <span className="sr-only" aria-live="polite">{copied ? "Install command copied" : ""}</span>

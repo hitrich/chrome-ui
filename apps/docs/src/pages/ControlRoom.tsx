@@ -8,7 +8,7 @@ import {
   Switch,
   Tabs,
   Toast
-} from "@chrome-ui/react";
+} from "@loreanai/chrome-ui";
 import { useEffect, useMemo, useState } from "react";
 import { Brand } from "../components/Brand";
 import { UiIcon, type IconName } from "../components/UiIcon";

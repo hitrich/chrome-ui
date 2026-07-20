@@ -1,7 +1,7 @@
 import "@fontsource-variable/space-grotesk";
 import "@fontsource-variable/jetbrains-mono";
 import "@fontsource-variable/oxanium";
-import "@chrome-ui/react/styles.css";
+import "@loreanai/chrome-ui/styles.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";

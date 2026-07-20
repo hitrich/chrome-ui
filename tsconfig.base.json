@@ -13,8 +13,8 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@chrome-ui/react": ["packages/chrome-ui/src/index.ts"],
-      "@chrome-ui/react/styles.css": ["packages/chrome-ui/src/styles.css"]
+      "@loreanai/chrome-ui": ["packages/chrome-ui/src/index.ts"],
+      "@loreanai/chrome-ui/styles.css": ["packages/chrome-ui/src/styles.css"]
     },
     "resolveJsonModule": true,
     "isolatedModules": true,

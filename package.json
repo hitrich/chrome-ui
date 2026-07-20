@@ -10,8 +10,8 @@
     "onlyBuiltDependencies": ["esbuild"]
   },
   "scripts": {
-    "dev": "pnpm --filter @chrome-ui/react build && pnpm --filter chrome-docs dev",
-    "build": "pnpm --filter @chrome-ui/react build && pnpm --filter chrome-docs build",
+    "dev": "pnpm --filter @loreanai/chrome-ui build && pnpm --filter chrome-docs dev",
+    "build": "pnpm --filter @loreanai/chrome-ui build && pnpm --filter chrome-docs build",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
     "test": "vitest run",

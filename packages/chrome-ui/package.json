@@ -1,5 +1,5 @@
 {
-  "name": "@chrome-ui/react",
+  "name": "@loreanai/chrome-ui",
   "version": "0.1.0",
   "description": "Reactive metal components for premium product interfaces.",
   "license": "MIT",
@@ -11,6 +11,9 @@
   },
   "homepage": "https://github.com/hitrich/chrome-ui#readme",
   "bugs": "https://github.com/hitrich/chrome-ui/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "sideEffects": ["**/*.css"],
   "files": ["dist"],

@@ -1,4 +1,4 @@
-import { Button, Select, Slider, Surface, Switch, TextField, useChrome, type ButtonSize, type ButtonVariant } from "@chrome-ui/react";
+import { Button, Select, Slider, Surface, Switch, TextField, useChrome, type ButtonSize, type ButtonVariant } from "@loreanai/chrome-ui";
 import { useState } from "react";
 import { Header } from "../components/Header";
 import { UiIcon } from "../components/UiIcon";

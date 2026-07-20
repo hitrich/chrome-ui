@@ -1,4 +1,4 @@
-import { ChromeProvider, Tooltip, type ChromeTheme } from "@chrome-ui/react";
+import { ChromeProvider, Tooltip, type ChromeTheme } from "@loreanai/chrome-ui";
 import { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { ComponentExplorer } from "./pages/ComponentExplorer";

@@ -1,4 +1,4 @@
-import { Button, Dialog, useChrome } from "@chrome-ui/react";
+import { Button, Dialog, useChrome } from "@loreanai/chrome-ui";
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { componentDocs, foundationDocs } from "../data";

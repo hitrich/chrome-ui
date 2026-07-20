@@ -8,7 +8,7 @@ It is fully original and does not use Shadcn, Tailwind, glass blur, or transluce
 
 ## What is included
 
-- `@chrome-ui/react`, an ESM React and TypeScript package with generated declarations
+- `@loreanai/chrome-ui`, an ESM React and TypeScript package with generated declarations
 - Ink and arctic themes with system, full, and reduced motion modes
 - ChromeProvider and `useChrome()` theme APIs
 - 17 documented components, including buttons, fields, selection controls, overlays, feedback, and surfaces
@@ -18,7 +18,13 @@ It is fully original and does not use Shadcn, Tailwind, glass blur, or transluce
 
 ## Quick start
 
-The package is npm-ready but has not been published to the npm registry yet. To run it from this repository:
+Install the public package from npm:
+
+```sh
+npm install @loreanai/chrome-ui
+```
+
+To run the documentation and package workspace locally:
 
 ```sh
 corepack enable
@@ -28,11 +34,11 @@ pnpm dev
 
 Then open the local URL shown by Vite.
 
-When consuming the package, import the library stylesheet once and wrap your application with `ChromeProvider`:
+Import the library stylesheet once and wrap your application with `ChromeProvider`:
 
 ```tsx
-import { Button, ChromeProvider } from "@chrome-ui/react";
-import "@chrome-ui/react/styles.css";
+import { Button, ChromeProvider } from "@loreanai/chrome-ui";
+import "@loreanai/chrome-ui/styles.css";
 
 export function App() {
   return (
@@ -51,7 +57,7 @@ export function App() {
 
 ```text
 apps/docs              Documentation and interactive examples
-packages/chrome-ui     Installable @chrome-ui/react package
+packages/chrome-ui     Installable @loreanai/chrome-ui package
 scripts                Package-consumer smoke validation
 ```
 

@@ -10,7 +10,7 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
-    "@chrome-ui/react": "workspace:*",
+    "@loreanai/chrome-ui": "workspace:*",
     "@fontsource-variable/jetbrains-mono": "latest",
     "@fontsource-variable/oxanium": "^5.3.0",
     "@fontsource-variable/space-grotesk": "latest",

@@ -44,14 +44,14 @@ try {
     throw new Error("The clean package fixture unexpectedly contains dist before prepack.");
   }
 
-  run("pnpm", ["install", "--frozen-lockfile", "--ignore-scripts", "--prefer-offline", "--filter", "@chrome-ui/react...", "--store-dir", sharedStore], cleanWorkspaceRoot);
+  run("pnpm", ["install", "--frozen-lockfile", "--ignore-scripts", "--prefer-offline", "--filter", "@loreanai/chrome-ui...", "--store-dir", sharedStore], cleanWorkspaceRoot);
 
   if (existsSync(join(cleanPackageRoot, "dist"))) {
     throw new Error("Dependency installation built dist before the prepack lifecycle.");
   }
 
   mkdirSync(artifactRoot, { recursive: true });
-  run("pnpm", ["--filter", "@chrome-ui/react", "pack", "--pack-destination", artifactRoot], cleanWorkspaceRoot);
+  run("pnpm", ["--filter", "@loreanai/chrome-ui", "pack", "--pack-destination", artifactRoot], cleanWorkspaceRoot);
 
   const tarballName = readdirSync(artifactRoot).find((name) => name.endsWith(".tgz"));
   if (!tarballName || !existsSync(join(cleanPackageRoot, "dist", "index.d.ts"))) {
@@ -64,7 +64,7 @@ try {
     private: true,
     type: "module",
     dependencies: {
-      "@chrome-ui/react": `file:${join(artifactRoot, tarballName)}`,
+      "@loreanai/chrome-ui": `file:${join(artifactRoot, tarballName)}`,
       react: "19.2.7",
       "react-dom": "19.2.7"
     },
@@ -80,7 +80,7 @@ try {
   writeFileSync(join(consumerRoot, "verify.mjs"), `
 import { readFileSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import * as Chrome from "@chrome-ui/react";
+import * as Chrome from "@loreanai/chrome-ui";
 
 const expected = [
   "Avatar", "Badge", "Button", "Checkbox", "ChromePortalLayer", "ChromeProvider", "Dialog",
@@ -90,7 +90,7 @@ const expected = [
 const missing = expected.filter((name) => !Chrome[name]);
 if (missing.length) throw new Error(\`Missing runtime exports: \${missing.join(", ")}\`);
 
-const stylesheetPath = fileURLToPath(import.meta.resolve("@chrome-ui/react/styles.css"));
+const stylesheetPath = fileURLToPath(import.meta.resolve("@loreanai/chrome-ui/styles.css"));
 if (statSync(stylesheetPath).size === 0 || !readFileSync(stylesheetPath, "utf8").includes("@layer chrome")) {
   throw new Error("The exported stylesheet is empty or missing Chrome layers.");
 }
@@ -106,7 +106,7 @@ import {
   type ButtonSize, type ButtonVariant, type ChromeMotion, type ChromeProviderProps,
   type ChromeTheme, type IconButtonProps, type ProgressProps, type SliderProps,
   type SurfaceProps, type TextFieldProps
-} from "@chrome-ui/react";
+} from "@loreanai/chrome-ui";
 
 const anchorRef = React.createRef<HTMLAnchorElement>();
 const iconAnchorRef = React.createRef<HTMLAnchorElement>();
@@ -153,7 +153,7 @@ void exportsToCheck;
   run(process.execPath, ["verify.mjs"], consumerRoot);
   run("pnpm", ["exec", "tsc", "--project", "tsconfig.json"], consumerRoot);
 
-  const packedStyles = join(consumerRoot, "node_modules", "@chrome-ui", "react", "dist", "index.css");
+  const packedStyles = join(consumerRoot, "node_modules", "@loreanai", "chrome-ui", "dist", "index.css");
   if (!existsSync(packedStyles) || statSync(packedStyles).size === 0) {
     throw new Error("The installed tarball is missing its stylesheet payload.");
   }

@@ -17,7 +17,7 @@ import {
   TextField,
   Toast,
   Tooltip
-} from "@chrome-ui/react";
+} from "@loreanai/chrome-ui";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { DocsRail } from "../components/DocsRail";
@@ -82,33 +82,33 @@ function DisabledVariant({ slug }: { slug: string }) {
 
 function usageFor(title: string, slug: string) {
   const snippets: Record<string, string> = {
-    avatar: `import { Avatar } from "@chrome-ui/react"\n\n<Avatar name="Arin Reyes" />`,
-    "chrome-provider": `import { ChromeProvider } from "@chrome-ui/react"\n\n<ChromeProvider defaultTheme="ink" motion="system">\n  <App />\n</ChromeProvider>`,
-    button: `import { Button } from "@chrome-ui/react"\n\n<Button variant="primary">Create project</Button>`,
-    "icon-button": `import { IconButton } from "@chrome-ui/react"\n\n<IconButton aria-label="More actions">···</IconButton>`,
-    "text-field": `import { TextField } from "@chrome-ui/react"\n\n<TextField label="Project name" />`,
-    select: `import { Select } from "@chrome-ui/react"\n\n<Select.Root defaultValue="analog">\n  <Select.Trigger aria-label="Input source"><Select.Value /></Select.Trigger>\n  <Select.Content><Select.Item value="analog">Analog 4</Select.Item></Select.Content>\n</Select.Root>`,
-    checkbox: `import { Checkbox } from "@chrome-ui/react"\n\n<Checkbox defaultChecked>Include styles</Checkbox>`,
-    "radio-group": `import { RadioGroup } from "@chrome-ui/react"\n\n<RadioGroup.Root defaultValue="ink" aria-label="Theme">\n  <RadioGroup.Item value="ink">Ink</RadioGroup.Item>\n  <RadioGroup.Item value="arctic">Arctic</RadioGroup.Item>\n</RadioGroup.Root>`,
-    switch: `import { Switch } from "@chrome-ui/react"\n\n<Switch aria-label="Responsive light" defaultChecked />`,
-    slider: `import { Slider } from "@chrome-ui/react"\n\n<Slider aria-label="Reflection intensity" defaultValue={[64]} />`,
-    tabs: `import { Tabs } from "@chrome-ui/react"\n\n<Tabs.Root defaultValue="preview">\n  <Tabs.List aria-label="Component view"><Tabs.Trigger value="preview">Preview</Tabs.Trigger></Tabs.List>\n  <Tabs.Content value="preview">Live component</Tabs.Content>\n</Tabs.Root>`,
-    badge: `import { Badge } from "@chrome-ui/react"\n\n<Badge tone="accent">Focused</Badge>`,
-    tooltip: `import { Tooltip } from "@chrome-ui/react"\n\n<Tooltip.Provider><Tooltip.Root><Tooltip.Trigger>Material</Tooltip.Trigger><Tooltip.Content>Reactive chrome</Tooltip.Content></Tooltip.Root></Tooltip.Provider>`,
-    dropdown: `import { Button, DropdownMenu } from "@chrome-ui/react"\n\n<DropdownMenu.Root><DropdownMenu.Trigger asChild><Button>Actions</Button></DropdownMenu.Trigger><DropdownMenu.Content><DropdownMenu.Item>Duplicate</DropdownMenu.Item></DropdownMenu.Content></DropdownMenu.Root>`,
-    dialog: `import { Button, Dialog } from "@chrome-ui/react"\n\n<Dialog.Root><Dialog.Trigger asChild><Button>Export</Button></Dialog.Trigger><Dialog.Content><Dialog.Title>Export package</Dialog.Title><Dialog.Description>Prepare files.</Dialog.Description></Dialog.Content></Dialog.Root>`,
-    toast: `import { Toast } from "@chrome-ui/react"\n\n<Toast.Provider><Toast.Root><Toast.Title>Snapshot saved</Toast.Title></Toast.Root><Toast.Viewport /></Toast.Provider>`,
-    progress: `import { Progress } from "@chrome-ui/react"\n\n<Progress value={68} aria-label="Package build" />`,
-    surface: `import { Surface } from "@chrome-ui/react"\n\n<Surface finish="chrome">Primary action</Surface>`
+    avatar: `import { Avatar } from "@loreanai/chrome-ui"\n\n<Avatar name="Arin Reyes" />`,
+    "chrome-provider": `import { ChromeProvider } from "@loreanai/chrome-ui"\n\n<ChromeProvider defaultTheme="ink" motion="system">\n  <App />\n</ChromeProvider>`,
+    button: `import { Button } from "@loreanai/chrome-ui"\n\n<Button variant="primary">Create project</Button>`,
+    "icon-button": `import { IconButton } from "@loreanai/chrome-ui"\n\n<IconButton aria-label="More actions">···</IconButton>`,
+    "text-field": `import { TextField } from "@loreanai/chrome-ui"\n\n<TextField label="Project name" />`,
+    select: `import { Select } from "@loreanai/chrome-ui"\n\n<Select.Root defaultValue="analog">\n  <Select.Trigger aria-label="Input source"><Select.Value /></Select.Trigger>\n  <Select.Content><Select.Item value="analog">Analog 4</Select.Item></Select.Content>\n</Select.Root>`,
+    checkbox: `import { Checkbox } from "@loreanai/chrome-ui"\n\n<Checkbox defaultChecked>Include styles</Checkbox>`,
+    "radio-group": `import { RadioGroup } from "@loreanai/chrome-ui"\n\n<RadioGroup.Root defaultValue="ink" aria-label="Theme">\n  <RadioGroup.Item value="ink">Ink</RadioGroup.Item>\n  <RadioGroup.Item value="arctic">Arctic</RadioGroup.Item>\n</RadioGroup.Root>`,
+    switch: `import { Switch } from "@loreanai/chrome-ui"\n\n<Switch aria-label="Responsive light" defaultChecked />`,
+    slider: `import { Slider } from "@loreanai/chrome-ui"\n\n<Slider aria-label="Reflection intensity" defaultValue={[64]} />`,
+    tabs: `import { Tabs } from "@loreanai/chrome-ui"\n\n<Tabs.Root defaultValue="preview">\n  <Tabs.List aria-label="Component view"><Tabs.Trigger value="preview">Preview</Tabs.Trigger></Tabs.List>\n  <Tabs.Content value="preview">Live component</Tabs.Content>\n</Tabs.Root>`,
+    badge: `import { Badge } from "@loreanai/chrome-ui"\n\n<Badge tone="accent">Focused</Badge>`,
+    tooltip: `import { Tooltip } from "@loreanai/chrome-ui"\n\n<Tooltip.Provider><Tooltip.Root><Tooltip.Trigger>Material</Tooltip.Trigger><Tooltip.Content>Reactive chrome</Tooltip.Content></Tooltip.Root></Tooltip.Provider>`,
+    dropdown: `import { Button, DropdownMenu } from "@loreanai/chrome-ui"\n\n<DropdownMenu.Root><DropdownMenu.Trigger asChild><Button>Actions</Button></DropdownMenu.Trigger><DropdownMenu.Content><DropdownMenu.Item>Duplicate</DropdownMenu.Item></DropdownMenu.Content></DropdownMenu.Root>`,
+    dialog: `import { Button, Dialog } from "@loreanai/chrome-ui"\n\n<Dialog.Root><Dialog.Trigger asChild><Button>Export</Button></Dialog.Trigger><Dialog.Content><Dialog.Title>Export package</Dialog.Title><Dialog.Description>Prepare files.</Dialog.Description></Dialog.Content></Dialog.Root>`,
+    toast: `import { Toast } from "@loreanai/chrome-ui"\n\n<Toast.Provider><Toast.Root><Toast.Title>Snapshot saved</Toast.Title></Toast.Root><Toast.Viewport /></Toast.Provider>`,
+    progress: `import { Progress } from "@loreanai/chrome-ui"\n\n<Progress value={68} aria-label="Package build" />`,
+    surface: `import { Surface } from "@loreanai/chrome-ui"\n\n<Surface finish="chrome">Primary action</Surface>`
   };
-  const componentImport = snippets[slug] ?? `import { ${title.replace(/\s/g, "")} } from "@chrome-ui/react"`;
+  const componentImport = snippets[slug] ?? `import { ${title.replace(/\s/g, "")} } from "@loreanai/chrome-ui"`;
   return componentImport;
 }
 
 function ButtonUsageCode() {
   return (
     <code className="syntax-code">
-      <span><b>import</b>{" { Button } "}<b>from</b>{" "}<i>"@chrome-ui/react"</i></span>
+      <span><b>import</b>{" { Button } "}<b>from</b>{" "}<i>"@loreanai/chrome-ui"</i></span>
       <span aria-hidden="true">&nbsp;</span>
       <span>{"<Button "}<em>variant</em>{"="}<i>"primary"</i>{">Create project</Button>"}</span>
     </code>

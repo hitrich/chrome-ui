@@ -65,9 +65,6 @@ importers:
 
   apps/docs:
     dependencies:
-      '@chrome-ui/react':
-        specifier: workspace:*
-        version: link:../../packages/chrome-ui
       '@fontsource-variable/jetbrains-mono':
         specifier: latest
         version: 5.3.0
@@ -77,6 +74,9 @@ importers:
       '@fontsource-variable/space-grotesk':
         specifier: latest
         version: 5.3.0
+      '@loreanai/chrome-ui':
+        specifier: workspace:*
+        version: link:../../packages/chrome-ui
       react:
         specifier: latest
         version: 19.2.7
