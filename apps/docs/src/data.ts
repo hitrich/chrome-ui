@@ -1,0 +1,28 @@
+export const componentDocs = [
+  { slug: "button", title: "Button", description: "A decisive control for actions that move the interface forward.", props: ["variant", "size", "disabled", "asChild"], anatomy: [["label", "action text"], ["icon", "optional direction"], ["finish", "chrome intensity"]] },
+  { slug: "icon-button", title: "Icon Button", description: "A compact action with a precise, accessible name.", props: ["variant", "size", "aria-label", "disabled"], anatomy: [["icon", "single action"], ["label", "screen reader name"], ["finish", "state surface"]] },
+  { slug: "text-field", title: "Text Field", description: "A focused input surface for clear, direct data entry.", props: ["label", "hint", "error", "trailing"], anatomy: [["label", "field purpose"], ["control", "entered value"], ["message", "hint or error"]] },
+  { slug: "select", title: "Select", description: "A compact menu for choosing one value from a known set.", props: ["value", "defaultValue", "onValueChange", "disabled"], anatomy: [["trigger", "current value"], ["content", "available options"], ["item", "selectable value"]] },
+  { slug: "checkbox", title: "Checkbox", description: "A binary choice that can stand alone or join a group.", props: ["checked", "defaultChecked", "onCheckedChange", "disabled"], anatomy: [["control", "checked state"], ["indicator", "confirmation mark"], ["label", "choice meaning"]] },
+  { slug: "radio-group", title: "Radio Group", description: "A mutually exclusive set of visible choices.", props: ["value", "defaultValue", "onValueChange", "orientation"], anatomy: [["root", "selection model"], ["item", "single option"], ["indicator", "selected state"]] },
+  { slug: "switch", title: "Switch", description: "An immediate on or off setting with a physical state change.", props: ["checked", "defaultChecked", "onCheckedChange", "disabled"], anatomy: [["track", "state boundary"], ["thumb", "current position"], ["label", "setting name"]] },
+  { slug: "slider", title: "Slider", description: "A continuous value control with a chrome grip and cobalt range.", props: ["value", "defaultValue", "min", "max"], anatomy: [["track", "full range"], ["range", "selected amount"], ["thumb", "current value"]] },
+  { slug: "tabs", title: "Tabs", description: "A compact mode switch for related views in one workspace.", props: ["value", "defaultValue", "onValueChange", "orientation"], anatomy: [["list", "available views"], ["trigger", "view selector"], ["content", "active view"]] },
+  { slug: "badge", title: "Badge", description: "A small semantic label reserved for real status and state.", props: ["tone", "children", "className"], anatomy: [["container", "status edge"], ["label", "state text"]] },
+  { slug: "tooltip", title: "Tooltip", description: "Brief supporting text for compact controls and unfamiliar icons.", props: ["delayDuration", "side", "sideOffset", "open"], anatomy: [["trigger", "referenced control"], ["content", "concise explanation"]] },
+  { slug: "dropdown", title: "Dropdown Menu", description: "Contextual actions that remain close to their trigger.", props: ["open", "onOpenChange", "modal", "dir"], anatomy: [["trigger", "menu action"], ["content", "action set"], ["item", "single command"]] },
+  { slug: "dialog", title: "Dialog", description: "A focused layer for decisions that require confirmation or detail.", props: ["open", "onOpenChange", "modal", "showClose"], anatomy: [["overlay", "focus boundary"], ["content", "decision surface"], ["close", "exit action"]] },
+  { slug: "toast", title: "Toast", description: "A temporary status update that confirms completed work.", props: ["open", "onOpenChange", "duration", "type"], anatomy: [["title", "result"], ["description", "supporting context"], ["close", "dismiss action"]] },
+  { slug: "progress", title: "Progress", description: "A direct readout of completed work across a known range.", props: ["value", "max", "aria-label", "className"], anatomy: [["track", "total amount"], ["range", "completed amount"]] },
+  { slug: "surface", title: "Surface", description: "The structural layer that controls chrome intensity and depth.", props: ["finish", "className", "children"], anatomy: [["base", "content plane"], ["edge", "material boundary"], ["finish", "intensity rule"]] },
+  { slug: "chrome-provider", title: "Chrome Provider", description: "The theme and motion boundary for every Reactive Chrome surface.", props: ["theme", "defaultTheme", "motion", "onThemeChange", "className"], anatomy: [["root", "material scope"], ["theme", "ink or arctic state"], ["motion", "system, full, or reduced behavior"]] },
+  { slug: "avatar", title: "Avatar", description: "A compact identity marker with a restrained chrome boundary.", props: ["name", "src", "size", "className"], anatomy: [["image", "identity source"], ["fallback", "initials"], ["edge", "identity boundary"]] }
+] as const;
+
+export const foundationDocs = [
+  { slug: "color", title: "Color", description: "Reflected color is semantic, never decorative." },
+  { slug: "typography", title: "Typography", description: "One disciplined grotesk and one technical mono keep metal readable." },
+  { slug: "motion", title: "Motion", description: "Light shifts, edges settle, and controls press with restrained physicality." },
+  { slug: "accessibility", title: "Accessibility", description: "Chrome remains operable by keyboard, screen reader, touch, and forced colors." },
+  { slug: "boundaries", title: "Usage boundaries", description: "Chrome marks decisions and state; graphite carries the workload." }
+] as const;

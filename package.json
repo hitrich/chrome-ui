@@ -1,0 +1,42 @@
+{
+  "name": "chrome-library-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "repository": "https://github.com/hitrich/chrome-ui",
+  "type": "module",
+  "packageManager": "pnpm@10.30.0",
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  },
+  "scripts": {
+    "dev": "pnpm --filter @chrome-ui/react build && pnpm --filter chrome-docs dev",
+    "build": "pnpm --filter @chrome-ui/react build && pnpm --filter chrome-docs build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:e2e": "pnpm build && playwright test",
+    "test:package": "node scripts/package-smoke.mjs",
+    "validate": "pnpm lint && pnpm typecheck && pnpm test && pnpm test:package && pnpm build"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "@playwright/test": "latest",
+    "@testing-library/jest-dom": "latest",
+    "@testing-library/react": "latest",
+    "@testing-library/user-event": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@vitejs/plugin-react": "latest",
+    "eslint": "latest",
+    "eslint-plugin-react-hooks": "latest",
+    "jsdom": "latest",
+    "tsup": "latest",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "latest",
+    "vite": "latest",
+    "vitest": "latest",
+    "vitest-axe": "latest"
+  }
+}
