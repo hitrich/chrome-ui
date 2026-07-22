@@ -149,6 +149,7 @@
     background: var(--button-frame);
     color: #07090d;
     cursor: pointer;
+    touch-action: manipulation;
     font-family: var(--chrome-font-sans);
     font-weight: 500;
     letter-spacing: -0.018em;
@@ -201,8 +202,12 @@
   }
 
   .chrome-button:active {
-    transform: translateY(2px);
+    transform: translateY(2px) scale(0.96);
     filter: brightness(0.9) contrast(1.06) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.48));
+  }
+
+  .chrome-button[data-static="true"]:active {
+    transform: translateY(2px);
   }
 
   .chrome-button > svg {
@@ -215,6 +220,7 @@
   .chrome-icon-button:focus-visible {
     outline: 2px solid var(--chrome-focus);
     outline-offset: 3px;
+    filter: drop-shadow(0 0 1px var(--chrome-focus)) drop-shadow(0 0 4px color-mix(in srgb, var(--chrome-focus) 70%, transparent)) drop-shadow(0 3px 5px rgba(0, 0, 0, 0.42));
   }
 
   .chrome-button:disabled,
@@ -675,7 +681,7 @@
   .chrome-dropdown__item {
     position: relative;
     display: flex;
-    min-height: 38px;
+    min-height: 40px;
     align-items: center;
     justify-content: space-between;
     gap: 18px;
@@ -874,24 +880,42 @@
 }
 
 @layer chrome.motion {
+  .chrome-select__content { transform-origin: var(--radix-select-content-transform-origin); }
+  .chrome-dropdown { transform-origin: var(--radix-dropdown-menu-content-transform-origin); }
+  .chrome-tooltip { transform-origin: var(--radix-tooltip-content-transform-origin); }
+
   .chrome-select__content[data-state="open"],
   .chrome-dropdown[data-state="open"],
   .chrome-tooltip[data-state="delayed-open"] {
-    animation: chrome-rise var(--chrome-duration-base) var(--chrome-ease);
+    animation: chrome-popover-in var(--chrome-duration-base) var(--chrome-ease);
   }
+  .chrome-select__content[data-state="closed"],
+  .chrome-dropdown[data-state="closed"],
+  .chrome-tooltip[data-state="closed"] { animation: chrome-popover-out 150ms ease-in; }
   .chrome-dialog__overlay[data-state="open"] { animation: chrome-fade var(--chrome-duration-base) ease; }
+  .chrome-dialog__overlay[data-state="closed"] { animation: chrome-fade-out 150ms ease-in; }
   .chrome-dialog__content[data-state="open"] { animation: chrome-dialog-in 260ms var(--chrome-ease); }
+  .chrome-dialog__content[data-state="closed"] { animation: chrome-dialog-out 170ms ease-in; }
   .chrome-toast[data-state="open"] { animation: chrome-toast-in 300ms var(--chrome-ease); }
   .chrome-toast[data-state="closed"] { animation: chrome-toast-out 180ms ease forwards; }
 
-  @keyframes chrome-rise {
+  @keyframes chrome-popover-in {
     from { opacity: 0; transform: translateY(6px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
+  @keyframes chrome-popover-out {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(4px) scale(0.985); }
+  }
   @keyframes chrome-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes chrome-fade-out { from { opacity: 1; } to { opacity: 0; } }
   @keyframes chrome-dialog-in {
     from { opacity: 0; transform: translate(-50%, calc(-50% + 14px)) scale(0.97); }
     to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+  @keyframes chrome-dialog-out {
+    from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    to { opacity: 0; transform: translate(-50%, calc(-50% + 10px)) scale(0.985); }
   }
   @keyframes chrome-toast-in {
     from { opacity: 0; transform: translateX(24px); }
@@ -917,16 +941,45 @@
       scroll-behavior: auto !important;
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
+      transition-duration: 100ms !important;
+    }
+
+    .chrome-root:not([data-chrome-motion="full"]) .chrome-button:hover,
+    .chrome-root:not([data-chrome-motion="full"]) .chrome-button:active {
+      transform: none !important;
     }
   }
 
   .chrome-root[data-chrome-motion="reduced"] *,
   .chrome-root[data-chrome-motion="reduced"] *::before,
   .chrome-root[data-chrome-motion="reduced"] *::after {
+    scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 100ms !important;
+  }
+
+  .chrome-root[data-chrome-motion="reduced"] .chrome-button:hover,
+  .chrome-root[data-chrome-motion="reduced"] .chrome-button:active {
+    transform: none !important;
+  }
+
+  @media (prefers-contrast: more) {
+    .chrome-surface,
+    .chrome-field__control,
+    .chrome-select__trigger,
+    .chrome-select__content,
+    .chrome-dropdown,
+    .chrome-dialog__content,
+    .chrome-toast {
+      border-color: currentColor;
+    }
+
+    .chrome-button:focus-visible,
+    .chrome-icon-button:focus-visible {
+      outline-width: 3px;
+      outline-offset: 4px;
+    }
   }
 
   @media (forced-colors: active) {

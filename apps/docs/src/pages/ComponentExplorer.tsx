@@ -117,10 +117,10 @@ function ButtonUsageCode() {
 
 function propType(prop: string, slug: string) {
   if (prop === "theme" || prop === "defaultTheme") return "'ink' | 'arctic'";
-  if (prop === "motion") return "'system' | 'full' | 'reduced'";
+  if (prop === "motion" || prop === "defaultMotion") return "'system' | 'full' | 'reduced'";
   if (prop === "variant") return "'primary'";
   if (prop === "size") return "'md'";
-  if (["disabled", "asChild", "modal", "open", "checked", "defaultChecked", "showClose"].includes(prop)) return "boolean";
+  if (["disabled", "asChild", "static", "modal", "open", "checked", "defaultChecked", "showClose"].includes(prop)) return "boolean";
   if (["min", "max", "duration", "delayDuration", "sideOffset"].includes(prop)) return "number";
   if (["value", "defaultValue"].includes(prop)) return slug === "slider" ? "number[]" : slug === "progress" ? "number" : "string";
   if (prop.startsWith("on")) return "function";

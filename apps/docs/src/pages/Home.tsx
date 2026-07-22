@@ -5,22 +5,64 @@ import {
   Slider,
   Switch,
   Tabs,
-  TextField
+  TextField,
+  useChrome
 } from "@loreanai/chrome-ui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChromeRibbon } from "../components/ChromeRibbon";
 import { Header } from "../components/Header";
-import { UiIcon } from "../components/UiIcon";
+import { UiIcon, UiIconSwap } from "../components/UiIcon";
+
+const installCommand = "pnpm add @loreanai/chrome-ui";
+
+type CopyStatus = "idle" | "copied" | "error";
+
+async function writeToClipboard(value: string) {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(value);
+      return;
+    } catch {
+      // Fall through to the selection-based path when permission is denied.
+    }
+  }
+
+  const fallback = document.createElement("textarea");
+  const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  fallback.value = value;
+  fallback.setAttribute("readonly", "");
+  fallback.setAttribute("aria-hidden", "true");
+  fallback.style.position = "fixed";
+  fallback.style.opacity = "0";
+  document.body.append(fallback);
+  try {
+    fallback.select();
+    const copied = document.execCommand("copy");
+    if (!copied) throw new Error("Clipboard is unavailable");
+  } finally {
+    fallback.remove();
+    if (previouslyFocused?.isConnected) previouslyFocused.focus({ preventScroll: true });
+  }
+}
 
 export function Home() {
-  const [motion, setMotion] = useState(true);
-  const [copied, setCopied] = useState(false);
+  const { motion, setMotion } = useChrome();
+  const [copyStatus, setCopyStatus] = useState<CopyStatus>("idle");
+
+  useEffect(() => {
+    if (copyStatus === "idle") return undefined;
+    const timer = window.setTimeout(() => setCopyStatus("idle"), copyStatus === "copied" ? 1400 : 2600);
+    return () => window.clearTimeout(timer);
+  }, [copyStatus]);
 
   const copyInstall = async () => {
-    await navigator.clipboard.writeText("npm install @loreanai/chrome-ui");
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1400);
+    try {
+      await writeToClipboard(installCommand);
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("error");
+    }
   };
 
   return (
@@ -37,12 +79,19 @@ export function Home() {
             <Button asChild size="lg" className="hero__cta">
               <Link to="/components/button">Explore components <UiIcon name="arrow-right" /></Link>
             </Button>
-            <button className="install-command" onClick={copyInstall} aria-label="Copy install command">
+            <button
+              className="install-command"
+              data-status={copyStatus}
+              onClick={copyInstall}
+              aria-label={copyStatus === "error" ? "Copy unavailable. Select the install command manually." : "Copy install command"}
+            >
               <span aria-hidden="true">›_</span>
-              <code>npm install @loreanai/chrome-ui</code>
-              <UiIcon name={copied ? "check" : "copy"} />
+              <code>{installCommand}</code>
+              <UiIconSwap icons={["copy", "check", "close"]} name={copyStatus === "copied" ? "check" : copyStatus === "error" ? "close" : "copy"} />
             </button>
-            <span className="sr-only" aria-live="polite">{copied ? "Install command copied" : ""}</span>
+            <span className="sr-only" aria-live="polite">
+              {copyStatus === "copied" ? "Install command copied" : copyStatus === "error" ? "Copy unavailable. Select the install command manually." : ""}
+            </span>
           </div>
           <ChromeRibbon />
         </section>
@@ -71,7 +120,7 @@ export function Home() {
             <div className="control-sample control-sample--switch">
               <span className="desktop-label">Switch</span>
               <span className="mobile-label">Motion</span>
-              <Switch checked={motion} onCheckedChange={setMotion} aria-label="Motion" />
+              <Switch checked={motion !== "reduced"} onCheckedChange={(checked) => setMotion(checked ? "system" : "reduced")} aria-label="Motion" />
             </div>
             <div className="control-sample control-sample--tabs">
               <span className="desktop-label">Tabs</span>

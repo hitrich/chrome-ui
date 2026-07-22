@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { HTMLAttributes, SVGProps } from "react";
 
 export type IconName =
   | "arrow-right"
@@ -24,6 +24,11 @@ export type IconName =
   | "wave";
 
 export interface UiIconProps extends SVGProps<SVGSVGElement> {
+  name: IconName;
+}
+
+export interface UiIconSwapProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
+  icons: readonly IconName[];
   name: IconName;
 }
 
@@ -61,5 +66,20 @@ export function UiIcon({ name, ...props }: UiIconProps) {
       {name === "upload" ? <><path d="M12 16V3M7 8l5-5 5 5" /><path d="M4 14v7h16v-7" /></> : null}
       {name === "wave" ? <path d="M2 12h2l1-5 2 10 2-14 2 18 2-16 2 12 2-8 2 6 1-3h2" /> : null}
     </svg>
+  );
+}
+
+export function UiIconSwap({ icons, name, className, ...props }: UiIconSwapProps) {
+  return (
+    <span className={["ui-icon-swap", className].filter(Boolean).join(" ")} aria-hidden="true" {...props}>
+      {icons.map((icon) => (
+        <UiIcon
+          key={icon}
+          className="ui-icon-swap__icon"
+          data-visible={icon === name ? "true" : undefined}
+          name={icon}
+        />
+      ))}
+    </span>
   );
 }

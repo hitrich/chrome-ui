@@ -11,7 +11,7 @@ import {
 } from "@loreanai/chrome-ui";
 import { useEffect, useMemo, useState } from "react";
 import { Brand } from "../components/Brand";
-import { UiIcon, type IconName } from "../components/UiIcon";
+import { UiIcon, UiIconSwap, type IconName } from "../components/UiIcon";
 
 const tracks = [
   { id: "vox", label: "VOX", icon: "mic" as IconName, seed: 2 },
@@ -37,6 +37,12 @@ function waveformPath(seed: number) {
 
 const waveforms = Object.fromEntries(tracks.map((track) => [track.id, waveformPath(track.seed)]));
 
+type Notice = {
+  kind: "saved" | "exported" | "removed";
+  title: string;
+  description: string;
+};
+
 function formatTime(seconds: number) {
   const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
   const remaining = Math.floor(seconds % 60).toString().padStart(2, "0");
@@ -48,6 +54,8 @@ export function ControlRoom() {
   const [mode, setMode] = useState("mix");
   const [selectedTrack, setSelectedTrack] = useState("synth");
   const [visibleTrackIds, setVisibleTrackIds] = useState(() => tracks.map((track) => track.id));
+  const [mutedTrackIds, setMutedTrackIds] = useState<string[]>([]);
+  const [soloTrackIds, setSoloTrackIds] = useState<string[]>(["synth"]);
   const [playing, setPlaying] = useState(false);
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(134);
@@ -56,7 +64,10 @@ export function ControlRoom() {
   const [spatial, setSpatial] = useState(true);
   const [monitor, setMonitor] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
+  const [noticeRevision, setNoticeRevision] = useState(0);
   const [exportOpen, setExportOpen] = useState(false);
+  const [notice, setNotice] = useState<Notice>({ kind: "saved", title: "Snapshot saved", description: "Just now" });
+  const [removedTrack, setRemovedTrack] = useState<{ id: string; index: number } | null>(null);
 
   useEffect(() => {
     if (!playing) return undefined;
@@ -66,15 +77,32 @@ export function ControlRoom() {
 
   const selected = useMemo(() => tracks.find((track) => track.id === selectedTrack) ?? tracks[2], [selectedTrack]);
   const visibleTracks = tracks.filter((track) => visibleTrackIds.includes(track.id));
-  const notifySaved = () => {
-    setToastOpen(false);
-    window.setTimeout(() => setToastOpen(true), 10);
+  const showNotice = (nextNotice: Notice) => {
+    setNotice(nextNotice);
+    setNoticeRevision((revision) => revision + 1);
+    setToastOpen(true);
   };
   const removeSelectedTrack = () => {
     if (visibleTrackIds.length <= 1) return;
+    const removedIndex = visibleTrackIds.indexOf(selectedTrack);
     const nextIds = visibleTrackIds.filter((id) => id !== selectedTrack);
+    const removedLabel = tracks.find((track) => track.id === selectedTrack)?.label ?? "Track";
+    setRemovedTrack({ id: selectedTrack, index: removedIndex });
     setVisibleTrackIds(nextIds);
-    setSelectedTrack(nextIds[0] ?? "synth");
+    setSelectedTrack(nextIds[Math.min(removedIndex, nextIds.length - 1)] ?? nextIds[0] ?? "synth");
+    showNotice({ kind: "removed", title: `${removedLabel} removed`, description: "Track removed from this mix" });
+  };
+  const restoreRemovedTrack = () => {
+    if (!removedTrack) return;
+    setVisibleTrackIds((ids) => {
+      if (ids.includes(removedTrack.id)) return ids;
+      const restored = [...ids];
+      restored.splice(Math.min(removedTrack.index, restored.length), 0, removedTrack.id);
+      return restored;
+    });
+    setSelectedTrack(removedTrack.id);
+    setRemovedTrack(null);
+    setToastOpen(false);
   };
 
   return (
@@ -96,7 +124,7 @@ export function ControlRoom() {
         <main className="mixer-workspace">
           <div className="mixer-heading">
             <div><h1>Violet Transmission</h1><Tabs.Root value={mode} onValueChange={setMode}><Tabs.List aria-label="Workspace mode"><Tabs.Trigger value="arrange">Arrange</Tabs.Trigger><Tabs.Trigger value="mix">Mix</Tabs.Trigger><Tabs.Trigger value="deliver">Deliver</Tabs.Trigger></Tabs.List><Tabs.Content className="sr-only" value="arrange">Arrange the session timeline.</Tabs.Content><Tabs.Content className="sr-only" value="mix">Mix the active channels.</Tabs.Content><Tabs.Content className="sr-only" value="deliver">Prepare the session for delivery.</Tabs.Content></Tabs.Root></div>
-            <div><Button variant="quiet" size="sm" onClick={notifySaved}><UiIcon name="bookmark" /> Save snapshot</Button><Button size="sm" onClick={() => setExportOpen(true)}>Export <UiIcon name="arrow-right" /></Button></div>
+            <div><Button variant="quiet" size="sm" onClick={() => showNotice({ kind: "saved", title: "Snapshot saved", description: "Just now" })}><UiIcon name="bookmark" /> Save snapshot</Button><Button size="sm" onClick={() => setExportOpen(true)}>Export <UiIcon name="arrow-right" /></Button></div>
           </div>
 
           <div className="timeline-ruler" aria-hidden="true">
@@ -106,11 +134,17 @@ export function ControlRoom() {
 
           <div className="track-list" style={{ gridTemplateRows: `repeat(${visibleTracks.length}, 101px)` }}>
             {visibleTracks.map((track) => (
-              <button key={track.id} className="track-row" data-track={track.id} data-selected={selectedTrack === track.id} onClick={() => setSelectedTrack(track.id)}>
-                <span className="track-name"><UiIcon name={track.icon} />{track.label}</span>
-                <span className="track-actions"><i>M</i><i data-active={selectedTrack === track.id ? "true" : undefined}>S</i></span>
-                <svg className="waveform" preserveAspectRatio="none" viewBox="0 0 100 64" aria-hidden="true"><path d={waveforms[track.id]} /></svg>
-              </button>
+              <div key={track.id} className="track-row" data-track={track.id} data-selected={selectedTrack === track.id} data-muted={mutedTrackIds.includes(track.id) || undefined}>
+                <button className="track-select" aria-label={`Select ${track.label} track`} aria-pressed={selectedTrack === track.id} onClick={() => setSelectedTrack(track.id)}>
+                  <span className="track-grip" aria-hidden="true"><i /><i /><i /></span>
+                  <span className="track-name"><UiIcon name={track.icon} />{track.label}</span>
+                  <svg className="waveform" preserveAspectRatio="none" viewBox="0 0 100 64" aria-hidden="true"><path d={waveforms[track.id]} /></svg>
+                </button>
+                <span className="track-actions">
+                  <button aria-label={`Mute ${track.label}`} aria-pressed={mutedTrackIds.includes(track.id)} onClick={() => setMutedTrackIds((ids) => ids.includes(track.id) ? ids.filter((id) => id !== track.id) : [...ids, track.id])}>M</button>
+                  <button aria-label={`Solo ${track.label}`} aria-pressed={soloTrackIds.includes(track.id)} onClick={() => setSoloTrackIds((ids) => ids.includes(track.id) ? ids.filter((id) => id !== track.id) : [...ids, track.id])}>S</button>
+                </span>
+              </div>
             ))}
           </div>
         </main>
@@ -128,7 +162,7 @@ export function ControlRoom() {
 
         <footer className="transport">
           <IconButton variant="quiet" aria-label="Previous marker" onClick={() => setSeconds((value) => Math.max(90, value - 15))}><UiIcon name="play" className="flip-icon" /></IconButton>
-          <IconButton size="lg" aria-label={playing ? "Pause playback" : "Start playback"} onClick={() => setPlaying((value) => !value)}><UiIcon name={playing ? "pause" : "play"} /></IconButton>
+          <IconButton size="lg" aria-label={playing ? "Pause playback" : "Start playback"} onClick={() => setPlaying((value) => !value)}><UiIconSwap icons={["play", "pause"]} name={playing ? "pause" : "play"} /></IconButton>
           <IconButton variant="quiet" aria-label="Next marker" onClick={() => setSeconds((value) => Math.min(180, value + 15))}><UiIcon name="play" /></IconButton>
           <button className="record-button" data-recording={recording || undefined} aria-label={recording ? "Stop recording" : "Record"} aria-pressed={recording} onClick={() => setRecording((value) => !value)}><UiIcon name="record" /></button>
           <time>{formatTime(seconds)}</time>
@@ -139,12 +173,16 @@ export function ControlRoom() {
           <Dialog.Content>
             <Dialog.Title>Export Violet Transmission</Dialog.Title>
             <Dialog.Description>Prepare the current mix as a lossless 24-bit package.</Dialog.Description>
-            <div className="dialog-actions"><Dialog.Close asChild><Button variant="quiet">Cancel</Button></Dialog.Close><Button onClick={() => { setExportOpen(false); notifySaved(); }}>Export package</Button></div>
+            <div className="dialog-actions"><Dialog.Close asChild><Button variant="quiet">Cancel</Button></Dialog.Close><Button onClick={() => { setExportOpen(false); showNotice({ kind: "exported", title: "Export complete", description: "Lossless package ready" }); }}>Export package</Button></div>
           </Dialog.Content>
         </Dialog.Root>
 
-        <Toast.Root open={toastOpen} onOpenChange={setToastOpen} duration={3200}>
-          <span className="toast-check"><UiIcon name="check" /></span><Toast.Title>Snapshot saved</Toast.Title><Toast.Description>Just now</Toast.Description><Toast.Close aria-label="Dismiss notification"><UiIcon name="close" /></Toast.Close>
+        <Toast.Root key={noticeRevision} open={toastOpen} onOpenChange={setToastOpen} duration={6000}>
+          <span className="toast-check"><UiIcon name="check" /></span>
+          <Toast.Title>{notice.title}</Toast.Title>
+          <Toast.Description>{notice.description}</Toast.Description>
+          {notice.kind === "removed" && removedTrack ? <Toast.Action altText={`Restore ${notice.title.replace(" removed", "")}`} onClick={restoreRemovedTrack}>Undo</Toast.Action> : null}
+          <Toast.Close aria-label="Dismiss notification"><UiIcon name="close" /></Toast.Close>
         </Toast.Root>
         <Toast.Viewport />
       </div>

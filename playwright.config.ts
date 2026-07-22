@@ -11,7 +11,7 @@ export default defineConfig({
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"], viewport: { width: 1586, height: 992 } } },
-    { name: "mobile", use: { ...devices["iPhone 13"], browserName: "chromium", viewport: { width: 390, height: 844 } } }
+    { name: "mobile", use: { ...devices["iPhone 13"], browserName: "chromium", viewport: { width: 426, height: 923 }, deviceScaleFactor: 2 } }
   ],
   webServer: {
     command: "pnpm --filter chrome-docs preview",

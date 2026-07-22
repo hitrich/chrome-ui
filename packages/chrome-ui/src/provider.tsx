@@ -8,12 +8,14 @@ type ChromeContextValue = {
   theme: ChromeTheme;
   setTheme: (theme: ChromeTheme) => void;
   motion: ChromeMotion;
+  setMotion: (motion: ChromeMotion) => void;
 };
 
 const fallbackContext: ChromeContextValue = {
   theme: "ink",
   setTheme: () => undefined,
-  motion: "system"
+  motion: "system",
+  setMotion: () => undefined
 };
 
 const ChromeContext = React.createContext<ChromeContextValue>(fallbackContext);
@@ -22,20 +24,26 @@ export interface ChromeProviderProps extends React.HTMLAttributes<HTMLDivElement
   theme?: ChromeTheme;
   defaultTheme?: ChromeTheme;
   motion?: ChromeMotion;
+  defaultMotion?: ChromeMotion;
   onThemeChange?: (theme: ChromeTheme) => void;
+  onMotionChange?: (motion: ChromeMotion) => void;
 }
 
 export function ChromeProvider({
   theme: controlledTheme,
   defaultTheme = "ink",
-  motion = "system",
+  motion: controlledMotion,
+  defaultMotion = "system",
   onThemeChange,
+  onMotionChange,
   className,
   children,
   ...props
 }: ChromeProviderProps) {
   const [internalTheme, setInternalTheme] = React.useState<ChromeTheme>(defaultTheme);
+  const [internalMotion, setInternalMotion] = React.useState<ChromeMotion>(defaultMotion);
   const theme = controlledTheme ?? internalTheme;
+  const motion = controlledMotion ?? internalMotion;
 
   const setTheme = React.useCallback(
     (nextTheme: ChromeTheme) => {
@@ -45,7 +53,18 @@ export function ChromeProvider({
     [controlledTheme, onThemeChange]
   );
 
-  const value = React.useMemo(() => ({ theme, setTheme, motion }), [motion, setTheme, theme]);
+  const setMotion = React.useCallback(
+    (nextMotion: ChromeMotion) => {
+      if (controlledMotion === undefined) setInternalMotion(nextMotion);
+      onMotionChange?.(nextMotion);
+    },
+    [controlledMotion, onMotionChange]
+  );
+
+  const value = React.useMemo(
+    () => ({ theme, setTheme, motion, setMotion }),
+    [motion, setMotion, setTheme, theme]
+  );
 
   return (
     <ChromeContext.Provider value={value}>

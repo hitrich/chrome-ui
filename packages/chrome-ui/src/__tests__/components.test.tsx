@@ -30,6 +30,11 @@ function ThemeProbe() {
   return <button onClick={() => setTheme(theme === "ink" ? "arctic" : "ink")}>{theme}</button>;
 }
 
+function MotionProbe() {
+  const { motion, setMotion } = useChrome();
+  return <button onClick={() => setMotion(motion === "reduced" ? "system" : "reduced")}>{motion}</button>;
+}
+
 describe("Chrome public API", () => {
   it("exports all documented components", () => {
     [Avatar, Badge, Button, Checkbox, Dialog, DropdownMenu, IconButton, Progress, RadioGroup, Select, Slider, Surface, Switch, Tabs, TextField, Toast, Tooltip].forEach((value) => expect(value).toBeTruthy());
@@ -61,12 +66,22 @@ describe("Chrome public API", () => {
     expect(container.firstElementChild).toHaveAttribute("data-chrome-motion", "reduced");
   });
 
+  it("owns uncontrolled motion state while reporting changes", async () => {
+    const user = userEvent.setup();
+    const onMotionChange = vi.fn();
+    const { container } = render(<ChromeProvider defaultMotion="reduced" onMotionChange={onMotionChange}><MotionProbe /></ChromeProvider>);
+    await user.click(screen.getByRole("button", { name: "reduced" }));
+    expect(container.firstElementChild).toHaveAttribute("data-chrome-motion", "system");
+    expect(onMotionChange).toHaveBeenCalledWith("system");
+  });
+
   it("applies button variants and native disabled behavior", () => {
-    render(<Button variant="danger" size="lg" disabled>Delete project</Button>);
+    render(<><Button variant="danger" size="lg" disabled>Delete project</Button><Button static>Static action</Button></>);
     const button = screen.getByRole("button", { name: "Delete project" });
     expect(button).toBeDisabled();
     expect(button).toHaveAttribute("data-variant", "danger");
     expect(button).toHaveAttribute("data-size", "lg");
+    expect(screen.getByRole("button", { name: "Static action" })).toHaveAttribute("data-static", "true");
   });
 
   it("forwards refs, merges class names, and passes native props on direct controls", async () => {

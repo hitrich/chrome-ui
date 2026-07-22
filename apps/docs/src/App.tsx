@@ -22,7 +22,7 @@ function ChromeRoutes() {
   }, [theme]);
 
   return (
-    <ChromeProvider theme={activeTheme} onThemeChange={setTheme}>
+    <ChromeProvider className="app-chrome-root" theme={activeTheme} onThemeChange={setTheme}>
       <Tooltip.Provider delayDuration={220}>
         <Routes>
           <Route path="/" element={<Home />} />

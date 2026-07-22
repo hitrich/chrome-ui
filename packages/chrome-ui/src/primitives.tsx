@@ -16,17 +16,18 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   variant?: ButtonVariant;
   size?: ButtonSize;
   asChild?: boolean;
+  static?: boolean;
 }
 
 export const Button = React.forwardRef<ButtonElement, ButtonProps>(function Button(
-  { variant = "primary", size = "md", asChild = false, className, type, ...props },
+  { variant = "primary", size = "md", asChild = false, static: isStatic = false, className, type, ...props },
   ref
 ) {
   const sharedClassName = cx("chrome-button", className);
   if (asChild) {
-    return <Slot ref={ref} className={sharedClassName} data-variant={variant} data-size={size} {...props} />;
+    return <Slot ref={ref} className={sharedClassName} data-static={isStatic || undefined} data-variant={variant} data-size={size} {...props} />;
   }
-  return <button ref={ref as React.ForwardedRef<HTMLButtonElement>} className={sharedClassName} data-variant={variant} data-size={size} type={type ?? "button"} {...props} />;
+  return <button ref={ref as React.ForwardedRef<HTMLButtonElement>} className={sharedClassName} data-static={isStatic || undefined} data-variant={variant} data-size={size} type={type ?? "button"} {...props} />;
 });
 
 export interface IconButtonProps extends ButtonProps {
