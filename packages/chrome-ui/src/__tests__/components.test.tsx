@@ -4,23 +4,43 @@ import { axe } from "vitest-axe";
 import { describe, expect, it, vi } from "vitest";
 import { createRef, useState } from "react";
 import {
+  Alert,
   Avatar,
   Badge,
+  Breadcrumb,
   Button,
   Checkbox,
   ChromeProvider,
+  CodeBlock,
   Dialog,
+  Divider,
   DropdownMenu,
+  EmptyState,
+  FileDropzone,
   IconButton,
+  KeyHint,
+  Meter,
+  Pagination,
   Progress,
   RadioGroup,
+  SearchField,
+  SegmentedControl,
   Select,
+  Skeleton,
   Slider,
+  Spinner,
+  Stat,
+  StatusIndicator,
+  Stepper,
   Surface,
   Switch,
+  Table,
   Tabs,
   TextField,
+  Timeline,
   Toast,
+  ToggleButton,
+  Toolbar,
   Tooltip,
   useChrome
 } from "../index";
@@ -37,7 +57,45 @@ function MotionProbe() {
 
 describe("Chrome public API", () => {
   it("exports all documented components", () => {
-    [Avatar, Badge, Button, Checkbox, Dialog, DropdownMenu, IconButton, Progress, RadioGroup, Select, Slider, Surface, Switch, Tabs, TextField, Toast, Tooltip].forEach((value) => expect(value).toBeTruthy());
+    [
+      Alert,
+      Avatar,
+      Badge,
+      Breadcrumb,
+      Button,
+      Checkbox,
+      CodeBlock,
+      Dialog,
+      Divider,
+      DropdownMenu,
+      EmptyState,
+      FileDropzone,
+      IconButton,
+      KeyHint,
+      Meter,
+      Pagination,
+      Progress,
+      RadioGroup,
+      SearchField,
+      SegmentedControl,
+      Select,
+      Skeleton,
+      Slider,
+      Spinner,
+      Stat,
+      StatusIndicator,
+      Stepper,
+      Surface,
+      Switch,
+      Table,
+      Tabs,
+      TextField,
+      Timeline,
+      Toast,
+      ToggleButton,
+      Toolbar,
+      Tooltip
+    ].forEach((value) => expect(value).toBeTruthy());
   });
 
   it("supports controlled theme changes", async () => {
@@ -400,6 +458,131 @@ describe("Chrome public API", () => {
     await user.click(trigger);
     await user.click(screen.getByRole("button", { name: "Done" }));
     expect(trigger).toHaveFocus();
+  });
+
+  it("updates extended selection, search, pagination, toggle, and stepper controls", async () => {
+    const user = userEvent.setup();
+    const onQueryChange = vi.fn();
+    const onViewChange = vi.fn();
+    const onPageChange = vi.fn();
+    const onPressedChange = vi.fn();
+    const onStepChange = vi.fn();
+
+    render(
+      <ChromeProvider>
+        <SearchField label="Search components" defaultValue="Signal" onValueChange={onQueryChange} />
+        <SegmentedControl
+          aria-label="Component view"
+          defaultValue="preview"
+          onValueChange={onViewChange}
+          items={[{ value: "preview", label: "Preview" }, { value: "code", label: "Code" }]}
+        />
+        <Pagination page={4} count={12} onPageChange={onPageChange} />
+        <ToggleButton onPressedChange={onPressedChange}>Pin view</ToggleButton>
+        <Stepper
+          activeStep={1}
+          onStepChange={onStepChange}
+          steps={[{ id: "source", label: "Source" }, { id: "map", label: "Map" }, { id: "review", label: "Review" }]}
+        />
+      </ChromeProvider>
+    );
+
+    expect(screen.getByRole("searchbox", { name: "Search components" })).toHaveValue("Signal");
+    await user.click(screen.getByRole("button", { name: "Clear search" }));
+    expect(screen.getByRole("searchbox", { name: "Search components" })).toHaveValue("");
+    expect(onQueryChange).toHaveBeenLastCalledWith("");
+
+    await user.click(screen.getByRole("button", { name: "Code" }));
+    expect(screen.getByRole("button", { name: "Code" })).toHaveAttribute("aria-pressed", "true");
+    expect(onViewChange).toHaveBeenCalledWith("code");
+
+    await user.click(screen.getByRole("button", { name: "Next page" }));
+    expect(onPageChange).toHaveBeenCalledWith(5);
+    expect(screen.getByRole("button", { name: "Page 4" })).toHaveAttribute("aria-current", "page");
+
+    await user.click(screen.getByRole("button", { name: "Pin view" }));
+    expect(screen.getByRole("button", { name: "Pin view" })).toHaveAttribute("aria-pressed", "true");
+    expect(onPressedChange).toHaveBeenCalledWith(true);
+
+    await user.click(screen.getByRole("button", { name: "Review" }));
+    expect(onStepChange).toHaveBeenCalledWith(2);
+    expect(screen.getByRole("button", { name: "Map" })).toHaveAttribute("aria-current", "step");
+  });
+
+  it("moves focus through toolbar controls with directional keys", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Toolbar label="Editing tools">
+          <button type="button">Cut</button>
+          <button type="button">Copy</button>
+          <button type="button">Paste</button>
+        </Toolbar>
+        <button type="button">After toolbar</button>
+      </>
+    );
+
+    const cut = screen.getByRole("button", { name: "Cut" });
+    const copy = screen.getByRole("button", { name: "Copy" });
+    const paste = screen.getByRole("button", { name: "Paste" });
+    await waitFor(() => {
+      expect(cut).toHaveAttribute("tabindex", "0");
+      expect(copy).toHaveAttribute("tabindex", "-1");
+      expect(paste).toHaveAttribute("tabindex", "-1");
+    });
+    cut.focus();
+    await user.keyboard("{ArrowRight}");
+    expect(copy).toHaveFocus();
+    expect(copy).toHaveAttribute("tabindex", "0");
+    expect(cut).toHaveAttribute("tabindex", "-1");
+    await user.tab();
+    expect(screen.getByRole("button", { name: "After toolbar" })).toHaveFocus();
+    copy.focus();
+    await user.keyboard("{End}");
+    expect(paste).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
+    expect(cut).toHaveFocus();
+  });
+
+  it("reports selected files and explicit code copy completion", async () => {
+    const user = userEvent.setup();
+    const onFiles = vi.fn();
+    const onCopy = vi.fn();
+    const { container } = render(
+      <>
+        <FileDropzone label="Upload component source" accept=".tsx" onFiles={onFiles} />
+        <CodeBlock code="<Button>Build</Button>" onCopy={onCopy} />
+      </>
+    );
+    const file = new File(["export {}"], "component.tsx", { type: "text/typescript" });
+    const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+    expect(input).not.toBeNull();
+    await user.upload(input!, file);
+    expect(onFiles).toHaveBeenCalledWith([file]);
+
+    await user.click(screen.getByRole("button", { name: "Copy code" }));
+    expect(onCopy).toHaveBeenCalledWith("<Button>Build</Button>");
+    expect(screen.getByRole("button", { name: "Code copied" })).toBeVisible();
+  });
+
+  it("renders extended data-display components with native semantics", () => {
+    render(
+      <ChromeProvider>
+        <Alert title="Build ready">No warnings.</Alert>
+        <Breadcrumb items={[{ label: "Components", href: "/components" }, { label: "Alert" }]} />
+        <Meter label="Coverage" value={92} />
+        <Spinner label="Loading report" />
+        <StatusIndicator tone="success" label="Operational" />
+        <Table aria-label="Builds"><tbody><tr><td>Alert</td></tr></tbody></Table>
+        <Timeline items={[{ id: "ready", title: "Build ready", meta: "Now" }]} />
+      </ChromeProvider>
+    );
+
+    expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toBeVisible();
+    expect(screen.getByRole("meter", { name: "Coverage" })).toHaveAttribute("aria-valuenow", "92");
+    expect(screen.getByRole("status", { name: "Loading report" })).toBeVisible();
+    expect(screen.getByRole("table", { name: "Builds" })).toBeVisible();
+    expect(screen.getAllByText("Build ready")).toHaveLength(2);
   });
 
   it.each(["ink", "arctic"] as const)("has no detectable structural accessibility violations in %s theme", async (theme) => {

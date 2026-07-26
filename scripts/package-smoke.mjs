@@ -83,9 +83,12 @@ import { fileURLToPath } from "node:url";
 import * as Chrome from "@loreanai/chrome-ui";
 
 const expected = [
-  "Avatar", "Badge", "Button", "Checkbox", "ChromePortalLayer", "ChromeProvider", "Dialog",
-  "DropdownMenu", "IconButton", "Progress", "RadioGroup", "Select", "Slider",
-  "Surface", "Switch", "Tabs", "TextField", "Toast", "Tooltip", "useChrome"
+  "Alert", "Avatar", "Badge", "Breadcrumb", "Button", "Checkbox", "ChromePortalLayer",
+  "ChromeProvider", "CodeBlock", "Dialog", "Divider", "DropdownMenu", "EmptyState",
+  "FileDropzone", "IconButton", "KeyHint", "Meter", "Pagination", "Progress", "RadioGroup",
+  "SearchField", "SegmentedControl", "Select", "Skeleton", "Slider", "Spinner", "Stat",
+  "StatusIndicator", "Stepper", "Surface", "Switch", "Table", "Tabs", "TextField",
+  "Timeline", "Toast", "ToggleButton", "Toolbar", "Tooltip", "useChrome"
 ];
 const missing = expected.filter((name) => !Chrome[name]);
 if (missing.length) throw new Error(\`Missing runtime exports: \${missing.join(", ")}\`);
@@ -99,13 +102,13 @@ if (statSync(stylesheetPath).size === 0 || !readFileSync(stylesheetPath, "utf8")
   writeFileSync(join(consumerRoot, "consumer.tsx"), `
 import * as React from "react";
 import {
-  Avatar, Badge, Button, Checkbox, ChromeProvider, Dialog, DropdownMenu,
-  IconButton, Progress, RadioGroup, Select, Slider, Surface, Switch, Tabs,
-  TextField, Toast, Tooltip, useChrome,
-  type AvatarProps, type BadgeProps, type ButtonElement, type ButtonProps,
+  Alert, Avatar, Badge, Button, Checkbox, ChromeProvider, Dialog, DropdownMenu,
+  IconButton, Progress, RadioGroup, SearchField, Select, Slider, Surface, Switch,
+  Table, Tabs, TextField, Toast, Toolbar, Tooltip, useChrome,
+  type AlertProps, type AvatarProps, type BadgeProps, type ButtonElement, type ButtonProps,
   type ButtonSize, type ButtonVariant, type ChromeMotion, type ChromeProviderProps,
-  type ChromeTheme, type IconButtonProps, type ProgressProps, type SliderProps,
-  type SurfaceProps, type TextFieldProps
+  type ChromeTheme, type IconButtonProps, type ProgressProps, type SearchFieldProps,
+  type SliderProps, type SurfaceProps, type TableProps, type TextFieldProps, type ToolbarProps
 } from "@loreanai/chrome-ui";
 
 const anchorRef = React.createRef<HTMLAnchorElement>();
@@ -114,13 +117,13 @@ const theme: ChromeTheme = "ink";
 const motion: ChromeMotion = "system";
 const props: ButtonProps = { variant: "primary", size: "md" };
 const element: ButtonElement | null = anchorRef.current;
-type PublicContracts = [AvatarProps, BadgeProps, ButtonProps, ButtonSize, ButtonVariant,
+type PublicContracts = [AlertProps, AvatarProps, BadgeProps, ButtonProps, ButtonSize, ButtonVariant,
   ChromeMotion, ChromeProviderProps, ChromeTheme, IconButtonProps, ProgressProps,
-  SliderProps, SurfaceProps, TextFieldProps];
+  SearchFieldProps, SliderProps, SurfaceProps, TableProps, TextFieldProps, ToolbarProps];
 const contracts: PublicContracts | undefined = undefined;
-const exportsToCheck = [Avatar, Badge, Checkbox, Dialog, DropdownMenu, IconButton,
-  Progress, RadioGroup, Select, Slider, Surface, Switch, Tabs, TextField, Toast,
-  Tooltip, useChrome];
+const exportsToCheck = [Alert, Avatar, Badge, Checkbox, Dialog, DropdownMenu,
+  IconButton, Progress, RadioGroup, SearchField, Select, Slider, Surface, Switch,
+  Table, Tabs, TextField, Toast, Toolbar, Tooltip, useChrome];
 
 export const fixture = (
   <ChromeProvider theme={theme} motion={motion}>
@@ -130,6 +133,7 @@ export const fixture = (
     <IconButton asChild ref={iconAnchorRef} aria-label="Open foundations">
       <a href="/foundations">i</a>
     </IconButton>
+    <Alert title="Ready">Package verified.</Alert>
   </ChromeProvider>
 );
 void element;

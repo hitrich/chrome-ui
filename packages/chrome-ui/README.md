@@ -26,3 +26,5 @@ export function App() {
 Themes are `ink` and `arctic`. Motion can follow the system preference, remain `full`, or be explicitly `reduced`. React and React DOM are peer dependencies.
 
 `Button` and `IconButton` use an `HTMLElement` ref because `asChild` can slot a link or another interactive element. Without `asChild`, the rendered element is a native button and receives standard button props.
+
+The package exposes 37 UI components plus `ChromeProvider`. Alongside the core controls, the extended set includes navigation (`Breadcrumb`, `Pagination`, `Stepper`), feedback (`Alert`, `EmptyState`, `Skeleton`, `Spinner`, `StatusIndicator`), data display (`CodeBlock`, `Meter`, `Stat`, `Table`, `Timeline`), and workspace controls (`FileDropzone`, `SearchField`, `SegmentedControl`, `ToggleButton`, `Toolbar`).

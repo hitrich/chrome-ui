@@ -11,7 +11,7 @@ It is fully original and does not use Shadcn, Tailwind, glass blur, or transluce
 - `@loreanai/chrome-ui`, an ESM React and TypeScript package with generated declarations
 - Ink and arctic themes with system, full, and reduced motion modes
 - ChromeProvider and `useChrome()` theme APIs
-- 17 documented components, including buttons, fields, selection controls, overlays, feedback, and surfaces
+- 37 documented UI components plus `ChromeProvider`, spanning controls, navigation, feedback, data display, overlays, and surfaces
 - A responsive Vite documentation app with foundations, component explorer, playground, and Control Room pattern
 - Self-hosted Space Grotesk, JetBrains Mono, and Oxanium typography
 - Unit, accessibility, package-consumer, and browser test coverage
@@ -51,7 +51,9 @@ export function App() {
 
 ## Component catalog
 
-`Surface`, `Button`, `IconButton`, `TextField`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `Slider`, `Tabs`, `Badge`, `Tooltip`, `DropdownMenu`, `Dialog`, `Toast`, `Progress`, and `ChromeProvider`.
+Core controls include `Surface`, `Button`, `IconButton`, `TextField`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `Slider`, `Tabs`, `Badge`, `Tooltip`, `DropdownMenu`, `Dialog`, `Toast`, `Progress`, and `Avatar`.
+
+The extended set adds `Alert`, `Breadcrumb`, `CodeBlock`, `Divider`, `EmptyState`, `FileDropzone`, `KeyHint`, `Meter`, `Pagination`, `SearchField`, `SegmentedControl`, `Skeleton`, `Spinner`, `Stat`, `StatusIndicator`, `Stepper`, `Table`, `Timeline`, `ToggleButton`, and `Toolbar`.
 
 ## Workspace
 

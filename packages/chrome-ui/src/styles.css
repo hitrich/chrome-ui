@@ -17,11 +17,13 @@
     --chrome-cobalt-deep: #0735b5;
     --chrome-enamel: #f04438;
     --chrome-enamel-deep: #8e1714;
+    --chrome-warning: #f4b740;
     --chrome-ivory: #fff5e6;
     --chrome-success: #30c985;
     --chrome-accent-text: #5f8cff;
     --chrome-danger-text: #ff746a;
     --chrome-success-text: #48d9a2;
+    --chrome-warning-text: #f7c75a;
     --chrome-radius-sm: 4px;
     --chrome-radius-md: 8px;
     --chrome-radius-lg: 12px;
@@ -54,6 +56,7 @@
     --chrome-accent-text: #0649c9;
     --chrome-danger-text: #ad241e;
     --chrome-success-text: #08734b;
+    --chrome-warning-text: #805500;
     color-scheme: light;
   }
 }

@@ -260,3 +260,52 @@ test("Control Room reflows rather than clipping tracks on short desktop viewport
   expect(lastTrackBox!.y + lastTrackBox!.height).toBeLessThanOrEqual(workspaceBox!.y + workspaceBox!.height);
   expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeGreaterThan(667);
 });
+
+test("extended navigation and workspace controls update visible state", async ({ page }) => {
+  await page.goto("/components/pagination");
+  let preview = page.getByRole("region", { name: "Preview" });
+  await preview.getByRole("button", { name: "Next page" }).click();
+  await expect(preview.getByRole("button", { name: "Page 5" })).toHaveAttribute("aria-current", "page");
+
+  await page.goto("/components/stepper");
+  preview = page.getByRole("region", { name: "Preview" });
+  await preview.getByRole("button", { name: /Review/ }).click();
+  await expect(preview.getByRole("button", { name: /Review/ })).toHaveAttribute("aria-current", "step");
+
+  await page.goto("/components/toolbar");
+  preview = page.getByRole("region", { name: "Preview" });
+  const favorite = preview.getByRole("button", { name: "Favorite" });
+  await favorite.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(preview.getByRole("button", { name: "Save" })).toBeFocused();
+});
+
+test("mobile table keeps wide data inside its local scroll container", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "mobile overflow contract");
+  await page.goto("/components/table");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  const preview = page.getByRole("region", { name: "Preview" });
+  const tableShell = preview.locator(".chrome-table-shell");
+  expect(await tableShell.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
+  await expect(preview.getByRole("region", { name: "Recent component builds horizontal scroll area" })).toHaveAttribute("tabindex", "0");
+  await expect(preview.locator(".chrome-table__scroll-hint")).toBeVisible();
+});
+
+test("all twenty extended component routes render a contained preview", async ({ page, isMobile }) => {
+  test.skip(isMobile, "desktop catalog contract");
+  const slugs = [
+    "alert", "breadcrumb", "code-block", "divider", "empty-state", "file-dropzone",
+    "key-hint", "meter", "pagination", "search-field", "segmented-control", "skeleton",
+    "spinner", "stat", "status-indicator", "stepper", "table", "timeline",
+    "toggle-button", "toolbar"
+  ];
+
+  for (const slug of slugs) {
+    await page.goto(`/components/${slug}`);
+    await expect(page.locator(".component-preview"), `${slug} preview`).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth),
+      `${slug} page overflow`
+    ).toBe(true);
+  }
+});
