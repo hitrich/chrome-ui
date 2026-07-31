@@ -30,6 +30,31 @@ test("theme selection persists across reloads", async ({ page, isMobile }) => {
   await expect(page.locator(".chrome-root").first()).toHaveAttribute("data-chrome-theme", "ink");
 });
 
+test("text selection keeps accessible contrast in both themes", async ({ page }) => {
+  await page.goto("/components/button");
+  const ratios = await page.getByRole("heading", { level: 1, name: "Button" }).evaluate((element) => {
+    const root = element.closest<HTMLElement>(".chrome-root")!;
+    const parseRgb = (value: string) => value.match(/[\d.]+/g)!.slice(0, 3).map(Number);
+    const luminance = (value: string) => {
+      const channels = parseRgb(value).map((channel) => {
+        const normalized = channel / 255;
+        return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      });
+      return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+    };
+
+    return (["ink", "arctic"] as const).map((theme) => {
+      root.dataset.chromeTheme = theme;
+      const selection = getComputedStyle(element, "::selection");
+      const foreground = luminance(selection.color);
+      const background = luminance(selection.backgroundColor);
+      return (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05);
+    });
+  });
+
+  for (const ratio of ratios) expect(ratio).toBeGreaterThanOrEqual(4.5);
+});
+
 test("component preview state changes real control behavior", async ({ page }) => {
   await page.goto("/components/button");
   await page.getByRole("button", { name: "Disabled", exact: true }).click();
@@ -61,7 +86,7 @@ test("structured disabled examples are programmatic and visibly subdued", async 
   const disabledMenuItem = page.getByRole("menuitem", { name: "Delete unavailable" });
   await expect(disabledMenuItem).toHaveAttribute("data-disabled", "");
   expect(Number.parseFloat(await disabledMenuItem.evaluate((element) => getComputedStyle(element).opacity))).toBeLessThan(0.5);
-  await disabledMenuItem.click({ force: true });
+  await disabledMenuItem.dispatchEvent("click");
   await expect(page.getByRole("menuitem", { name: "Delete unavailable" })).toBeVisible();
 });
 
@@ -101,8 +126,32 @@ test("mobile navigation opens and reaches foundations", async ({ page, isMobile 
   await page.getByRole("link", { name: "Foundations" }).click();
   await expect(page).toHaveURL(/\/foundations\/color/);
   await page.getByRole("button", { name: "Open navigation" }).click();
+  const navigationDialog = page.getByRole("dialog", { name: "Navigate Chrome" });
+  for (const theme of ["Ink", "Arctic"]) {
+    const box = await navigationDialog.getByRole("button", { name: theme, exact: true }).boundingBox();
+    expect(box?.height).toBeGreaterThanOrEqual(44);
+  }
   await page.getByRole("link", { name: "Slider", exact: true }).click();
   await expect(page).toHaveURL(/\/components\/slider/);
+});
+
+test("component dialogs adapt to an anchored mobile sheet and restore focus", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "mobile-only dialog contract");
+  await page.goto("/components/dialog");
+  const preview = page.getByRole("region", { name: "Preview" });
+  const trigger = preview.getByRole("button", { name: "Open dialog" });
+  await trigger.click();
+
+  const dialog = page.getByRole("dialog", { name: "Export package" });
+  await expect(dialog).toBeVisible();
+  await expect.poll(async () => {
+    const box = await dialog.boundingBox();
+    return box ? Math.abs(box.y + box.height - page.viewportSize()!.height) : Number.POSITIVE_INFINITY;
+  }).toBeLessThanOrEqual(1);
+
+  await page.getByRole("button", { name: "Close dialog" }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect(trigger).toBeFocused();
 });
 
 test("full motion remains available when the operating system requests reduction", async ({ page }) => {
@@ -114,6 +163,22 @@ test("full motion remains available when the operating system requests reduction
   await root.evaluate((element) => element.setAttribute("data-chrome-motion", "full"));
   const fullDuration = await button.evaluate((element) => Number.parseFloat(getComputedStyle(element).transitionDuration));
   expect(fullDuration).toBeGreaterThan(reducedDuration);
+
+  await page.goto("/components/pagination");
+  const paginationRoot = page.locator(".chrome-root").first();
+  const nextPage = page.getByRole("region", { name: "Preview" }).getByRole("button", { name: "Next page" });
+  await nextPage.hover();
+  await page.mouse.down();
+  const reducedTransform = await nextPage.evaluate((element) => getComputedStyle(element).transform);
+  await page.mouse.up();
+  expect(reducedTransform).toBe("none");
+
+  await paginationRoot.evaluate((element) => element.setAttribute("data-chrome-motion", "full"));
+  await nextPage.hover();
+  await page.mouse.down();
+  const fullTransform = await nextPage.evaluate((element) => getComputedStyle(element).transform);
+  await page.mouse.up();
+  expect(fullTransform).not.toBe("none");
 });
 
 test("mobile landing has no horizontal overflow and preserves touch targets", async ({ page, isMobile }) => {
@@ -219,8 +284,21 @@ test("Control Room transport, export dialog, and toast respond", async ({ page }
   await page.goto("/patterns/control-room");
   await expect(page.locator(".chrome-toast")).toHaveCount(0);
   await page.getByRole("button", { name: "Save snapshot", exact: true }).click();
-  await expect(page.locator(".chrome-toast")).toContainText("Snapshot saved");
-  await page.locator(".chrome-toast").evaluate((element) => element.setAttribute("data-test-instance", "first"));
+  const toast = page.locator(".chrome-toast");
+  await expect(toast).toContainText("Snapshot saved");
+  const toastBox = await toast.boundingBox();
+  expect(toastBox).not.toBeNull();
+  await page.mouse.move(toastBox!.x + toastBox!.width / 2, toastBox!.y + toastBox!.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(toastBox!.x + toastBox!.width / 2 + 20, toastBox!.y + toastBox!.height / 2);
+  await expect(toast).toHaveAttribute("data-swipe", "start");
+  await page.mouse.move(toastBox!.x + toastBox!.width / 2 + 24, toastBox!.y + toastBox!.height / 2);
+  await expect(toast).toHaveAttribute("data-swipe", "move");
+  await page.mouse.up();
+  await expect(toast).toHaveAttribute("data-swipe", "cancel");
+  expect(await toast.evaluate((element) => getComputedStyle(element).animationName)).toBe("none");
+  await expect(toast).toBeVisible();
+  await toast.evaluate((element) => element.setAttribute("data-test-instance", "first"));
   await page.getByRole("button", { name: "Save snapshot", exact: true }).click();
   await expect(page.locator('.chrome-toast[data-test-instance="first"]')).toHaveCount(0);
   await page.getByRole("button", { name: "Start playback" }).click();

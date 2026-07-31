@@ -249,11 +249,27 @@ export const Dialog = {
   Description: DialogDescription
 };
 
+type ToastProviderProps = React.ComponentPropsWithoutRef<typeof ToastPrimitive.Provider>;
+type ToastSwipeDirection = NonNullable<ToastProviderProps["swipeDirection"]>;
+
+const ToastSwipeDirectionContext = React.createContext<ToastSwipeDirection>("right");
+
+function ToastProvider({ swipeDirection = "right", children, ...props }: ToastProviderProps) {
+  return (
+    <ToastSwipeDirectionContext.Provider value={swipeDirection}>
+      <ToastPrimitive.Provider swipeDirection={swipeDirection} {...props}>
+        {children}
+      </ToastPrimitive.Provider>
+    </ToastSwipeDirectionContext.Provider>
+  );
+}
+
 const ToastRoot = React.forwardRef<
   React.ElementRef<typeof ToastPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitive.Root>
 >(function ToastRoot({ className, ...props }, ref) {
-  return <ToastPrimitive.Root ref={ref} className={cx("chrome-toast", className)} {...props} />;
+  const swipeDirection = React.useContext(ToastSwipeDirectionContext);
+  return <ToastPrimitive.Root ref={ref} className={cx("chrome-toast", className)} {...props} data-swipe-direction={swipeDirection} />;
 });
 
 const ToastViewport = React.forwardRef<
@@ -296,7 +312,7 @@ const ToastClose = React.forwardRef<
 });
 
 export const Toast = {
-  Provider: ToastPrimitive.Provider,
+  Provider: ToastProvider,
   Root: ToastRoot,
   Title: ToastTitle,
   Description: ToastDescription,

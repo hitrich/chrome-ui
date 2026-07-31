@@ -33,7 +33,7 @@ function FoundationContent({ slug }: { slug: string }) {
   if (slug === "motion") {
     return (
       <div className="motion-specimen">
-        <div className="motion-rail" /><div><span>210ms · physical state</span><h2>Light shifts. Edges settle.</h2><p>Hover moves the highlight, press compresses depth, and overlays rise along one restrained curve.</p></div>
+        <div className="motion-rail" /><div><span>90ms press · 240ms settle</span><h2>Response is instant. Release is calm.</h2><p>Pointer-tracked light follows intent, controls compress on contact, and overlays arrive from their spatial source.</p></div>
       </div>
     );
   }

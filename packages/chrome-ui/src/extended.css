@@ -365,7 +365,12 @@
     color: var(--chrome-text-muted);
     cursor: pointer;
     font: 0.75rem/1 var(--chrome-font-mono);
-    transition: border-color var(--chrome-duration-fast) ease, background-color var(--chrome-duration-fast) ease, color var(--chrome-duration-fast) ease;
+    transition:
+      border-color var(--chrome-duration-fast) ease,
+      background-color var(--chrome-duration-fast) ease,
+      color var(--chrome-duration-fast) ease,
+      box-shadow var(--chrome-duration-base) var(--chrome-ease),
+      transform var(--chrome-duration-instant) ease-out;
   }
 
   .chrome-pagination button:hover:not(:disabled) { border-color: var(--chrome-border-strong); background: var(--chrome-surface-raised); color: var(--chrome-text); }
@@ -377,6 +382,7 @@
   }
 
   .chrome-pagination button:disabled { cursor: not-allowed; opacity: 0.3; }
+  .chrome-pagination button:active:not(:disabled) { transform: scale(0.9); }
   .chrome-pagination button svg { width: 17px; height: 17px; }
   .chrome-pagination__ellipsis { display: grid; width: 30px; height: 44px; place-items: center; color: var(--chrome-text-muted); font-family: var(--chrome-font-mono); }
 
@@ -399,12 +405,16 @@
     background: linear-gradient(180deg, #06080b, #0b0e13 68%, #050608);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 2px 14px rgba(0, 0, 0, 0.72);
     color: #eef1f5;
-    transition: border-color var(--chrome-duration-fast) ease, box-shadow var(--chrome-duration-fast) ease;
+    transition: border-color var(--chrome-duration-fast) ease, box-shadow var(--chrome-duration-base) var(--chrome-ease);
   }
 
   .chrome-search-field__control:focus-within {
     border-color: var(--chrome-cobalt);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 2px 14px rgba(0, 0, 0, 0.72), 0 0 0 1px var(--chrome-cobalt), 0 0 12px rgba(18, 88, 255, 0.2);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.14),
+      inset 0 2px 14px rgba(0, 0, 0, 0.72),
+      0 0 0 1px var(--chrome-cobalt),
+      0 0 0 4px color-mix(in srgb, var(--chrome-cobalt) 16%, transparent);
   }
 
   .chrome-search-field__control > svg { width: 18px; height: 18px; justify-self: center; color: #89919d; }
@@ -416,6 +426,7 @@
     outline: 0;
     background: transparent;
     color: #f7f8fa;
+    caret-color: var(--chrome-accent-text);
     padding: 0 8px 0 0;
     font-size: 0.875rem;
   }
@@ -431,9 +442,11 @@
     background: transparent;
     color: #aeb5bf;
     cursor: pointer;
+    transition: color var(--chrome-duration-fast) ease, transform var(--chrome-duration-instant) ease-out;
   }
 
   .chrome-search-field__clear:hover { color: #fff; }
+  .chrome-search-field__clear:active { transform: scale(0.86); }
   .chrome-search-field__clear svg { width: 15px; height: 15px; }
   .chrome-search-field__shortcut { margin-right: 10px; }
   .chrome-search-field[data-disabled] { filter: grayscale(0.8); opacity: 0.42; }
@@ -463,7 +476,11 @@
     cursor: pointer;
     padding: 0 15px;
     font-size: 0.78rem;
-    transition: background-color var(--chrome-duration-fast) ease, color var(--chrome-duration-fast) ease, box-shadow var(--chrome-duration-fast) ease;
+    transition:
+      background-color var(--chrome-duration-fast) ease,
+      color var(--chrome-duration-fast) ease,
+      box-shadow var(--chrome-duration-base) var(--chrome-ease),
+      transform var(--chrome-duration-instant) ease-out;
   }
 
   .chrome-segmented button[aria-pressed="true"] {
@@ -473,6 +490,7 @@
   }
 
   .chrome-segmented button:hover:not([aria-pressed="true"]):not(:disabled) { background: var(--chrome-surface-raised); color: var(--chrome-text); }
+  .chrome-segmented button:active:not(:disabled) { transform: scale(0.96); }
   .chrome-segmented button:disabled { cursor: not-allowed; opacity: 0.36; }
   .chrome-segmented button svg { width: 16px; height: 16px; }
   .chrome-segmented[data-size="sm"] button { min-width: 62px; min-height: 36px; padding-inline: 11px; font-size: 0.72rem; }
@@ -611,6 +629,7 @@
   }
 
   .chrome-stepper button { cursor: pointer; }
+  .chrome-stepper button:active:not(:disabled) .chrome-stepper__index { transform: scale(0.9); }
   .chrome-stepper button:disabled { cursor: not-allowed; opacity: 0.38; }
   .chrome-stepper__index {
     display: grid;
@@ -623,6 +642,11 @@
     color: var(--chrome-text-muted);
     box-shadow: 0 0 0 4px var(--chrome-bg);
     font: 0.64rem/1 var(--chrome-font-mono);
+    transition:
+      border-color var(--chrome-duration-fast) ease,
+      background-color var(--chrome-duration-fast) ease,
+      box-shadow var(--chrome-duration-base) var(--chrome-ease),
+      transform var(--chrome-duration-instant) ease-out;
   }
 
   .chrome-stepper [data-state="complete"] .chrome-stepper__index {
@@ -839,7 +863,7 @@
     background:
       linear-gradient(180deg, color-mix(in srgb, var(--chrome-silver-high) 7%, transparent), transparent 45%),
       var(--chrome-surface);
-    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--chrome-silver-high) 14%, transparent), 0 12px 28px var(--chrome-shadow);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--chrome-silver-high) 14%, transparent), var(--chrome-shadow-raised);
     padding: 5px;
   }
 

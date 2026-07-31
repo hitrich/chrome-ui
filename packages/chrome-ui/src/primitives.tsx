@@ -19,15 +19,85 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   static?: boolean;
 }
 
+function setButtonLightPosition(element: HTMLElement, bounds: DOMRect, clientX: number, clientY: number) {
+  if (bounds.width <= 0 || bounds.height <= 0) return;
+
+  const x = Math.max(0, Math.min(100, ((clientX - bounds.left) / bounds.width) * 100));
+  const y = Math.max(0, Math.min(100, ((clientY - bounds.top) / bounds.height) * 100));
+  element.style.setProperty("--chrome-light-x", `${x.toFixed(2)}%`);
+  element.style.setProperty("--chrome-light-y", `${y.toFixed(2)}%`);
+}
+
 export const Button = React.forwardRef<ButtonElement, ButtonProps>(function Button(
-  { variant = "primary", size = "md", asChild = false, static: isStatic = false, className, type, ...props },
+  {
+    variant = "primary",
+    size = "md",
+    asChild = false,
+    static: isStatic = false,
+    className,
+    type,
+    onPointerEnter,
+    onPointerMove,
+    onPointerLeave,
+    ...props
+  },
   ref
 ) {
   const sharedClassName = cx("chrome-button", className);
+  const lightBoundsRef = React.useRef<{ element: HTMLElement; bounds: DOMRect } | null>(null);
+  const handlePointerEnter = React.useCallback<React.PointerEventHandler<HTMLElement>>((event) => {
+    const isDisabled = event.currentTarget.matches(":disabled, [aria-disabled=\"true\"]");
+    if (event.pointerType !== "touch" && !isDisabled) {
+      lightBoundsRef.current = { element: event.currentTarget, bounds: event.currentTarget.getBoundingClientRect() };
+    }
+    onPointerEnter?.(event as React.PointerEvent<HTMLButtonElement>);
+  }, [onPointerEnter]);
+  const handlePointerMove = React.useCallback<React.PointerEventHandler<HTMLElement>>((event) => {
+    const isDisabled = event.currentTarget.matches(":disabled, [aria-disabled=\"true\"]");
+    if (event.pointerType !== "touch" && !isDisabled) {
+      const cached = lightBoundsRef.current;
+      const bounds = cached?.element === event.currentTarget ? cached.bounds : event.currentTarget.getBoundingClientRect();
+      lightBoundsRef.current = { element: event.currentTarget, bounds };
+      setButtonLightPosition(event.currentTarget, bounds, event.clientX, event.clientY);
+    }
+    onPointerMove?.(event as React.PointerEvent<HTMLButtonElement>);
+  }, [onPointerMove]);
+  const handlePointerLeave = React.useCallback<React.PointerEventHandler<HTMLElement>>((event) => {
+    lightBoundsRef.current = null;
+    event.currentTarget.style.removeProperty("--chrome-light-x");
+    event.currentTarget.style.removeProperty("--chrome-light-y");
+    onPointerLeave?.(event as React.PointerEvent<HTMLButtonElement>);
+  }, [onPointerLeave]);
+
   if (asChild) {
-    return <Slot ref={ref} className={sharedClassName} data-static={isStatic || undefined} data-variant={variant} data-size={size} {...props} />;
+    return (
+      <Slot
+        ref={ref}
+        className={sharedClassName}
+        data-static={isStatic || undefined}
+        data-variant={variant}
+        data-size={size}
+        onPointerEnter={handlePointerEnter}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
+        {...props}
+      />
+    );
   }
-  return <button ref={ref as React.ForwardedRef<HTMLButtonElement>} className={sharedClassName} data-static={isStatic || undefined} data-variant={variant} data-size={size} type={type ?? "button"} {...props} />;
+  return (
+    <button
+      ref={ref as React.ForwardedRef<HTMLButtonElement>}
+      className={sharedClassName}
+      data-static={isStatic || undefined}
+      data-variant={variant}
+      data-size={size}
+      type={type ?? "button"}
+      onPointerEnter={handlePointerEnter}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      {...props}
+    />
+  );
 });
 
 export interface IconButtonProps extends ButtonProps {

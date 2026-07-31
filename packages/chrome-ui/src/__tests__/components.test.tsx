@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "vitest-axe";
 import { describe, expect, it, vi } from "vitest";
@@ -140,6 +140,66 @@ describe("Chrome public API", () => {
     expect(button).toHaveAttribute("data-variant", "danger");
     expect(button).toHaveAttribute("data-size", "lg");
     expect(screen.getByRole("button", { name: "Static action" })).toHaveAttribute("data-static", "true");
+  });
+
+  it("tracks responsive button light without swallowing consumer pointer handlers", () => {
+    const onPointerMove = vi.fn();
+    const onPointerLeave = vi.fn();
+    const onDisabledPointerMove = vi.fn();
+    render(
+      <>
+        <Button onPointerMove={onPointerMove} onPointerLeave={onPointerLeave}>Responsive light</Button>
+        <Button asChild aria-disabled="true" onPointerMove={onDisabledPointerMove}>
+          <a href="/unavailable">Unavailable light</a>
+        </Button>
+      </>
+    );
+    const button = screen.getByRole("button", { name: "Responsive light" });
+    const boundsSpy = vi.spyOn(button, "getBoundingClientRect").mockReturnValue({
+      x: 0,
+      y: 0,
+      top: 0,
+      right: 200,
+      bottom: 100,
+      left: 0,
+      width: 200,
+      height: 100,
+      toJSON: () => ({})
+    });
+
+    fireEvent.pointerMove(button, { clientX: 150, clientY: 25, pointerType: "mouse" });
+    expect(button.style.getPropertyValue("--chrome-light-x")).toBe("75.00%");
+    expect(button.style.getPropertyValue("--chrome-light-y")).toBe("25.00%");
+    expect(onPointerMove).toHaveBeenCalledOnce();
+
+    fireEvent.pointerMove(button, { clientX: 50, clientY: 75, pointerType: "mouse" });
+    expect(button.style.getPropertyValue("--chrome-light-x")).toBe("25.00%");
+    expect(button.style.getPropertyValue("--chrome-light-y")).toBe("75.00%");
+    expect(onPointerMove).toHaveBeenCalledTimes(2);
+    expect(boundsSpy).toHaveBeenCalledOnce();
+
+    fireEvent.pointerLeave(button, { pointerType: "mouse" });
+    expect(button.style.getPropertyValue("--chrome-light-x")).toBe("");
+    expect(button.style.getPropertyValue("--chrome-light-y")).toBe("");
+    expect(onPointerLeave).toHaveBeenCalledOnce();
+
+    const disabledLink = screen.getByRole("link", { name: "Unavailable light" });
+    const disabledBoundsSpy = vi.spyOn(disabledLink, "getBoundingClientRect").mockReturnValue({
+      x: 0,
+      y: 0,
+      top: 0,
+      right: 200,
+      bottom: 100,
+      left: 0,
+      width: 200,
+      height: 100,
+      toJSON: () => ({})
+    });
+    fireEvent.pointerMove(disabledLink, { clientX: 100, clientY: 50, pointerType: "mouse" });
+    expect(disabledLink.style.getPropertyValue("--chrome-light-x")).toBe("");
+    expect(disabledLink.style.getPropertyValue("--chrome-light-y")).toBe("");
+    expect(onDisabledPointerMove).toHaveBeenCalledOnce();
+    expect(disabledBoundsSpy).not.toHaveBeenCalled();
   });
 
   it("forwards refs, merges class names, and passes native props on direct controls", async () => {
@@ -408,7 +468,7 @@ describe("Chrome public API", () => {
     const closeRef = createRef<HTMLButtonElement>();
     render(
       <ChromeProvider>
-        <Toast.Provider>
+        <Toast.Provider swipeDirection="up">
           <Toast.Root open onOpenChange={onToastChange} className="consumer-toast">
             <Toast.Title ref={titleRef} className="consumer-toast-title" data-contract="title">Snapshot saved</Toast.Title>
             <Toast.Close ref={closeRef} className="consumer-toast-close" data-contract="close">Dismiss snapshot</Toast.Close>
@@ -422,6 +482,7 @@ describe("Chrome public API", () => {
     expect(titleRef.current).toHaveAttribute("data-contract", "title");
     expect(closeRef.current).toHaveClass("chrome-toast__close", "consumer-toast-close");
     expect(screen.getByText("Snapshot saved").closest(".chrome-toast")).toHaveClass("consumer-toast");
+    expect(screen.getByText("Snapshot saved").closest(".chrome-toast")).toHaveAttribute("data-swipe-direction", "up");
     await user.click(screen.getByRole("button", { name: "Dismiss snapshot" }));
     expect(onToastChange).toHaveBeenCalledWith(false);
   });
