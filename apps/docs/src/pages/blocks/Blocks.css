@@ -1,0 +1,215 @@
+/* Blocks (Blocks.tsx): the helmet of work/canvas/project/Blocks.dc.html, scoped under .blk.
+   Controls are package components; only the block layout, panels and page-level bits live here.
+   Ink values are the defaults, Satin overrides them; each nested preview root resets its own. */
+.chrome-root {
+  --blk-pnl: linear-gradient(180deg, #141416, #0e0e10);
+  --blk-pnl-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 24px -16px rgba(0, 0, 0, 0.8);
+  --blk-side: rgba(255, 255, 255, 0.025);
+  --blk-tile: rgba(255, 255, 255, 0.035);
+  --blk-tile-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --blk-chip: #1c1c1f;
+  --blk-bubble: #18181b;
+  --blk-bubble-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  --blk-flat-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --blk-sel: rgba(31, 85, 255, 0.14);
+  --blk-ok: var(--chrome-mint);
+  --blk-unread: radial-gradient(circle at 36% 30%, #f4f4f5, #a1a1aa 55%, #52525b);
+  --blk-count-ring: #0b0b0d;
+  --blk-drop-line: rgba(255, 255, 255, 0.2);
+  --blk-drop-fill: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.02));
+  --blk-drop-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+  --blk-log: #050506;
+}
+.chrome-root:is([data-chrome-theme="satin"], [data-chrome-theme="arctic"]) {
+  --blk-pnl: linear-gradient(180deg, #f3f4f4, #ecedee);
+  --blk-pnl-shadow: inset 0 1px 0 #fff, 0 0 0 1px rgba(0, 0, 0, 0.07), 0 10px 24px -16px rgba(40, 60, 56, 0.4);
+  --blk-side: #eceded;
+  --blk-tile: #e8e9e9;
+  --blk-tile-ring: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --blk-chip: #e3e5e5;
+  --blk-bubble: #f4f5f5;
+  --blk-bubble-ring: inset 0 0 0 1px rgba(0, 0, 0, 0.07);
+  --blk-flat-ring: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  --blk-sel: rgba(20, 71, 230, 0.07);
+  --blk-ok: #0f8a5f;
+  --blk-unread: radial-gradient(circle at 36% 30%, #9aa0a2, #3e4244 55%, #0e1010);
+  --blk-count-ring: #e2e3e3;
+  --blk-drop-line: #959a9a;
+  --blk-drop-fill: linear-gradient(180deg, rgba(0, 0, 0, 0.045), rgba(255, 255, 255, 0.3));
+  --blk-drop-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+  --blk-log: #161818;
+}
+
+/* ---------- helpers (the helmet's preview helpers) ---------- */
+.blk { min-width: 0; text-align: left; }
+.blk .v { display: flex; flex-direction: column; gap: 8px; }
+.blk .h { display: flex; align-items: center; gap: 8px; }
+.blk .jb { justify-content: space-between; }
+.blk .fw { width: 100%; }
+.blk .f1 { flex: 1; min-width: 0; }
+.blk .ml { margin-left: auto; }
+.blk .b { font-weight: 600; }
+.blk .sm { font-size: 12.5px; line-height: 18px; }
+.blk .xs { font-size: 12px; line-height: 16px; }
+.blk .sm b { font-weight: 600; }
+.blk .nav-item.n28 { height: 28px; font-size: 13px; }
+.blk.pnl,
+.blk .pnl { border-radius: 14px; background: var(--blk-pnl); box-shadow: var(--blk-pnl-shadow); }
+.blk .blk-logo24 { width: 24px; height: 24px; }
+.blk .blk-ok { color: var(--blk-ok); }
+.blk .blk-cobalt { color: var(--chrome-cobalt-text); }
+.blk .blk-bad { color: var(--chrome-enamel-text); }
+.blk .blk-up { color: var(--chrome-mint); }
+.blk .blk-linkbtn { padding: 0; border: 0; background: none; font: inherit; white-space: nowrap; cursor: pointer; }
+.blk .blk-linkbtn.xs { font-size: 12px; line-height: 16px; }
+.blk .blk-linkbtn:disabled { color: var(--chrome-text-3); cursor: default; }
+.blk .blk-cap {
+  padding: 9px 10px 3px;
+  font: 500 10.5px/14px var(--chrome-font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--chrome-text-3);
+}
+.blk .blk-row { padding: 8px 0; border-bottom: 1px solid var(--chrome-line); }
+
+/* ---------- Sidebar ---------- */
+.blk-sidebar { display: flex; align-items: stretch; width: 100%; border-radius: 14px 14px 0 0; overflow: hidden; }
+.blk-sidebar .blk-sidebar__side { width: 196px; flex: none; padding: 10px; gap: 6px; background: var(--blk-side); border-right: 1px solid var(--chrome-line); }
+.blk-sidebar__ws { height: 36px; padding: 0 6px; }
+/* the design draws the in-app search a size down from the default field */
+.blk-sidebar .chrome-search-field__control { height: 28px; font-size: 12.5px; }
+.blk-sidebar .blk-sidebar__me { margin-top: auto; padding: 8px 6px; border-top: 1px solid var(--chrome-line); }
+.blk-sidebar .blk-sidebar__main { padding: 16px; gap: 12px; }
+.blk-mk { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 10px; background: var(--blk-tile); box-shadow: var(--blk-tile-ring); }
+.blk-mk__v { font-size: 18px; line-height: 20px; font-weight: 500; }
+.blk-sidebar .blk-sidebar__plot { flex: 1; min-height: 96px; display: flex; padding: 12px 12px 10px; border-radius: 12px; }
+.blk-sidebar__plot > .chrome-chart { flex: 1; }
+
+/* ---------- Command Bar ---------- */
+.blk-command { width: min(404px, 100%); }
+
+/* ---------- Data Grid ---------- */
+.blk-grid { width: 100%; overflow: hidden; }
+.blk-grid .blk-grid__bar { flex-wrap: wrap; padding: 8px 12px; }
+.blk-grid__filter { width: 156px; }
+.blk-grid__filter .chrome-search-field__control { height: 30px; font-size: 12.5px; }
+.blk-grid .chrome-table th { height: 30px; padding: 0 8px; font-size: 11.5px; }
+.blk-grid .chrome-table td { height: 34px; padding: 0 8px; font-size: 12px; white-space: nowrap; }
+.blk-grid .chrome-table :is(th, td):first-child { padding-left: 12px; }
+.blk-grid .chrome-table :is(th, td):last-child { padding-right: 12px; }
+.blk-grid .chrome-table .r { padding-right: 16px; }
+.blk-grid .chrome-table .mono { font-size: 11.5px; }
+.blk-grid .chrome-table .chrome-status { font-size: 12px; }
+.blk-grid .chrome-table tr[data-selected] td { background: var(--blk-sel); }
+.blk-grid .chrome-table .chrome-choice-label { display: flex; }
+.blk-grid .blk-grid__foot { height: 36px; padding: 0 6px 0 12px; border-top: 1px solid var(--chrome-line); }
+.blk-grid__foot .chrome-icon-button { width: 26px; height: 26px; }
+
+/* ---------- Agent Run ---------- */
+.blk-run { display: flex; align-items: stretch; width: 100%; height: 100%; overflow: hidden; }
+.blk-run .blk-run__main { padding: 14px; gap: 10px; }
+.blk-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; }
+.blk-steps li { display: flex; align-items: center; gap: 10px; }
+.blk-pend { box-sizing: border-box; width: 14px; height: 14px; border-radius: 50%; border: 1px dashed var(--chrome-text-3); flex: none; }
+.blk-log { width: 184px; flex: none; padding: 12px; background: var(--blk-log); font: 400 10px/17px var(--chrome-font-mono); color: #d4d4d8; white-space: pre; overflow: hidden; }
+.blk-log > i { font-style: normal; color: #8a8a94; }
+.blk-log .e { color: #ff8a80; }
+.blk-log .blk-log__head { gap: 6px; margin-bottom: 4px; color: #a1a1aa; }
+
+/* ---------- Auth Panel ---------- */
+.blk-auth { display: flex; flex-direction: column; width: min(300px, 100%); margin: 0; padding: 14px 16px; gap: 8px; }
+.blk-auth .blk-auth__head { gap: 10px; margin-bottom: 6px; }
+.blk-auth .chrome-field { gap: 4px; }
+.blk-auth input[type="password"] { letter-spacing: 0.18em; }
+.blk-auth .chrome-field__control { height: 32px; font-size: 13px; }
+
+/* ---------- Settings Panel ---------- */
+.blk-settings { display: flex; align-items: stretch; width: 100%; overflow: hidden; }
+.blk-settings .blk-settings__side { width: 140px; flex: none; padding: 8px; gap: 1px; background: var(--blk-side); border-right: 1px solid var(--chrome-line); }
+.blk-settings .blk-settings__main { padding: 14px 16px; gap: 0; }
+.blk-settings .blk-settings__select { height: 28px; gap: 6px; padding-right: 8px; font-size: 12.5px; }
+.blk-settings .blk-settings__save { justify-content: flex-end; padding-top: 10px; border-top: 1px solid var(--chrome-line); }
+
+/* ---------- Notification Center ---------- */
+.blk-notify { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; width: min(360px, 100%); }
+.blk-notify__bell { position: relative; display: inline-flex; }
+/* count bubble: smoked chrome micro pill, as the base Badge (the package Badge has no count variant) */
+.blk-count {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: #fff;
+  font: 600 11px/16px var(--chrome-font-sans);
+  text-align: center;
+  pointer-events: none;
+  background: linear-gradient(180deg, #4a4e4e, #0e1010) padding-box, linear-gradient(180deg, #8a8a8a, #1a1a1a 50%, #4f6b66) border-box;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 0 2px var(--blk-count-ring), 0 2px 4px -1px rgba(0, 0, 0, 0.35);
+}
+.blk-notify .blk-notify__tray { width: 100%; gap: 0; overflow: hidden; }
+.blk-notify .blk-notify__head { height: 42px; padding: 0 14px; gap: 12px; border-bottom: 1px solid var(--chrome-line); }
+.blk-ntf { display: flex; align-items: center; gap: 10px; padding: 9px 14px; }
+.blk-ntf + .blk-ntf { border-top: 1px solid var(--chrome-line); }
+/* unread: smoked metal bead, matching the count badge (cobalt stays for selection and progress) */
+.blk-unread { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--blk-unread); box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.35), 0 0 0 0.5px rgba(0, 0, 0, 0.3); }
+.blk-ki { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 8px; flex: none; background: var(--blk-chip); color: var(--chrome-enamel-text); }
+
+/* ---------- Stat Deck ---------- */
+.blk-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+.blk-stat { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 12px 14px; }
+.blk-stats .blk-stat__row { align-items: baseline; gap: 6px; }
+.blk-stat__v { font-size: 24px; line-height: 28px; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.blk-stat__stack { position: relative; height: 28px; }
+.blk-stat__stack > svg { position: absolute; inset: 0; }
+/* a thumbnail: no baseline under the agent bars (BarChart has no axis switch) */
+.blk-stat .chrome-chart__axis { display: none; }
+
+/* ---------- Pricing Table ---------- */
+.blk-pricing { display: flex; flex-direction: column; width: 100%; align-items: center; gap: 12px; }
+.blk-pricing__plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: stretch; width: 100%; }
+.blk-plan { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 12px; }
+.blk-plan--flat { border-radius: 14px; box-shadow: var(--blk-flat-ring); }
+.blk-pricing .blk-plan__price { align-items: baseline; gap: 4px; }
+.blk-plan__v { font-size: 24px; line-height: 28px; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.blk-plan__list { list-style: none; margin: 4px 0 6px; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+.blk-plan__list li { display: flex; align-items: center; gap: 6px; }
+.blk-plan__list .i { color: var(--chrome-text-2); }
+
+/* ---------- Upload Queue ---------- */
+.blk-upload { display: flex; flex-direction: column; width: 100%; padding: 14px; gap: 8px; }
+/* drop strip: recessed with a dashed cut, as the base File Dropzone (which has no one-line variant) */
+.blk-drop { display: flex; align-items: center; justify-content: center; gap: 8px; height: 36px; border: 1.5px dashed var(--blk-drop-line); border-radius: 10px; background: var(--blk-drop-fill); box-shadow: var(--blk-drop-shadow); color: var(--chrome-text-2); }
+.blk-upload__row { display: flex; align-items: center; gap: 10px; min-height: 32px; }
+
+/* ---------- Activity Feed ---------- */
+.blk-feed { display: flex; flex-direction: column; width: 100%; padding: 14px 16px; gap: 12px; }
+.blk-feed__list { position: relative; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.blk-feed__list::before { content: ""; position: absolute; left: 12px; top: 12px; bottom: 12px; width: 1px; background: var(--chrome-line-2); }
+.blk-feed__list li { position: relative; display: flex; align-items: flex-start; gap: 10px; }
+.blk-feed__list li > span:not(.chrome-avatar, .logo) { padding-top: 3px; line-height: 18px; }
+.blk-feed .blk-feed__pr { align-self: flex-start; padding: 4px 8px; border-radius: 6px; background: var(--blk-chip); }
+
+/* ---------- Composer ---------- */
+.blk-composer { display: flex; flex-direction: column; width: 100%; gap: 12px; }
+.blk-composer .blk-composer__msg { align-items: flex-start; gap: 10px; max-width: 380px; }
+.blk-bubble { padding: 8px 12px; border-radius: 4px 14px 14px 14px; background: var(--blk-bubble); box-shadow: var(--blk-bubble-ring); }
+.blk-composer .blk-composer__box { padding: 12px; gap: 10px; }
+.blk-composer__file { font-size: 11.5px; }
+/* the draft grows with its text where the browser can size fields to content */
+.blk-composer textarea { field-sizing: content; min-height: calc(2lh + 16px); max-height: calc(5lh + 16px); }
+
+/* ---------- narrow stages: stack or drop secondary panes ---------- */
+@container (max-width: 420px) {
+  .blk-sidebar .blk-sidebar__side { width: 100%; border-right: 0; }
+  .blk-sidebar .blk-sidebar__main { display: none; }
+  .blk-run { flex-direction: column; height: auto; }
+  .blk-log { width: auto; }
+  .blk-settings .blk-settings__side { display: none; }
+  .blk-stats,
+  .blk-pricing__plans { grid-template-columns: minmax(0, 1fr); }
+  .blk-upload__row .h.jb { flex-wrap: wrap; }
+}

@@ -1,0 +1,532 @@
+/* Layers: Accordion, CommandPalette, ContextMenu, Drawer, HoverCard, Popover, TreeView.
+   The floating surface is the design's `.float`, built from the overlay tokens in styles.css (--chrome-float-*, --chrome-item-*,
+   --chrome-lift, --chrome-engrave-*, --chrome-scrim, --chrome-bezel*) so these layers match DropdownMenu and Dialog. */
+
+@layer chrome.tokens {
+  .chrome-root {
+    --chrome-layer-arrow: #161618;
+    --chrome-layer-arrow-edge: #7a7a7a;
+    --chrome-layer-arrow-end: #0e0e10;
+    --chrome-layer-arrow-edge-end: #4f6b66;
+    --chrome-layer-hover: rgba(255, 255, 255, 0.045);
+    --chrome-layer-target: linear-gradient(180deg, rgba(31, 85, 255, 0.18), rgba(31, 85, 255, 0.1));
+    --chrome-layer-target-ring: rgba(123, 157, 255, 0.55);
+    --chrome-layer-panel: linear-gradient(180deg, #141416, #0f0f11);
+    --chrome-layer-panel-open: linear-gradient(180deg, #1b1b1e, #141416 60%);
+    --chrome-layer-panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 20px -14px rgba(0, 0, 0, 0.9);
+    --chrome-layer-knob-ring: linear-gradient(180deg, #9c9e9e, #161616 50%, #3d524e);
+    --chrome-layer-knob-core: linear-gradient(180deg, #3a3d3e, #161718);
+    --chrome-layer-knob-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.8);
+    --chrome-layer-guide: linear-gradient(90deg, rgba(0, 0, 0, 0.85) 50%, rgba(255, 255, 255, 0.1) 50%);
+  }
+
+  .chrome-root:is([data-chrome-theme="satin"], [data-chrome-theme="arctic"]) {
+    --chrome-layer-arrow: #f7f8f8;
+    --chrome-layer-arrow-edge: #c9c9c9;
+    --chrome-layer-arrow-end: #ecedec;
+    --chrome-layer-arrow-edge-end: #abc9c4;
+    --chrome-layer-hover: rgba(0, 0, 0, 0.04);
+    --chrome-layer-target: linear-gradient(180deg, #f2f5ff, #e2e8ff);
+    --chrome-layer-target-ring: rgba(36, 57, 138, 0.5);
+    --chrome-layer-panel: linear-gradient(180deg, #fafbfb, #eceeee);
+    --chrome-layer-panel-open: linear-gradient(180deg, #fff, #f2f3f3 60%);
+    --chrome-layer-panel-shadow: 0 10px 20px -14px rgba(40, 60, 56, 0.45);
+    --chrome-layer-knob-ring: linear-gradient(180deg, #f4f4f4, #565656 50%, #93b3ae);
+    --chrome-layer-knob-core: linear-gradient(180deg, #eef0f0, #aab3b1);
+    --chrome-layer-knob-shadow: 0 2px 4px -2px rgba(40, 60, 56, 0.6);
+    --chrome-layer-guide: linear-gradient(90deg, rgba(0, 0, 0, 0.16) 50%, rgba(255, 255, 255, 0.75) 50%);
+  }
+}
+
+@layer chrome.components {
+  /* ---------- shared floating surface ---------- */
+  .chrome-layer {
+    position: relative;
+    z-index: 85; /* above dialog layers (80/81), so menus and popovers opened inside a drawer or dialog stay visible */
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: var(--chrome-float-fill) padding-box, var(--chrome-float-rim) border-box;
+    color: var(--chrome-text);
+    box-shadow: var(--chrome-float-shadow);
+    font-family: var(--chrome-font-sans);
+    font-size: 13px;
+    line-height: 18px;
+    outline: none;
+  }
+
+  /* Inline (previews): plain markup in normal flow, sized by its content unless the page sets a width. */
+  .chrome-layer[data-chrome-inline] { width: max-content; max-width: 100%; animation: none; }
+
+  /* dialog-class layers: a 2.5px satin bezel inside the rim, then a hairline step to the panel */
+  .chrome-layer--bezel { border-radius: 14px; }
+  .chrome-layer--bezel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2.5px;
+    border-radius: 13px;
+    background: var(--chrome-bezel);
+    pointer-events: none;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  }
+  .chrome-layer--bezel::after {
+    content: "";
+    position: absolute;
+    inset: 2.5px;
+    border-radius: 10.5px;
+    box-shadow: var(--chrome-bezel-inner);
+    pointer-events: none;
+  }
+
+  .chrome-layer-scrim {
+    position: fixed;
+    z-index: 80;
+    inset: 0;
+    background: var(--chrome-scrim);
+  }
+  .chrome-layer-scrim[data-inline] { position: absolute; z-index: auto; }
+
+  .chrome-layer-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .chrome-layer__close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 1;
+    display: grid;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--chrome-text-2);
+    cursor: pointer;
+    padding: 0;
+  }
+  .chrome-layer__close svg { width: 14px; height: 14px; stroke-width: 1.6; stroke-linecap: round; }
+  .chrome-layer__close:hover { background: var(--chrome-layer-hover); color: var(--chrome-text); }
+  .chrome-layer__close:focus-visible { outline: 2px solid var(--chrome-focus); outline-offset: 2px; }
+
+  /* Arrow: drawn pointing down (Radix's convention for side="top"); Radix rotates it for other sides. */
+  .chrome-layer__arrow {
+    position: relative;
+    display: block;
+    width: 15px;
+    height: 9px;
+    overflow: hidden;
+  }
+  .chrome-layer__arrow::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: 2.5px;
+    width: 10px;
+    height: 10px;
+    border-right: 1px solid var(--chrome-arrow-edge, var(--chrome-layer-arrow-edge));
+    border-bottom: 1px solid var(--chrome-arrow-edge, var(--chrome-layer-arrow-edge));
+    background: var(--chrome-arrow-fill, var(--chrome-layer-arrow));
+    transform: rotate(45deg);
+  }
+  .chrome-layer[data-side="top"] { --chrome-arrow-fill: var(--chrome-layer-arrow-end); --chrome-arrow-edge: var(--chrome-layer-arrow-edge-end); }
+  .chrome-layer__arrow[data-inline] {
+    position: absolute;
+    top: 0;
+    left: var(--chrome-arrow-x, 50%);
+    transform: translateX(-50%) rotate(180deg);
+    transform-origin: 50% 0;
+  }
+
+  /* ---------- menu rows (context menu, command palette) ---------- */
+  .chrome-menu {
+    display: flex;
+    min-width: 180px;
+    flex-direction: column;
+    gap: 1px;
+    padding: 4px;
+  }
+
+  .chrome-menu__item {
+    position: relative;
+    display: flex;
+    height: 28px;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    padding: 0 8px;
+    color: var(--chrome-text);
+    font-size: 13px;
+    white-space: nowrap;
+    cursor: default;
+    outline: none;
+    user-select: none;
+  }
+  .chrome-menu__item[data-highlighted],
+  .chrome-menu__item[data-state="open"] {
+    background: var(--chrome-item-fill) padding-box, var(--chrome-item-rim) border-box;
+    box-shadow: var(--chrome-lift);
+  }
+  .chrome-menu__item[data-tone="danger"],
+  .chrome-menu__item[data-tone="danger"] .chrome-menu__icon { color: var(--chrome-enamel-text); }
+  .chrome-menu__item[data-disabled] { color: var(--chrome-text-3); cursor: not-allowed; }
+  .chrome-menu__item b { font-weight: 600; }
+
+  .chrome-menu__icon {
+    display: grid;
+    width: 14px;
+    height: 14px;
+    flex: none;
+    place-items: center;
+    color: var(--chrome-text-2);
+  }
+  .chrome-menu__icon > svg { width: 14px; height: 14px; }
+  .chrome-menu__label { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; }
+  .chrome-menu__label[data-mono] { font-family: var(--chrome-font-mono); font-size: 12px; }
+  .chrome-menu__meta { flex: none; color: var(--chrome-text-3); font-size: 12px; line-height: 16px; }
+  .chrome-menu__shortcut { display: inline-flex; flex: none; align-items: center; gap: 3px; margin-left: auto; }
+  .chrome-menu__chevron { width: 12px; height: 12px; flex: none; margin-left: auto; color: var(--chrome-text-3); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .chrome-menu__separator {
+    height: 1px;
+    flex: none;
+    margin: 4px 0;
+    background: var(--chrome-engrave-dark);
+    box-shadow: 0 1px 0 var(--chrome-engrave-light);
+  }
+
+  .chrome-menu__caption {
+    padding: 6px 8px 2px;
+    color: var(--chrome-text-3);
+    font: 500 10.5px/14px var(--chrome-font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* the row that was right-clicked: a cobalt hairline around a pale cobalt wash */
+  .chrome-context-menu__trigger[data-state="open"] {
+    background: var(--chrome-layer-target);
+    box-shadow: inset 0 0 0 1px var(--chrome-layer-target-ring);
+  }
+
+  /* ---------- Command palette ---------- */
+  .chrome-command {
+    position: fixed;
+    z-index: 81;
+    top: 14vh;
+    left: 50%;
+    display: flex;
+    width: min(560px, calc(100vw - 32px));
+    max-height: 72vh;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateX(-50%);
+  }
+  .chrome-command[data-chrome-inline] { position: relative; top: auto; left: auto; z-index: auto; width: 100%; max-height: none; transform: none; }
+
+  .chrome-command__header {
+    display: flex;
+    height: 44px;
+    flex: none;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--chrome-engrave-dark);
+    box-shadow: 0 1px 0 var(--chrome-engrave-light);
+    padding: 0 16px;
+  }
+  .chrome-command[data-size="sm"] .chrome-command__header { height: 36px; gap: 8px; padding: 0 8px 0 12px; }
+  .chrome-command__search {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    color: var(--chrome-text-3);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+  .chrome-command[data-size="sm"] .chrome-command__search { width: 14px; height: 14px; }
+  .chrome-command__input {
+    min-width: 0;
+    flex: 1;
+    border: 0;
+    background: transparent;
+    color: var(--chrome-text);
+    caret-color: var(--chrome-cobalt);
+    font: 400 14px/20px var(--chrome-font-sans);
+    outline: none;
+    padding: 0;
+  }
+  .chrome-command[data-size="sm"] .chrome-command__input { font-size: 12.5px; line-height: 18px; }
+  .chrome-command__input::placeholder { color: var(--chrome-text-3); }
+  .chrome-command__esc {
+    display: inline-flex;
+    flex: none;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  .chrome-command__esc:focus-visible { outline: 2px solid var(--chrome-focus); outline-offset: 2px; }
+
+  .chrome-command__list {
+    position: relative;
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    gap: 1px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 4px 6px 6px;
+  }
+  .chrome-command[data-size="sm"] .chrome-command__list { padding: 4px; }
+  /* md (the app-shell command bar) has roomier rows than the menu-sized sm palette */
+  .chrome-command[data-size="md"] .chrome-menu__item { height: 32px; gap: 10px; border-radius: 8px; padding: 0 9px; }
+  .chrome-command[data-size="md"] .chrome-menu__caption { padding: 8px 10px 4px; }
+  .chrome-command__group { display: flex; flex-direction: column; gap: 1px; }
+  .chrome-command__list .chrome-menu__item { cursor: pointer; }
+  .chrome-command__empty { padding: 20px 16px; color: var(--chrome-text-3); text-align: center; }
+
+  .chrome-command__footer {
+    display: flex;
+    height: 34px;
+    flex: none;
+    align-items: center;
+    gap: 16px;
+    border-top: 1px solid var(--chrome-line);
+    color: var(--chrome-text-3);
+    font-size: 12px;
+    line-height: 16px;
+    padding: 0 16px;
+  }
+  .chrome-command__hint { display: inline-flex; align-items: center; gap: 4px; }
+  .chrome-command__count { margin-left: auto; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Drawer ---------- */
+  .chrome-drawer {
+    position: fixed;
+    z-index: 81;
+    top: 8px;
+    bottom: 8px;
+    display: flex;
+    width: min(360px, calc(100vw - 16px));
+    flex-direction: column;
+    gap: 6px;
+    overflow: hidden;
+    padding: 12px 14px 14px;
+  }
+  .chrome-drawer[data-side="right"] { right: 8px; }
+  .chrome-drawer[data-side="left"] { left: 8px; }
+  .chrome-drawer[data-chrome-inline] { position: absolute; z-index: auto; width: min(68%, 360px); }
+  .chrome-drawer__close { top: 8px; right: 9px; }
+  .chrome-drawer__header { display: flex; flex-direction: column; gap: 2px; padding-right: 24px; }
+  .chrome-drawer__eyebrow { color: var(--chrome-text-3); font: 400 12px/16px var(--chrome-font-mono); }
+  .chrome-drawer__title { margin: 0; font-size: 12.5px; font-weight: 600; line-height: 18px; }
+  .chrome-drawer__description { margin: 0; color: var(--chrome-text-2); font-size: 12px; line-height: 16px; }
+  .chrome-drawer__body { display: flex; min-height: 0; flex-direction: column; gap: 6px; overflow-y: auto; font-size: 12px; line-height: 16px; }
+  .chrome-drawer__footer { display: flex; gap: 8px; margin-top: auto; padding-top: 2px; }
+  .chrome-drawer__footer > * { flex: 1; }
+  /* the design draws the drawer as a card-sized miniature; a full-height sheet steps the type up to the h3 scale */
+  .chrome-drawer:not([data-chrome-inline]) { gap: 10px; padding: 18px 20px 20px; }
+  .chrome-drawer:not([data-chrome-inline]) .chrome-drawer__header { padding-right: 36px; }
+  .chrome-drawer:not([data-chrome-inline]) .chrome-drawer__close { top: 14px; right: 14px; width: 30px; height: 30px; border-radius: 999px; }
+  .chrome-drawer:not([data-chrome-inline]) .chrome-drawer__close svg { width: 16px; height: 16px; }
+  .chrome-drawer:not([data-chrome-inline]) .chrome-drawer__title { font-size: 16px; line-height: 22px; letter-spacing: -0.01em; }
+  .chrome-drawer:not([data-chrome-inline]) :is(.chrome-drawer__description, .chrome-drawer__body) { font-size: 13.5px; line-height: 20px; }
+
+  /* ---------- Hover card and popover ---------- */
+  .chrome-hover-card,
+  .chrome-popover {
+    display: flex;
+    max-width: calc(100vw - 16px);
+    flex-direction: column;
+    padding: 12px;
+  }
+  .chrome-hover-card { width: 240px; gap: 10px; }
+  .chrome-popover { min-width: 184px; gap: 4px; }
+  .chrome-popover:has(> .chrome-popover__close) { padding-right: 36px; }
+  .chrome-popover[data-flush] { overflow: hidden; padding: 0; gap: 0; }
+
+  /* ---------- Accordion ---------- */
+  .chrome-accordion {
+    overflow: hidden;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: var(--chrome-layer-panel) padding-box, var(--chrome-rim) border-box;
+    box-shadow: var(--chrome-layer-panel-shadow);
+  }
+  .chrome-accordion__item + .chrome-accordion__item {
+    border-top: 1px solid var(--chrome-engrave-dark);
+    box-shadow: inset 0 1px 0 var(--chrome-engrave-light);
+  }
+  .chrome-accordion__item[data-state="open"] { background: var(--chrome-layer-panel-open); }
+  .chrome-accordion__header { margin: 0; font: inherit; }
+  .chrome-accordion__trigger {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border: 0;
+    background: none;
+    color: var(--chrome-text);
+    cursor: pointer;
+    font: 400 12.5px/18px var(--chrome-font-sans);
+    padding: 8px 10px 8px 12px;
+    text-align: left;
+  }
+  .chrome-accordion__trigger:focus-visible { outline: none; }
+  .chrome-accordion__trigger[data-state="open"] { font-weight: 600; }
+  .chrome-accordion__trigger[data-disabled] { color: var(--chrome-text-3); cursor: not-allowed; }
+  .chrome-accordion__chevron {
+    position: relative;
+    display: grid;
+    width: 20px;
+    height: 20px;
+    flex: none;
+    place-items: center;
+    isolation: isolate;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    background: var(--chrome-well) padding-box, var(--chrome-well) border-box;
+    color: var(--chrome-text-2);
+    box-shadow: var(--chrome-well-shadow-sm);
+  }
+  .chrome-accordion__trigger[data-state="open"] .chrome-accordion__chevron {
+    background: var(--chrome-layer-knob-ring) padding-box, var(--chrome-rim) border-box;
+    color: var(--chrome-text);
+    box-shadow: var(--chrome-layer-knob-shadow);
+  }
+  .chrome-accordion__trigger[data-state="open"] .chrome-accordion__chevron::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 2px;
+    border-radius: 50%;
+    background: var(--chrome-layer-knob-core);
+  }
+  .chrome-accordion__trigger:focus-visible .chrome-accordion__chevron { outline: 2px solid var(--chrome-focus); outline-offset: 2px; }
+  .chrome-accordion__chevron svg {
+    width: 12px;
+    height: 12px;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform var(--chrome-duration-base) var(--chrome-ease);
+  }
+  .chrome-accordion__trigger[data-state="open"] .chrome-accordion__chevron svg { transform: rotate(180deg); }
+  .chrome-accordion__content { overflow: hidden; margin-top: -4px; color: var(--chrome-text-2); font-size: 12px; line-height: 16px; }
+  .chrome-accordion__content[data-state="open"] { animation: chrome-layer-expand var(--chrome-duration-base) var(--chrome-ease); }
+  .chrome-accordion__content[data-state="closed"] { animation: chrome-layer-collapse 180ms var(--chrome-ease-in); }
+  .chrome-accordion__body { padding: 0 38px 8px 12px; }
+
+  /* ---------- Tree view ---------- */
+  .chrome-tree,
+  .chrome-tree__group { margin: 0; padding: 0; list-style: none; }
+  .chrome-tree { color: var(--chrome-text); font: 400 12px/16px var(--chrome-font-mono); }
+  .chrome-tree__item { outline: none; }
+  .chrome-tree__row {
+    --chrome-tree-pad: 6px;
+    position: relative;
+    display: flex;
+    height: 22px;
+    align-items: center;
+    gap: 6px;
+    isolation: isolate;
+    margin-left: calc((var(--chrome-tree-level, 1) - 1) * 14px);
+    border-radius: 6px;
+    padding: 0 6px 0 var(--chrome-tree-pad);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .chrome-tree__item[data-leaf][data-nested] > .chrome-tree__row {
+    --chrome-tree-pad: 12px;
+    margin-left: calc((var(--chrome-tree-level, 1) - 1) * 14px - 1px);
+    border-radius: 0 6px 6px 0;
+  }
+  .chrome-tree[data-lines] .chrome-tree__item[data-leaf][data-nested] > .chrome-tree__row::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background: var(--chrome-layer-guide);
+  }
+  .chrome-tree__row:hover:not([data-selected])::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0 0 0 calc(var(--chrome-tree-pad) - 6px);
+    border-radius: 7px;
+    background: var(--chrome-layer-hover);
+  }
+  .chrome-tree__row[data-selected]::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0 0 0 calc(var(--chrome-tree-pad) - 6px);
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: var(--chrome-pill-inner) content-box, var(--chrome-pill-ring) padding-box, var(--chrome-pill-stroke) border-box;
+    box-shadow: var(--chrome-pill-shadow);
+    padding: 1.5px;
+  }
+  .chrome-tree__item:focus-visible > .chrome-tree__row { outline: 2px solid var(--chrome-focus); outline-offset: 1px; }
+  .chrome-tree__item[aria-disabled="true"] > .chrome-tree__row { color: var(--chrome-text-3); cursor: not-allowed; }
+  .chrome-tree__toggle,
+  .chrome-tree__icon > svg {
+    width: 12px;
+    height: 12px;
+    flex: none;
+    color: var(--chrome-text-3);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .chrome-tree__toggle { transition: transform var(--chrome-duration-fast) var(--chrome-ease); }
+  .chrome-tree__item[aria-expanded="true"] > .chrome-tree__row > .chrome-tree__toggle { transform: rotate(90deg); }
+  .chrome-tree__icon { display: inline-flex; flex: none; align-items: center; color: var(--chrome-text-3); }
+  .chrome-tree__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .chrome-tree__meta { margin-left: auto; color: var(--chrome-text-3); }
+}
+
+@layer chrome.motion {
+  .chrome-menu,
+  .chrome-popover,
+  .chrome-hover-card {
+    transform-origin: var(--radix-popper-transform-origin);
+  }
+  .chrome-menu[data-state="open"],
+  .chrome-popover[data-state="open"],
+  .chrome-hover-card[data-state="open"] { animation: chrome-layer-in var(--chrome-duration-fast) var(--chrome-ease); }
+  .chrome-command[data-state="open"] { animation: chrome-layer-drop var(--chrome-duration-base) var(--chrome-ease); }
+  .chrome-drawer[data-side="right"][data-state="open"] { animation: chrome-layer-slide var(--chrome-duration-base) var(--chrome-ease); }
+  .chrome-drawer[data-side="left"][data-state="open"] { --chrome-layer-slide-x: -24px; animation: chrome-layer-slide var(--chrome-duration-base) var(--chrome-ease); }
+  .chrome-layer-scrim[data-state="open"] { animation: chrome-layer-fade var(--chrome-duration-base) ease; }
+  .chrome-layer[data-chrome-inline],
+  .chrome-layer-scrim[data-inline] { animation: none; }
+
+  @keyframes chrome-layer-in { from { opacity: 0; transform: scale(0.97); } }
+  @keyframes chrome-layer-drop { from { opacity: 0; transform: translate(-50%, -6px) scale(0.985); } }
+  @keyframes chrome-layer-slide { from { opacity: 0; transform: translateX(var(--chrome-layer-slide-x, 24px)); } }
+  @keyframes chrome-layer-fade { from { opacity: 0; } }
+  @keyframes chrome-layer-expand { from { height: 0; } to { height: var(--radix-accordion-content-height); } }
+  @keyframes chrome-layer-collapse { from { height: var(--radix-accordion-content-height); } to { height: 0; } }
+}
+
+@media (forced-colors: active) {
+  .chrome-layer,
+  .chrome-accordion { border-color: CanvasText; }
+  .chrome-menu__item[data-highlighted],
+  .chrome-tree__row[data-selected] { outline: 2px solid Highlight; }
+}

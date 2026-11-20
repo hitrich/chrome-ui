@@ -1,0 +1,77 @@
+/* Components overview (/components). Header, filter row, section rows and tiles come from BaseCatalog.css. */
+
+.pg-components .pb-hd .co-lead { max-width: 680px; }
+
+/* install command: a mono well with a ghost copy button */
+.pg-components .co-install {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 100%;
+  height: 40px;
+  margin-top: 8px;
+  padding: 0 4px 0 16px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 12.5px;
+  color: var(--chrome-text);
+  background: var(--chrome-well) padding-box, var(--chrome-rim) border-box;
+  box-shadow: var(--chrome-well-shadow);
+}
+.pg-components .co-install code { font: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pg-components .co-install__state { margin-right: -10px; font: 500 12px/16px var(--chrome-font-sans); color: var(--chrome-cobalt-text); }
+
+.pg-components .co-va { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; line-height: 18px; font-weight: 500; color: var(--chrome-text); }
+.pg-components .co-va:hover { color: var(--chrome-cobalt-text); }
+
+/* wide tiles (Blocks, Charts): 220px stage, category on the title row */
+.pg-components .co-grid-wide { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
+.pg-components .co-wide .pv { height: 220px; }
+.pg-components .co-wide .meta h3 { align-items: baseline; }
+.pg-components .co-wide .meta p { min-height: 0; }
+.pg-components .co-cat { margin-left: auto; font-size: 12px; font-weight: 400; color: var(--chrome-text-3); }
+.pg-components .co-wide .meta .chrome-chart-legend,
+.pg-components .co-wide .meta .chrome-heatmap-legend { margin-top: 6px; }
+
+/* stage content fills the stage, centred, with the card padding */
+.pg-components .co-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; }
+.pg-components .tile .pv .co-stage > * { pointer-events: auto; }
+.pg-components .co-xs { font-size: 12px; line-height: 16px; }
+
+/* Color */
+.pg-components .co-color .co-stage { gap: 6px; padding: 16px 12px; }
+.pg-components .co-sp { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 38px; font: 500 10px/14px var(--chrome-font-mono); color: var(--chrome-text-3); }
+.pg-components .co-sp > span { width: 28px; height: 96px; border-radius: 8px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1); }
+
+/* Typography */
+.pg-components .co-type .co-stage { justify-content: flex-start; padding: 16px 24px; }
+.pg-components .co-type__stack { display: flex; flex-direction: column; gap: 6px; color: var(--chrome-text); }
+.pg-components .co-type__mark { font-size: 30px; line-height: 34px; letter-spacing: 0.08em; }
+.pg-components .co-type__title { font-size: 17px; line-height: 24px; font-weight: 500; letter-spacing: -0.01em; }
+.pg-components .co-type__num { font-size: 24px; line-height: 28px; font-weight: 500; letter-spacing: -0.02em; }
+.pg-components .co-type__unit { font-size: 12.5px; line-height: 18px; letter-spacing: 0; }
+
+/* Finishes */
+.pg-components .co-fin { display: grid; grid-template-columns: auto auto; gap: 10px 8px; }
+
+/* Motion */
+.pg-components .co-motion .co-stage { flex-direction: column; gap: 16px; padding-top: 24px; }
+.pg-components .co-curve { display: block; overflow: visible; }
+.pg-components .co-curve__rule { stroke: var(--chrome-line-2); }
+.pg-components .co-curve__handle { fill: none; stroke: var(--chrome-text-3); }
+.pg-components .co-curve__knot { fill: var(--chrome-raised); stroke: var(--chrome-text-2); }
+
+/* Blocks: the dot-grid stage of the Blocks catalog; blocks lay out to the stage width */
+.pg-components .tile .pv.co-blk { container-type: inline-size; background: var(--docs-dots); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.07); }
+.pg-components .co-blk--sidebar .co-stage { align-items: stretch; padding: 12px 16px 0; }
+
+/* Charts: recessed well */
+.pg-components .co-chart .chrome-chart { width: 100%; }
+.pg-components .tile .pv.co-chart { display: flex; align-items: center; justify-content: center; padding: 16px; }
+
+/* compact Command Bar and Data Grid */
+.pg-components .co-cmd { width: 100%; }
+.pg-components .co-pnl { width: 100%; overflow: hidden; border-radius: 14px; background: var(--chrome-panel-fill); box-shadow: inset 0 0 0 1px var(--chrome-line), var(--chrome-panel-shadow); }
+.pg-components .co-grid .chrome-table tr[data-selected] td { background: color-mix(in srgb, var(--chrome-cobalt) 8%, transparent); }
+.pg-components .co-grid__foot { display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 12px; border-top: 1px solid var(--chrome-line); font-size: 12px; color: var(--chrome-text-2); }

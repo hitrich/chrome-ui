@@ -1,0 +1,502 @@
+/* Inputs: ButtonGroup, Calendar, Chip, ColorPicker, Combobox, DatePicker, InputOTP, NumberField, TagInput, Textarea.
+   Every theme difference is a token below; the components only read tokens, so nested Ink islands just work. */
+
+@layer chrome.tokens {
+  .chrome-root {
+    /* raised plate: chips, tag tokens, the highlighted option, small round keys */
+    --chrome-in-plate: linear-gradient(180deg, #222225, #17171a);
+    --chrome-in-plate-rim: linear-gradient(180deg, #5f6162, #1e1f20 50%, #3b504c);
+    --chrome-in-lift: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.6);
+    --chrome-in-group-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.5);
+    /* engraved hairline: a dark cut with a lit lip */
+    --chrome-in-engrave: rgba(0, 0, 0, 0.7);
+    --chrome-in-engrave-lip: rgba(255, 255, 255, 0.07);
+    --chrome-in-mark: #55585a;
+    --chrome-in-mark-lip: rgba(0, 0, 0, 0.75);
+    --chrome-in-x-fill: rgba(255, 255, 255, 0.08);
+    --chrome-in-x-fill-hover: rgba(255, 255, 255, 0.16);
+    --chrome-in-dashed: rgba(255, 255, 255, 0.24);
+    --chrome-in-dashed-fill: rgba(255, 255, 255, 0.02);
+    /* recessed cobalt band behind a date range */
+    --chrome-in-band: linear-gradient(180deg, rgba(31, 85, 255, 0.24), rgba(31, 85, 255, 0.16));
+    --chrome-in-check-a: #2a2c2e;
+    --chrome-in-check-b: #151617;
+    /* floating panel: smoked chrome rim, satin face */
+    --chrome-in-float: linear-gradient(180deg, #161618, #0e0e10);
+    --chrome-in-float-rim: linear-gradient(180deg, #8a8a8a, #2a2b2b 34%, #1a1a1a 62%, #4f6b66);
+    --chrome-in-float-shadow: 0 0 0 1px #000, inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.6), 0 14px 32px -14px rgba(0, 0, 0, 0.9);
+    --chrome-in-rim-enamel: linear-gradient(180deg, #edc2bd, #8a2620 50%, #ffa99f);
+    --chrome-in-halo-enamel: 0 0 0 3px rgba(229, 55, 42, 0.28);
+  }
+
+  .chrome-root:is([data-chrome-theme="satin"], [data-chrome-theme="arctic"]) {
+    --chrome-in-plate: linear-gradient(180deg, #fefefe, #e8eaea);
+    --chrome-in-plate-rim: linear-gradient(180deg, #d2d4d4, #8a8e8e 50%, #b5cfca);
+    --chrome-in-lift: 0 1px 2px -0.5px rgba(0, 0, 0, 0.2);
+    --chrome-in-group-shadow: inset 0 1px 0 #fff, 0 1px 1px rgba(0, 0, 0, 0.06), 0 4px 10px -6px rgba(40, 60, 56, 0.45);
+    --chrome-in-engrave: rgba(0, 0, 0, 0.14);
+    --chrome-in-engrave-lip: rgba(255, 255, 255, 0.85);
+    --chrome-in-mark: #8f9494;
+    --chrome-in-mark-lip: rgba(255, 255, 255, 0.8);
+    --chrome-in-x-fill: rgba(0, 0, 0, 0.06);
+    --chrome-in-x-fill-hover: rgba(0, 0, 0, 0.12);
+    --chrome-in-dashed: #8f9494;
+    --chrome-in-dashed-fill: rgba(255, 255, 255, 0.28);
+    --chrome-in-band: linear-gradient(180deg, #d2dbfb, #e0e7ff);
+    --chrome-in-check-a: #c9cccc;
+    --chrome-in-check-b: #f4f5f5;
+    --chrome-in-float: linear-gradient(180deg, #f8f9f9, #ecedec);
+    --chrome-in-float-rim: linear-gradient(180deg, #c9c9c9, #686a69 50%, #abc9c4);
+    --chrome-in-float-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(30, 40, 38, 0.12), 0 12px 28px -14px rgba(40, 60, 56, 0.38);
+    --chrome-in-halo-enamel: 0 0 0 3px rgba(212, 46, 31, 0.16);
+  }
+}
+
+@layer chrome.components {
+  .chrome-in-icon { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .chrome-in-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- field shell ---------- */
+  .chrome-in-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .chrome-in-label { font-size: 13px; line-height: 18px; font-weight: 500; color: var(--chrome-text); }
+  .chrome-in-messages { display: flex; justify-content: space-between; gap: 12px; }
+  .chrome-in-hint { font-size: 12.5px; line-height: 18px; color: var(--chrome-text-3); }
+  .chrome-in-hint[data-error] { color: var(--chrome-enamel-text); }
+  .chrome-in-count { flex: none; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .chrome-in-count[data-full] { color: var(--chrome-enamel-text); }
+
+  /* ---------- the recessed well in a chrome rim; focus = cobalt rim + halo ---------- */
+  .chrome-in-well {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--chrome-text);
+    background: var(--chrome-well) padding-box, var(--chrome-rim) border-box;
+    box-shadow: var(--chrome-well-shadow);
+    transition: box-shadow 0.15s;
+  }
+  .chrome-in-well:hover { background: var(--chrome-well) padding-box, var(--chrome-rim-hover) border-box; }
+  .chrome-in-well:is(:focus-within, [data-state="open"]) {
+    outline: none;
+    background: var(--chrome-well) padding-box, var(--chrome-rim-cobalt) border-box;
+    box-shadow: var(--chrome-well-shadow), var(--chrome-halo);
+  }
+  .chrome-in-well[data-invalid] { background: var(--chrome-well) padding-box, var(--chrome-in-rim-enamel) border-box; }
+  .chrome-in-well[data-invalid]:is(:focus-within, [data-state="open"]) { box-shadow: var(--chrome-well-shadow), var(--chrome-in-halo-enamel); }
+  .chrome-in-well:is([data-disabled], :disabled) {
+    color: var(--chrome-text-3);
+    border-color: var(--chrome-disabled-border);
+    background: var(--chrome-disabled-fill);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .chrome-in-well :is(input, textarea) {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    caret-color: var(--chrome-cobalt);
+  }
+  .chrome-in-well :is(input, textarea)::placeholder { color: var(--chrome-text-3); opacity: 1; }
+  .chrome-in-well :is(input, textarea):disabled { cursor: not-allowed; }
+
+  /* ---------- ButtonGroup ---------- */
+  .chrome-button-group { display: inline-flex; align-items: center; vertical-align: middle; }
+  /* attached: one rim around joined satin segments, short engraved dividers */
+  .chrome-button-group[data-variant="attached"] {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: var(--chrome-in-plate) padding-box, var(--chrome-in-plate-rim) border-box;
+    box-shadow: var(--chrome-in-group-shadow);
+  }
+  .chrome-button-group[data-variant="attached"] > .chrome-button {
+    --sh: none;
+    --sh-down: none;
+    border-color: transparent;
+    border-radius: 0;
+    background: var(--chrome-in-divider, transparent);
+  }
+  .chrome-button-group[data-variant="attached"] > .chrome-button + .chrome-button {
+    --chrome-in-divider:
+      linear-gradient(var(--chrome-in-engrave), var(--chrome-in-engrave)) left 0 top 50% / 1px calc(100% - 16px) no-repeat,
+      linear-gradient(var(--chrome-in-engrave-lip), var(--chrome-in-engrave-lip)) left 1px top 50% / 1px calc(100% - 16px) no-repeat;
+  }
+  .chrome-button-group[data-variant="attached"] > .chrome-button:not(:disabled, [aria-disabled="true"]):is(:hover, [data-hover], :active, [data-active]) {
+    border-color: transparent;
+    background: var(--chrome-in-divider, transparent);
+    background-color: var(--chrome-ghost-hover);
+    transform: none;
+  }
+  .chrome-button-group[data-variant="attached"] > .chrome-button:not(:disabled, [aria-disabled="true"]):is(:active, [data-active]) { background-color: var(--chrome-ghost-active); }
+  .chrome-button-group[data-variant="attached"] > .chrome-button:first-child { border-radius: 999px 0 0 999px; }
+  .chrome-button-group[data-variant="attached"] > .chrome-button:last-child { border-radius: 0 999px 999px 0; }
+  .chrome-button-group[data-variant="attached"] > .chrome-button:only-child { border-radius: 999px; }
+  .chrome-button-group[data-variant="attached"] > .chrome-icon-button { aspect-ratio: auto; padding: 0 10px; }
+  /* split: parts keep their finish and share one seam; the glow splits left and right */
+  .chrome-button-group[data-variant="split"] > .chrome-button { border-radius: 0; }
+  .chrome-button-group[data-variant="split"] > .chrome-button + .chrome-button { margin-left: -1px; }
+  .chrome-button-group[data-variant="split"] > .chrome-button:first-child { border-radius: 999px 0 0 999px; }
+  .chrome-button-group[data-variant="split"] > .chrome-button:last-child { border-radius: 0 999px 999px 0; }
+  .chrome-button-group[data-variant="split"] > .chrome-icon-button:last-child { aspect-ratio: auto; padding: 0 10px 0 9px; }
+  .chrome-button-group[data-variant="split"] > .chrome-button:is([data-finish="polished"], [data-finish="smoked"], [data-finish="cobalt"], [data-finish="enamel"]):first-child {
+    --sh: -10px 9px 18px -9px rgba(var(--g0), var(--ga));
+    --sh-down: -6px 5px 12px -7px rgba(var(--g0), var(--ga));
+  }
+  .chrome-button-group[data-variant="split"] > .chrome-button:is([data-finish="polished"], [data-finish="smoked"], [data-finish="cobalt"], [data-finish="enamel"]):last-child {
+    --sh: 10px 9px 18px -9px rgba(var(--g1), var(--gb));
+    --sh-down: 6px 5px 12px -7px rgba(var(--g1), var(--gb));
+  }
+  .chrome-button-group[data-variant="split"] > .chrome-button:focus-visible { z-index: 1; }
+
+  /* ---------- Chip ---------- */
+  .chrome-chip {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 26px;
+    padding: 0 10px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font: 400 12.5px/1 var(--chrome-font-sans);
+    color: var(--chrome-text);
+    white-space: nowrap;
+    background: var(--chrome-in-plate) padding-box, var(--chrome-pill-stroke) border-box;
+    box-shadow: var(--chrome-in-lift);
+    transition: box-shadow 0.15s, background-color 0.15s;
+  }
+  button.chrome-chip { cursor: pointer; }
+  button.chrome-chip:not(:disabled, [data-selected], [data-variant="dashed"]):hover { background: var(--chrome-in-plate) padding-box, var(--chrome-rim-hover) border-box; }
+  .chrome-chip:focus-visible { outline: 2px solid var(--chrome-focus); outline-offset: 2px; }
+  .chrome-chip[data-size="sm"] { height: 24px; padding: 0 8px; font-size: 12px; }
+  .chrome-chip__icon, .chrome-chip__avatar { display: inline-flex; flex: none; color: inherit; }
+  .chrome-chip__icon svg, .chrome-chip__remove svg { width: 12px; height: 12px; }
+  .chrome-chip[data-avatar] { padding-left: 2px; }
+  /* the avatar slot is 20 px whatever size the Avatar was given */
+  :is(.chrome-chip__avatar, .chrome-in-option__icon) > .chrome-avatar { width: 20px; height: 20px; padding: 1px; font-size: 9px; }
+  .chrome-chip[data-removable] { padding-right: 6px; }
+  .chrome-chip[data-selected] {
+    color: #fff;
+    font-weight: 500;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+    background: linear-gradient(180deg, #e2e8ff, #1a37a8 50%, #7f9cff) padding-box, var(--chrome-rim-cobalt) border-box;
+    box-shadow: 0 4px 8px -5px rgba(31, 70, 220, 0.8);
+  }
+  .chrome-chip[data-selected]::before {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(180deg, #4f7bff, #1c44d6);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+  button.chrome-chip[data-selected]:not(:disabled):hover::before { filter: brightness(1.07); }
+  .chrome-chip[data-selected] .chrome-in-icon { stroke-width: 2.2; }
+  .chrome-chip[data-variant="dashed"] { color: var(--chrome-text-2); border: 1px dashed var(--chrome-in-dashed); background: var(--chrome-in-dashed-fill); box-shadow: none; }
+  button.chrome-chip[data-variant="dashed"]:not(:disabled):hover { color: var(--chrome-text); border-color: var(--chrome-text-3); }
+  .chrome-chip:is(:disabled, [data-disabled]) { color: var(--chrome-disabled-text); background: var(--chrome-disabled-fill); border-color: var(--chrome-disabled-border); box-shadow: none; text-shadow: none; cursor: not-allowed; }
+  .chrome-chip:is(:disabled, [data-disabled])::before { display: none; }
+  .chrome-chip__remove {
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    margin-right: -2px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    color: var(--chrome-text-2);
+    background: transparent;
+    cursor: pointer;
+  }
+  .chrome-chip__remove:hover:not(:disabled) { color: var(--chrome-text); background: var(--chrome-in-x-fill); }
+  .chrome-chip__remove:focus-visible { outline: 2px solid var(--chrome-focus); outline-offset: 1px; }
+  .chrome-chip__remove:disabled { cursor: not-allowed; }
+
+  /* ---------- Textarea ---------- */
+  .chrome-textarea { position: relative; display: flex; }
+  .chrome-textarea textarea { display: block; width: 100%; padding: 8px 12px; font-size: 13px; line-height: 19px; resize: vertical; }
+  .chrome-textarea[data-resize="none"] textarea { resize: none; }
+  .chrome-textarea[data-size="lg"] textarea { padding: 12px 14px; font-size: 14px; line-height: 22px; }
+  /* the native handle stays usable; the engraved grip below replaces its glyph */
+  .chrome-textarea textarea::-webkit-resizer { background: transparent; }
+  .chrome-textarea__grip { position: absolute; right: 4px; bottom: 4px; width: 10px; height: 10px; fill: none; stroke-linecap: round; pointer-events: none; }
+  .chrome-textarea__grip path:first-child { stroke: var(--chrome-in-mark); stroke-width: 1.1; }
+  .chrome-textarea__grip path:last-child { stroke: var(--chrome-in-mark-lip); stroke-width: 1; }
+
+  /* ---------- NumberField ---------- */
+  .chrome-number-field { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 4px; }
+  .chrome-number-field input { text-align: center; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .chrome-number-field[data-unit] input { text-align: right; }
+  .chrome-number-field__unit { flex: 1; min-width: 0; margin-left: -4px; font-size: 13px; color: var(--chrome-text-3); white-space: nowrap; }
+  .chrome-number-field__step {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    flex: none;
+    padding: 0;
+    border: 1px solid var(--chrome-graphite-border);
+    border-radius: 50%;
+    color: var(--chrome-text);
+    background: var(--chrome-graphite-fill);
+    box-shadow: var(--chrome-graphite-shadow);
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .chrome-number-field__step:not(:disabled):hover { border-color: var(--chrome-graphite-border-hover); background: var(--chrome-graphite-fill-hover); }
+  .chrome-number-field__step:not(:disabled):active { background: var(--chrome-graphite-fill-active); box-shadow: var(--chrome-graphite-shadow-down); }
+  .chrome-number-field__step:disabled { color: var(--chrome-disabled-text); border-color: var(--chrome-disabled-border); background: var(--chrome-disabled-fill); box-shadow: none; cursor: not-allowed; }
+  .chrome-number-field__step .chrome-in-icon { width: 14px; height: 14px; }
+
+  /* ---------- InputOTP ---------- */
+  .chrome-otp { display: flex; align-items: center; gap: 4px; }
+  .chrome-otp__cell { width: 26px; height: 36px; padding: 0; text-align: center; font: 500 16px/1 var(--chrome-font-mono); color: var(--chrome-text); caret-color: var(--chrome-cobalt); outline: none; }
+  .chrome-otp__cell::selection { background: transparent; }
+  .chrome-otp__cell:disabled { cursor: not-allowed; }
+  .chrome-otp__dash { width: 8px; height: 2px; margin: 0 4px; flex: none; border-radius: 1px; background: var(--chrome-in-mark); box-shadow: 0 1px 0 var(--chrome-in-mark-lip); }
+
+  /* ---------- TagInput ---------- */
+  .chrome-tag-input { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-height: 36px; padding: 4px; cursor: text; }
+  .chrome-tag-input__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 24px;
+    padding: 0 4px 0 9px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font: 500 12px/1 var(--chrome-font-sans);
+    color: var(--chrome-text);
+    white-space: nowrap;
+    background: var(--chrome-in-plate) padding-box, var(--chrome-in-plate-rim) border-box;
+    box-shadow: var(--chrome-in-lift);
+    cursor: default;
+  }
+  .chrome-tag-input[data-mono] .chrome-tag-input__tag { font: 500 11.5px/1 var(--chrome-font-mono); }
+  .chrome-tag-input__remove { display: grid; place-items: center; width: 16px; height: 16px; flex: none; padding: 0; border: 0; border-radius: 50%; color: var(--chrome-text-2); background: var(--chrome-in-x-fill); cursor: pointer; }
+  .chrome-tag-input__remove:not(:disabled):hover { color: var(--chrome-text); background: var(--chrome-in-x-fill-hover); }
+  .chrome-tag-input__remove:focus-visible { outline: 2px solid var(--chrome-focus); outline-offset: 1px; }
+  .chrome-tag-input__remove .chrome-in-icon { width: 10px; height: 10px; stroke-width: 2; }
+  .chrome-tag-input input { flex: 1 0 80px; height: 24px; padding: 0 10px; font-size: 13px; line-height: 24px; }
+  .chrome-tag-input[data-mono] input { font-family: var(--chrome-font-mono); font-size: 12px; }
+  .chrome-tag-input[data-disabled] { cursor: not-allowed; }
+  .chrome-tag-input[data-disabled] .chrome-tag-input__tag { color: var(--chrome-disabled-text); background: var(--chrome-disabled-fill); border-color: var(--chrome-disabled-border); box-shadow: none; }
+  .chrome-tag-input[data-disabled] .chrome-tag-input__remove { color: inherit; cursor: not-allowed; }
+
+  /* ---------- ColorPicker ---------- */
+  .chrome-color-picker { display: flex; flex-direction: column; gap: 8px; width: 100%; min-width: 0; }
+  .chrome-color-picker__area,
+  .chrome-color-picker__hue,
+  .chrome-color-picker__alpha { position: relative; border: 1px solid transparent; touch-action: none; cursor: pointer; }
+  .chrome-color-picker__area {
+    height: 52px;
+    border-radius: 9px;
+    background: linear-gradient(to top, #000, rgba(0, 0, 0, 0)) padding-box, linear-gradient(to right, #fff, var(--chrome-picker-hue)) padding-box, var(--chrome-rim) border-box;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    cursor: crosshair;
+  }
+  .chrome-color-picker__hue,
+  .chrome-color-picker__alpha { height: 12px; border-radius: 999px; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3); }
+  .chrome-color-picker__hue { background: linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00) padding-box, var(--chrome-rim) border-box; }
+  .chrome-color-picker__alpha {
+    background:
+      linear-gradient(90deg, transparent, var(--chrome-picker-solid)) padding-box,
+      repeating-conic-gradient(var(--chrome-in-check-a) 0 25%, var(--chrome-in-check-b) 0 50%) 0 0 / 8px 8px padding-box,
+      var(--chrome-rim) border-box;
+  }
+  .chrome-color-picker__knob {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    background: linear-gradient(var(--chrome-knob-fill), var(--chrome-knob-fill)) padding-box, linear-gradient(180deg, #f4f4f4, #565656 50%, #93b3ae) border-box;
+    box-shadow: var(--chrome-knob-shadow);
+  }
+  .chrome-color-picker__knob:focus { outline: none; }
+  .chrome-color-picker__knob:focus-visible { outline: 2px solid var(--chrome-focus); outline-offset: 2px; }
+  .chrome-color-picker [data-disabled] { cursor: not-allowed; opacity: 0.5; }
+  .chrome-color-picker__swatches { display: flex; justify-content: space-between; gap: 6px; padding: 0 4px; }
+  .chrome-color-picker__swatch,
+  .chrome-color-picker__chip {
+    border: 1.5px solid transparent;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(0, 0, 0, 0.1)) padding-box, linear-gradient(var(--chrome-swatch), var(--chrome-swatch)) padding-box, linear-gradient(180deg, #f4f4f4, #565656 50%, #93b3ae) border-box;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.22), 0 1px 2px rgba(0, 0, 0, 0.14);
+  }
+  .chrome-color-picker__swatch { width: 20px; height: 20px; flex: none; padding: 0; cursor: pointer; }
+  .chrome-color-picker__swatch[aria-pressed="true"] { box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.22), 0 0 0 2px var(--chrome-surface), 0 0 0 3.5px var(--chrome-cobalt); }
+  .chrome-color-picker__swatch:focus-visible { outline: 2px solid var(--chrome-focus); outline-offset: 4px; }
+  .chrome-color-picker__swatch:disabled { cursor: not-allowed; opacity: 0.5; }
+  .chrome-color-picker__hex { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 8px 0 12px; font: 12px/1 var(--chrome-font-mono); }
+  .chrome-color-picker__chip { width: 14px; height: 14px; flex: none; border-width: 1px; border-radius: 4px; }
+  .chrome-color-picker__alpha-readout { color: var(--chrome-text-3); font-variant-numeric: tabular-nums; }
+
+  /* ---------- Calendar ---------- */
+  .chrome-calendar { --chrome-cal-w: 36px; --chrome-cal-h: 32px; display: inline-flex; flex-direction: column; gap: 4px; color: var(--chrome-text); font-variant-numeric: tabular-nums; }
+  .chrome-calendar[data-size="sm"] { --chrome-cal-w: 26px; --chrome-cal-h: 19px; }
+  .chrome-calendar[data-size="sm"][data-marks] { --chrome-cal-h: 20px; }
+  .chrome-calendar__header { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 22px; padding-left: 2px; }
+  .chrome-calendar__title { font-size: 12.5px; line-height: 18px; font-weight: 600; }
+  .chrome-calendar[data-size="md"] .chrome-calendar__title { font-size: 14px; }
+  .chrome-calendar__nav { display: flex; gap: 4px; }
+  .chrome-calendar__nav-button {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    color: var(--chrome-text);
+    background: var(--chrome-in-plate) padding-box, var(--chrome-pill-stroke) border-box;
+    box-shadow: var(--chrome-in-lift);
+    cursor: pointer;
+  }
+  .chrome-calendar__nav-button:not(:disabled):hover { background: var(--chrome-in-plate) padding-box, var(--chrome-rim-hover) border-box; }
+  .chrome-calendar__nav-button:focus-visible { outline: 2px solid var(--chrome-focus); outline-offset: 2px; }
+  .chrome-calendar__nav-button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .chrome-calendar__nav-button .chrome-in-icon { width: 12px; height: 12px; }
+  .chrome-calendar__grid { border-collapse: separate; border-spacing: 0 1px; margin: -1px 0; table-layout: fixed; }
+  .chrome-calendar__grid th { width: var(--chrome-cal-w); padding: 0; font-size: 10.5px; line-height: 14px; font-weight: 500; color: var(--chrome-text-3); text-align: center; }
+  .chrome-calendar__grid td { width: var(--chrome-cal-w); height: var(--chrome-cal-h); padding: 0; }
+  .chrome-calendar__day {
+    position: relative;
+    isolation: isolate;
+    display: block;
+    width: 100%;
+    height: var(--chrome-cal-h);
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    font-size: 11.5px;
+    line-height: var(--chrome-cal-h);
+    text-align: center;
+    cursor: pointer;
+  }
+  .chrome-calendar[data-size="md"] .chrome-calendar__day { font-size: 13px; }
+  .chrome-calendar[data-size="md"] .chrome-calendar__grid th { font-size: 11.5px; line-height: 20px; }
+  .chrome-calendar[data-marks] .chrome-calendar__day { line-height: calc(var(--chrome-cal-h) - 3px); }
+  .chrome-calendar__day:not([data-selected], [data-in-range], [aria-disabled]):hover { background: var(--chrome-ghost-hover); }
+  .chrome-calendar__day:focus-visible { z-index: 1; outline: 2px solid var(--chrome-focus); outline-offset: 0; }
+  .chrome-calendar__day[data-outside] { color: var(--chrome-text-3); }
+  .chrome-calendar__day[data-today] { color: var(--chrome-cobalt-text); font-weight: 700; }
+  .chrome-calendar__day[aria-disabled] { color: var(--chrome-text-3); text-decoration: line-through; opacity: 0.6; cursor: not-allowed; }
+  .chrome-calendar__day[data-in-range] { border-radius: 0; color: var(--chrome-cobalt-text); background: var(--chrome-in-band); }
+  /* chosen day: the cobalt chrome tile (frame + core) */
+  .chrome-calendar__day[data-selected] { color: #fff; font-weight: 600; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25); }
+  .chrome-calendar__day[data-selected]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: linear-gradient(180deg, #e2e8ff, #1a37a8 50%, #7f9cff) padding-box, var(--chrome-rim-cobalt) border-box;
+    box-shadow: 0 3px 6px -3px rgba(31, 70, 220, 0.7);
+  }
+  .chrome-calendar__day[data-selected]::after {
+    content: "";
+    position: absolute;
+    inset: 2.5px;
+    z-index: -1;
+    border-radius: 5.5px;
+    background: linear-gradient(180deg, #4f7bff, #1c44d6);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+  /* range ends sit on the band, which runs out from their inner half */
+  .chrome-calendar__day:is([data-range-start], [data-range-end]) { border-radius: 0; background: var(--chrome-in-band) right / 50% 100% no-repeat; }
+  .chrome-calendar__day[data-range-end] { background-position: left; }
+  .chrome-calendar__day:is([data-range-start], [data-range-end])::before { inset: 0 1px; }
+  .chrome-calendar__day:is([data-range-start], [data-range-end])::after { inset: 1.5px 2.5px; }
+  .chrome-calendar__mark {
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 36% 30%, #fff 0, #c9d5ff 20%, #3f6dff 55%, #0b2687 100%);
+  }
+  .chrome-calendar__day .chrome-calendar__mark { position: absolute; left: 50%; bottom: 0; margin-left: -2px; }
+  .chrome-calendar__day[data-selected] .chrome-calendar__mark { bottom: 1.5px; width: 3px; height: 3px; margin-left: -1.5px; background: radial-gradient(circle at 40% 35%, #fff 40%, #c9d5ff 100%); }
+  .chrome-calendar__legend { display: flex; align-items: center; gap: 6px; padding: 0 2px; font-size: 12px; line-height: 16px; color: var(--chrome-text-3); }
+  .chrome-calendar__legend .chrome-calendar__mark { width: 6px; height: 6px; background: radial-gradient(circle at 36% 30%, #fff 0, #c9d5ff 20%, #3f6dff 55%, #1238c4 85%, #0b2687 100%); box-shadow: 0 1px 1.5px rgba(0, 0, 0, 0.3); }
+
+  /* ---------- floating panel (Combobox list, DatePicker calendar) ---------- */
+  .chrome-in-popover {
+    z-index: 85;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: var(--chrome-text);
+    font-family: var(--chrome-font-sans);
+    background: var(--chrome-in-float) padding-box, var(--chrome-in-float-rim) border-box;
+    box-shadow: var(--chrome-in-float-shadow);
+    outline: none;
+    transform-origin: var(--radix-popover-content-transform-origin);
+  }
+  .chrome-in-popover[data-state="open"] { animation: chrome-in-pop 0.16s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .chrome-in-popover[data-side="top"] { --chrome-in-pop-y: 4px; }
+  @keyframes chrome-in-pop { from { opacity: 0; transform: translateY(var(--chrome-in-pop-y, -4px)) scale(0.98); } }
+  .chrome-date-picker__popover { padding: 7px 10px 8px; }
+  .chrome-date-picker__popover .chrome-calendar { gap: 3px; }
+  .chrome-date-picker__popover .chrome-calendar__title { padding-left: 4px; }
+  .chrome-date-picker__popover .chrome-calendar__nav { gap: 0; }
+  .chrome-date-picker__popover .chrome-calendar__nav-button { border-color: transparent; color: var(--chrome-text-2); background: transparent; box-shadow: none; }
+  .chrome-date-picker__popover .chrome-calendar__nav-button:not(:disabled):hover { color: var(--chrome-text); background: var(--chrome-ghost-hover); }
+  .chrome-date-picker__popover .chrome-calendar__nav-button .chrome-in-icon { width: 14px; height: 14px; }
+  .chrome-combobox__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    width: var(--radix-popover-trigger-width);
+    max-height: min(264px, var(--radix-popover-content-available-height, 264px));
+    padding: 4px;
+    overflow-y: auto;
+  }
+  .chrome-in-option {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    min-height: 28px;
+    padding: 0 8px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--chrome-text);
+    white-space: nowrap;
+    cursor: default;
+    user-select: none;
+  }
+  .chrome-in-option[data-highlighted] { background: var(--chrome-in-plate) padding-box, var(--chrome-in-plate-rim) border-box; box-shadow: var(--chrome-in-lift); }
+  .chrome-in-option[aria-disabled="true"] { color: var(--chrome-text-3); }
+  .chrome-in-option b { font-weight: 600; }
+  .chrome-in-option__icon { display: inline-flex; flex: none; }
+  .chrome-in-option__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .chrome-in-option__description { flex: none; font-size: 12px; color: var(--chrome-text-3); }
+  .chrome-in-option__check { width: 14px; height: 14px; color: var(--chrome-cobalt); }
+
+  /* ---------- Combobox and DatePicker fields ---------- */
+  .chrome-combobox { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 8px 0 12px; font-size: 13.5px; }
+  .chrome-combobox__icon { display: inline-flex; flex: none; color: var(--chrome-text-3); }
+  .chrome-combobox__icon svg { width: 14px; height: 14px; }
+  .chrome-date-picker { display: flex; align-items: center; gap: 8px; width: 100%; height: 36px; padding: 0 12px; font: inherit; font-size: 13.5px; text-align: left; cursor: pointer; }
+  .chrome-date-picker > .chrome-in-icon { width: 14px; height: 14px; color: var(--chrome-text-3); }
+  .chrome-date-picker__value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .chrome-date-picker[data-placeholder] .chrome-date-picker__value { color: var(--chrome-text-3); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chrome-root:not([data-chrome-motion="full"]) .chrome-in-popover { animation: none; }
+  }
+}

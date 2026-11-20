@@ -2,101 +2,87 @@ import * as React from "react";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import * as SliderPrimitive from "@radix-ui/react-slider";
-import { Slot } from "@radix-ui/react-slot";
+import { Slot, Slottable } from "@radix-ui/react-slot";
 import * as SwitchPrimitive from "@radix-ui/react-switch";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
-import { CheckIcon } from "./icons";
 import { cx } from "./utils";
 
+/** @deprecated use `ButtonFinish`. */
 export type ButtonVariant = "primary" | "secondary" | "quiet" | "danger";
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonFinish = "polished" | "smoked" | "cobalt" | "enamel" | "graphite" | "ghost";
+export type ButtonSize = "sm" | "md" | "lg" | "xl";
 export type ButtonElement = HTMLElement;
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Material and intent. Default "graphite". */
+  finish?: ButtonFinish;
+  /** @deprecated use `finish` (primary → polished, secondary → graphite, quiet → ghost, danger → enamel). `finish` wins. */
   variant?: ButtonVariant;
+  /** Height 30, 36, 44 or 52 px. */
   size?: ButtonSize;
+  /** Centred spinner over the hidden label (keeps the width), sets aria-busy and ignores presses. */
+  loading?: boolean;
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
   asChild?: boolean;
+  /** No press travel, for dense toolbars. */
   static?: boolean;
 }
 
-function setButtonLightPosition(element: HTMLElement, bounds: DOMRect, clientX: number, clientY: number) {
-  if (bounds.width <= 0 || bounds.height <= 0) return;
-
-  const x = Math.max(0, Math.min(100, ((clientX - bounds.left) / bounds.width) * 100));
-  const y = Math.max(0, Math.min(100, ((clientY - bounds.top) / bounds.height) * 100));
-  element.style.setProperty("--chrome-light-x", `${x.toFixed(2)}%`);
-  element.style.setProperty("--chrome-light-y", `${y.toFixed(2)}%`);
-}
+const variantFinish: Record<ButtonVariant, ButtonFinish> = {
+  primary: "polished",
+  secondary: "graphite",
+  quiet: "ghost",
+  danger: "enamel"
+};
 
 export const Button = React.forwardRef<ButtonElement, ButtonProps>(function Button(
   {
-    variant = "primary",
+    finish,
+    variant,
     size = "md",
+    loading = false,
+    leadingIcon,
+    trailingIcon,
     asChild = false,
     static: isStatic = false,
     className,
     type,
-    onPointerEnter,
-    onPointerMove,
-    onPointerLeave,
+    children,
+    onClickCapture,
     ...props
   },
   ref
 ) {
-  const sharedClassName = cx("chrome-button", className);
-  const lightBoundsRef = React.useRef<{ element: HTMLElement; bounds: DOMRect } | null>(null);
-  const handlePointerEnter = React.useCallback<React.PointerEventHandler<HTMLElement>>((event) => {
-    const isDisabled = event.currentTarget.matches(":disabled, [aria-disabled=\"true\"]");
-    if (event.pointerType !== "touch" && !isDisabled) {
-      lightBoundsRef.current = { element: event.currentTarget, bounds: event.currentTarget.getBoundingClientRect() };
+  const Comp = asChild ? Slot : "button";
+  // capture phase, so a loading part also swallows the press before an asChild element's own onClick
+  const handleClickCapture = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (loading) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
     }
-    onPointerEnter?.(event as React.PointerEvent<HTMLButtonElement>);
-  }, [onPointerEnter]);
-  const handlePointerMove = React.useCallback<React.PointerEventHandler<HTMLElement>>((event) => {
-    const isDisabled = event.currentTarget.matches(":disabled, [aria-disabled=\"true\"]");
-    if (event.pointerType !== "touch" && !isDisabled) {
-      const cached = lightBoundsRef.current;
-      const bounds = cached?.element === event.currentTarget ? cached.bounds : event.currentTarget.getBoundingClientRect();
-      lightBoundsRef.current = { element: event.currentTarget, bounds };
-      setButtonLightPosition(event.currentTarget, bounds, event.clientX, event.clientY);
-    }
-    onPointerMove?.(event as React.PointerEvent<HTMLButtonElement>);
-  }, [onPointerMove]);
-  const handlePointerLeave = React.useCallback<React.PointerEventHandler<HTMLElement>>((event) => {
-    lightBoundsRef.current = null;
-    event.currentTarget.style.removeProperty("--chrome-light-x");
-    event.currentTarget.style.removeProperty("--chrome-light-y");
-    onPointerLeave?.(event as React.PointerEvent<HTMLButtonElement>);
-  }, [onPointerLeave]);
-
-  if (asChild) {
-    return (
-      <Slot
-        ref={ref}
-        className={sharedClassName}
-        data-static={isStatic || undefined}
-        data-variant={variant}
-        data-size={size}
-        onPointerEnter={handlePointerEnter}
-        onPointerMove={handlePointerMove}
-        onPointerLeave={handlePointerLeave}
-        {...props}
-      />
-    );
-  }
+    onClickCapture?.(event);
+  };
   return (
-    <button
+    <Comp
       ref={ref as React.ForwardedRef<HTMLButtonElement>}
-      className={sharedClassName}
-      data-static={isStatic || undefined}
+      className={cx("chrome-button", className)}
+      data-finish={finish ?? (variant ? variantFinish[variant] : "graphite")}
       data-variant={variant}
       data-size={size}
-      type={type ?? "button"}
-      onPointerEnter={handlePointerEnter}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
+      data-static={isStatic || undefined}
+      data-loading={loading || undefined}
+      type={asChild ? undefined : type ?? "button"}
       {...props}
-    />
+      aria-busy={loading || props["aria-busy"] || undefined}
+      onClickCapture={handleClickCapture}
+    >
+      {loading ? <span className="chrome-button__spinner" aria-hidden="true" /> : null}
+      {leadingIcon ? <span className="chrome-button__icon" aria-hidden="true">{leadingIcon}</span> : null}
+      {asChild ? <Slottable>{children}</Slottable> : children}
+      {trailingIcon ? <span className="chrome-button__icon" aria-hidden="true">{trailingIcon}</span> : null}
+    </Comp>
   );
 });
 
@@ -105,13 +91,14 @@ export interface IconButtonProps extends ButtonProps {
 }
 
 export const IconButton = React.forwardRef<ButtonElement, IconButtonProps>(function IconButton(
-  { className, size = "md", ...props },
+  { className, ...props },
   ref
 ) {
-  return <Button ref={ref} className={cx("chrome-icon-button", className)} size={size} {...props} />;
+  return <Button ref={ref} className={cx("chrome-icon-button", className)} {...props} />;
 });
 
 export interface SurfaceProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** "ink" = card, "edge" = top-lit card (once per screen), "chrome" = floating chrome-rimmed panel. */
   finish?: "ink" | "edge" | "chrome";
 }
 
@@ -125,6 +112,7 @@ export const Surface = React.forwardRef<HTMLDivElement, SurfaceProps>(function S
 export interface AvatarProps extends React.HTMLAttributes<HTMLSpanElement> {
   name: string;
   src?: string;
+  /** 24, 32 or 40 px. */
   size?: "sm" | "md" | "lg";
 }
 
@@ -141,9 +129,14 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Av
   );
 });
 
+/** Text affixes ("orbital-ops/", "ms") render as a recessed segment; icons sit inline. */
+function affixKind(node: React.ReactNode) {
+  return typeof node === "string" || typeof node === "number" ? "text" : "icon";
+}
+
 export interface TextFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   label?: string;
-  hint?: string;
+  hint?: React.ReactNode;
   error?: string;
   leading?: React.ReactNode;
   trailing?: React.ReactNode;
@@ -160,9 +153,9 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(func
     <div className={cx("chrome-field", className)}>
       {label ? <label className="chrome-field__label" htmlFor={id}>{label}</label> : null}
       <span className="chrome-field__control" data-invalid={error ? "true" : undefined}>
-        {leading ? <span className="chrome-field__affix">{leading}</span> : null}
+        {leading ? <span className="chrome-field__affix" data-kind={affixKind(leading)}>{leading}</span> : null}
         <input ref={ref} id={id} aria-describedby={descriptionId} aria-invalid={Boolean(error)} {...props} />
-        {trailing ? <span className="chrome-field__affix">{trailing}</span> : null}
+        {trailing ? <span className="chrome-field__affix" data-kind={affixKind(trailing)}>{trailing}</span> : null}
       </span>
       {error ? <span id={descriptionId} className="chrome-field__message" data-error>{error}</span> : null}
       {!error && hint ? <span id={descriptionId} className="chrome-field__message">{hint}</span> : null}
@@ -171,7 +164,8 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(func
 });
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  tone?: "neutral" | "accent" | "danger" | "success";
+  /** "new" (cobalt) and "bad" (enamel) are the design names; "accent" and "danger" are their 0.1 aliases. */
+  tone?: "neutral" | "new" | "bad" | "success" | "warning" | "accent" | "danger";
 }
 
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
@@ -184,10 +178,12 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badg
 export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
   value?: number;
   max?: number;
+  /** A short cobalt run sweeping the groove, for work with no known end. */
+  indeterminate?: boolean;
 }
 
 export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(function Progress(
-  { value = 0, max = 100, className, ...props },
+  { value = 0, max = 100, indeterminate = false, className, ...props },
   ref
 ) {
   const bounded = Math.max(0, Math.min(value, max));
@@ -199,10 +195,11 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(function
       role="progressbar"
       aria-valuemin={0}
       aria-valuemax={max}
-      aria-valuenow={bounded}
+      aria-valuenow={indeterminate ? undefined : bounded}
+      data-indeterminate={indeterminate || undefined}
       {...props}
     >
-      <span style={{ width: `${percentage}%` }} />
+      <span style={indeterminate ? undefined : { width: `${percentage}%` }} />
     </div>
   );
 });
@@ -213,9 +210,8 @@ export const Checkbox = React.forwardRef<
 >(function Checkbox({ className, children, ...props }, ref) {
   return (
     <label className="chrome-choice-label">
-      <CheckboxPrimitive.Root ref={ref} className={cx("chrome-checkbox", className)} {...props}>
-        <CheckboxPrimitive.Indicator><CheckIcon /></CheckboxPrimitive.Indicator>
-      </CheckboxPrimitive.Root>
+      {/* the check and the mixed dash are drawn by CSS from data-state */}
+      <CheckboxPrimitive.Root ref={ref} className={cx("chrome-checkbox", className)} {...props} />
       {children ? <span>{children}</span> : null}
     </label>
   );

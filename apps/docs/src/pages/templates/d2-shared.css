@@ -1,0 +1,56 @@
+/* Thin satin pill meters (Control room, Agent console, Settings): a recessed groove with satin pill segments. */
+:is(.pg-control, .pg-agents, .pg-settings) .d2-sp {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+  border-radius: 999px;
+}
+:is(.pg-control, .pg-agents, .pg-settings) .d2-sp[data-size="sm"] { height: 6px; }
+:is(.pg-control, .pg-agents, .pg-settings) .d2-sp > i {
+  display: block;
+  min-width: 8px;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #d5d8d8, #818c8a) padding-box, linear-gradient(180deg, #f4f4f4, #565656 50%, #93b3ae) border-box;
+}
+:is(.pg-control, .pg-agents, .pg-settings) .d2-sp[data-size="sm"] > i { border-width: 1.25px; }
+:is(.pg-control, .pg-agents, .pg-settings) .d2-sp > i[data-finish="cobalt"] {
+  background: linear-gradient(180deg, #4f7bff, #1c44d6) padding-box, linear-gradient(180deg, #eef2ff, #1a37a8 50%, #7f9cff) border-box;
+}
+:is(.pg-control, .pg-agents, .pg-settings) .d2-sp > i[data-finish="enamel"] {
+  background: linear-gradient(180deg, #ec5548, #b8241b) padding-box, linear-gradient(180deg, #ffe6e2, #a3231a 50%, #ff8a80) border-box;
+}
+:is(.pg-control, .pg-agents, .pg-settings) .d2-sp > i[data-finish="graphite"] {
+  background: linear-gradient(180deg, #7a7f80, #4a4e50) padding-box, linear-gradient(180deg, #b9bdbe, #3a3d3e 50%, #5f7d78) border-box;
+}
+/* Ink groove: the smoked rim of the track primitive so it still reads on #0c0c0e */
+:is(.pg-control, .pg-agents) .d2-sp {
+  background: linear-gradient(180deg, #050506, #0a0a0c);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 0 0.5px rgba(0, 0, 0, 0.9), 0 -0.25px 0 1px #3b3d3e, 0 0.25px 0 1px #253330;
+}
+:is(.pg-control, .pg-agents) .d2-sp > i[data-finish="amber"] {
+  background: linear-gradient(180deg, #f5b94e, #b87300) padding-box, linear-gradient(180deg, #fff0d6, #8a5600 50%, #ffc870) border-box;
+}
+/* Satin groove (Settings, as on the Dashboard and Finance desk) */
+.pg-settings .d2-sp {
+  background: #d2d5d5;
+  box-shadow: inset 0 1px 1.5px rgba(0, 0, 0, 0.16), 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+.pg-settings .d2-sp > i { min-width: 0; height: 8px; box-sizing: border-box; }
+.pg-settings .d2-sp > i[data-finish="amber"] {
+  background: linear-gradient(180deg, #e3a03a, #a36700) padding-box, linear-gradient(180deg, #fff0d4, #8a5600 50%, #f5c77e) border-box;
+}
+:is(.pg-control, .pg-agents, .pg-settings) .d2-sp > i { transition: width var(--chrome-duration-base, 0.2s) var(--chrome-ease, ease); }
+@media (prefers-reduced-motion: reduce) {
+  :is(.pg-control, .pg-agents, .pg-settings) .d2-sp > i { transition: none; }
+}
+
+/* Plan steps (agent run in the Control room, Plan in the Agent console) */
+:is(.pg-control, .pg-agents) .d2-steps { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+:is(.pg-control, .pg-agents) .d2-step { display: flex; align-items: center; gap: 10px; font-size: 13px; line-height: 20px; color: var(--chrome-text-2); }
+:is(.pg-control, .pg-agents) .d2-step[data-state="active"] { color: var(--chrome-text); }
+:is(.pg-control, .pg-agents) .d2-step[data-state="todo"] { color: var(--chrome-text-3); }
+:is(.pg-control, .pg-agents) .d2-step > .i[data-done] { color: var(--chrome-mint); }
+:is(.pg-control, .pg-agents) .d2-step > .chrome-spinner { margin: 0 1px; color: var(--chrome-cobalt-text); }
+:is(.pg-control, .pg-agents) .d2-ring { flex: none; width: 14px; height: 14px; margin: 0 1px; border: 1px dashed #71717a; border-radius: 50%; }
+:is(.pg-control, .pg-agents) .d2-step[data-state="rejected"] > .d2-ring { border-style: solid; border-color: var(--chrome-enamel-text); }

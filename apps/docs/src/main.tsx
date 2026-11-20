@@ -1,6 +1,7 @@
-import "@fontsource-variable/space-grotesk";
-import "@fontsource-variable/jetbrains-mono";
+import "@fontsource-variable/plus-jakarta-sans";
 import "@fontsource-variable/oxanium";
+import "@fontsource-variable/jetbrains-mono";
+// imported like any consumer does: the package entry is side-effect free, so a production build drops CSS imported only there
 import "@loreanai/chrome-ui/styles.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";

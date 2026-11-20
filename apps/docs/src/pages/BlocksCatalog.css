@@ -1,0 +1,50 @@
+/* /components/blocks (work/canvas/project/Blocks.dc.html helmet: header, filter row, tiles, preview stage). */
+.pg-blocks .pg-blocks__hd { display: flex; flex-direction: column; gap: 16px; padding: 40px 0 32px; }
+.pg-blocks .pg-blocks__hd .h1 { font-size: 56px; }
+.pg-blocks .pg-blocks__hd .lead { max-width: none; font-size: 17px; line-height: 27px; }
+.pg-blocks .pg-blocks__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--chrome-line);
+}
+/* the category control scrolls in place rather than widening the page on a phone */
+.pg-blocks .pg-blocks__scroll { max-width: 100%; overflow-x: auto; scrollbar-width: none; padding: 3px; margin: -3px; }
+.pg-blocks .pg-blocks__theme { display: flex; align-items: center; gap: 10px; }
+.pg-blocks .pg-blocks__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(440px, 100%), 1fr)); gap: 16px; }
+.pg-blocks .pg-blocks__tile { position: relative; display: flex; flex-direction: column; overflow: hidden; scroll-margin-top: 24px; }
+
+/* recessed preview well; it is the nested ChromeProvider, so it carries the preview theme */
+.pg-blocks .pg-blocks__pv {
+  position: relative;
+  height: 320px;
+  margin: 6px 6px 0;
+  padding: 20px;
+  border-radius: 18px;
+  display: flex;
+  align-items: safe center;
+  justify-content: safe center;
+  overflow: hidden;
+  container-type: inline-size;
+  color: var(--chrome-text);
+  background: var(--chrome-well);
+  box-shadow: var(--chrome-well-shadow);
+}
+.pg-blocks .pg-blocks__pv[data-block="sidebar"] { padding: 20px 20px 0; align-items: stretch; }
+.pg-blocks .pg-blocks__pv[data-block="notification-center"] { justify-content: flex-end; }
+
+.pg-blocks .pg-blocks__meta { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px 16px; }
+.pg-blocks .pg-blocks__meta h2 { display: flex; align-items: baseline; gap: 8px; }
+.pg-blocks .pg-blocks__meta h2 a { color: var(--chrome-text); }
+.pg-blocks .pg-blocks__meta p { margin: 0; font-size: 13px; line-height: 19px; color: var(--chrome-text-2); }
+.pg-blocks .pg-blocks__cat { margin-left: auto; font-size: 12px; font-weight: 400; color: var(--chrome-text-3); }
+
+/* phones: stages grow with their (stacked) block instead of clipping it */
+@media (max-width: 520px) {
+  .pg-blocks .pg-blocks__pv { height: auto; min-height: 320px; padding: 16px; }
+  .pg-blocks .pg-blocks__pv[data-block="sidebar"] { padding: 16px 16px 0; }
+}

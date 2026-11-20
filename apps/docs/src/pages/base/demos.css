@@ -1,0 +1,206 @@
+/* Base component demos (catalog card stages, component page previews). Layout and page-level pieces only:
+   package controls keep their own look. Everything is scoped under .base-demo; theme values come from tokens. */
+
+/* The demo fills its positioned stage and centres the sample, with the card stage's 16px padding. */
+.base-demo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  color: var(--chrome-text);
+}
+.base-demo.bd-start { align-items: flex-start; justify-content: flex-start; }
+.base-demo.bd-pad8 { padding: 8px; }
+.base-demo.bd-pad12 { padding: 12px; }
+.base-demo.bd-tip-stage { padding-top: 52px; }
+
+/* helpers (the artboard's .v .h .jb .fw .f1 .sm .xs .b) */
+.base-demo .bd-v { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.base-demo .bd-h { display: flex; align-items: center; gap: 8px; }
+.base-demo .bd-jb { justify-content: space-between; }
+.base-demo .bd-wrap { flex-wrap: wrap; }
+/* full-width samples stretch to the card but stay card-sized on a wide stage */
+.base-demo .bd-fw { width: 100%; max-width: 360px; }
+.base-demo .f1 { flex: 1; min-width: 0; }
+.base-demo .bd-ml { margin-left: auto; }
+.base-demo .sm { font-size: 12.5px; line-height: 18px; }
+.base-demo .xs { font-size: 12px; line-height: 16px; }
+.base-demo .sm13 { font-size: 13px; }
+.base-demo .b { font-weight: 600; }
+.base-demo .bd-mono12 { font-size: 12px; font-weight: 500; }
+.base-demo .bd-nowrap { white-space: nowrap; }
+.base-demo .bd-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.base-demo .bd-contents { display: contents; }
+.base-demo .bd-after { margin-left: 10px; }
+.base-demo .bd-indent { display: flex; padding-left: 26px; }
+.base-demo .field-label { font-size: 12.5px; }
+.base-demo .bd-linkbtn { padding: 0; border: 0; background: none; color: var(--chrome-cobalt-text); font: inherit; cursor: pointer; }
+.base-demo .bd-underline { text-decoration: underline; text-underline-offset: 2px; }
+.base-demo .bd-caret { display: inline-block; width: 1.5px; height: 15px; margin-left: 1px; vertical-align: -3px; background: var(--chrome-cobalt); }
+/* a static open list sits in flow, not positioned by a popper */
+.base-demo .bd-static-list { position: static; width: 100%; max-height: none; transform: none; animation: none; }
+.base-demo .bd-anchor { position: relative; display: inline-flex; }
+
+/* Checkbox / radio rows */
+.base-demo .bd-radios { display: flex; flex-direction: column; gap: 12px; }
+
+/* Input OTP: centred label and hint */
+.base-demo .bd-otp { align-items: center; gap: 8px; }
+
+/* File dropzone + an upload in progress */
+.base-demo .bd-file { display: flex; align-items: center; gap: 10px; padding: 7px 6px 7px 10px; border-radius: 10px; color: var(--chrome-text-2); }
+.base-demo .bd-file .mono { color: var(--chrome-text); }
+
+/* Slider scale: engraved ticks aligned to the thumb's travel */
+/* the thumb overhangs a 6px groove in the card; the package Slider is 22px tall, so pull the neighbours in */
+.base-demo .bd-slider { margin: -8px 0; }
+.base-demo .bd-scale { position: relative; margin: 0 11px; --tk: color-mix(in srgb, var(--chrome-text) 42%, transparent); --tk-lip: var(--chrome-engrave-light); }
+.base-demo .bd-ticks {
+  height: 6px;
+  margin-right: -1px;
+  background:
+    linear-gradient(90deg, var(--tk) 0 1px, var(--tk-lip) 1px 2px, transparent 2px) right -1px top 0 / 2px 100% no-repeat,
+    repeating-linear-gradient(90deg, var(--tk) 0 1px, var(--tk-lip) 1px 2px, transparent 2px 10%);
+}
+.base-demo .bd-ticks.bd-mj {
+  height: 9px;
+  margin-top: -9px;
+  background:
+    linear-gradient(90deg, var(--tk) 0 1px, var(--tk-lip) 1px 2px, transparent 2px) 0 0 / 50% 100% repeat-x,
+    linear-gradient(90deg, var(--tk) 0 1px, var(--tk-lip) 1px 2px, transparent 2px) right -1px top 0 / 2px 100% no-repeat;
+}
+.base-demo .bd-tkl { position: relative; height: 16px; margin-top: 4px; }
+.base-demo .bd-tkl span { position: absolute; top: 0; transform: translateX(-50%); }
+
+/* Switch rows */
+.base-demo .bd-row10 { padding: 10px 0; cursor: pointer; }
+
+/* Breadcrumb: collapsed levels behind a small satin key */
+.base-demo .bd-more {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--chrome-text-2);
+  background: var(--chrome-plate) padding-box, var(--chrome-plate-rim) border-box;
+  box-shadow: var(--chrome-lift);
+  cursor: pointer;
+}
+
+/* Toolbar over an editor */
+.base-demo .bd-editor { overflow: hidden; border-radius: 12px; background: var(--chrome-panel-fill); box-shadow: inset 0 0 0 1px var(--chrome-line), var(--chrome-panel-shadow); }
+.base-demo .bd-editor > .chrome-toolbar { border-radius: 0; }
+
+/* Badge: count bubble and presence dot */
+.base-demo .bd-count {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: #fff;
+  font: 600 11px/16px var(--chrome-font-sans);
+  text-align: center;
+  background: linear-gradient(180deg, #4a4e4e, #0e1010) padding-box, linear-gradient(180deg, #8a8a8a, #1a1a1a 50%, #4f6b66) border-box;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 0 2px var(--chrome-bg), 0 2px 4px -1px rgba(0, 0, 0, 0.35);
+}
+.base-demo .bd-presence {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid transparent;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #d4fae9 0, #34c98e 36%, #0b7a52 100%) padding-box, linear-gradient(180deg, #f4f4f4, #565656 50%, #93b3ae) border-box;
+  box-shadow: 0 0 0 1.5px var(--chrome-bg), 0 0 4px rgba(15, 138, 95, 0.4);
+}
+
+/* Meter: threshold key */
+.base-demo .bd-tick { display: inline-block; width: 2px; height: 10px; border-radius: 1px; background: linear-gradient(180deg, #c9c9c9, #565656 50%, #93b3ae); }
+
+/* Skeleton on a raised plate */
+.base-demo .bd-skc { display: flex; flex-direction: column; gap: 12px; padding: 14px; border-radius: 14px; }
+
+/* Status indicator list */
+.base-demo .bd-status { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px 12px; white-space: nowrap; }
+
+/* Context menu: the right-clicked row, menu and pointer inside a fixed scene */
+.base-demo .bd-scene { position: relative; width: 100%; max-width: 300px; height: 100%; }
+.base-demo .bd-target { display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 8px; border: 1px solid transparent; border-radius: 8px; }
+.base-demo .bd-cursor { position: absolute; left: 38px; top: 15px; }
+
+/* Dialog and drawer: a page behind a scrim */
+.base-demo .bd-page { position: absolute; display: flex; flex-direction: column; }
+.base-demo .bd-page--dialog { top: 12px; bottom: 12px; left: 50%; width: 192px; margin-left: -96px; justify-content: space-between; }
+.base-demo .bd-page--drawer { top: 16px; left: 16px; right: 16px; gap: 10px; }
+.base-demo .bd-sk { display: block; height: 8px; border-radius: 4px; background: var(--chrome-skeleton-fill); box-shadow: var(--chrome-skeleton-shadow); }
+.base-demo .bd-scrim { position: absolute; inset: 0; background: var(--chrome-scrim); }
+.base-demo .bd-dialog { width: 208px; padding: 16px; }
+.base-demo .bd-kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; margin: 2px 0 0; }
+.base-demo .bd-kv dt { color: var(--chrome-text-3); }
+.base-demo .bd-kv dd { margin: 0; }
+
+/* Dropdown: avatar trigger, account header */
+.base-demo .bd-menu-head { gap: 0; padding: 6px 8px 4px; }
+.base-demo .bd-avatar-trigger { padding: 0 8px 0 3px; gap: 6px; }
+
+/* Popover: segmented control fills the panel */
+.base-demo .bd-fill { display: flex; }
+.base-demo .bd-fill > button { flex: 1; }
+
+/* Toast stack: two sheets fanned behind the live toast, a cobalt timer wire at its foot */
+.base-demo .bd-toasts { position: relative; width: 100%; max-width: 360px; padding-top: 16px; }
+.base-demo .bd-toast-back { position: absolute; left: 0; right: 0; top: 16px; height: 52px; transform-origin: 50% 0; }
+.base-demo .bd-toast-back--1 { transform: translateY(-8px) scale(0.94); }
+.base-demo .bd-toast-back--2 { transform: translateY(-16px) scale(0.88); }
+.base-demo .bd-toast { position: relative; width: 100%; max-width: none; }
+.base-demo .bd-timer { z-index: 1; position: absolute; left: 14px; right: 14px; bottom: 4px; height: 2px; border-radius: 2px; background: var(--chrome-engrave-dark); }
+.base-demo .bd-timer > span { display: block; height: 100%; border-radius: 2px; background: linear-gradient(90deg, #1c44d6, #4f7bff); }
+
+/* Tooltip above its trigger */
+.base-demo .bd-tip-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; width: 100%; }
+.base-demo .bd-tip { position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%); white-space: nowrap; }
+/* tail: page markup (the package Tooltip has none) */
+.base-demo .bd-tip::after { content: ""; position: absolute; bottom: -5px; left: 50%; width: 9px; height: 9px; margin-left: -4.5px; transform: rotate(45deg); border-radius: 0 0 2px 0; background: #0e0e10; border-right: 1px solid #4f6b66; border-bottom: 1px solid #4f6b66; }
+
+/* Avatar stack */
+.base-demo .bd-stack { display: flex; }
+.base-demo .bd-stack > * + * { margin-left: -6px; }
+
+/* Code block */
+.base-demo .bd-code pre { font-size: 11px; line-height: 18px; }
+
+/* Divider */
+.base-demo .bd-vr { height: 16px; }
+
+/* Key hint list */
+.base-demo .bd-keys { gap: 12px; margin: 0; }
+.base-demo .bd-keys dd { margin: 0; }
+
+/* Stat with its sparkline */
+.base-demo .bd-unit { margin-left: 6px; font-weight: 400; letter-spacing: 0; }
+.base-demo .bd-stat .chrome-stat__description { display: flex; flex-direction: column; gap: 6px; }
+.base-demo .bd-spark { display: block; width: 100%; }
+
+/* Surface levels: offsets in % so the stack fits the narrowest card */
+.base-demo .bd-surfaces { position: relative; width: min(200px, 100%); height: 132px; }
+.base-demo .bd-layer { position: absolute; width: 66%; height: 68px; padding: 8px 10px; border-radius: 14px; }
+.base-demo .bd-layer[data-level="0"] { left: 0; top: 0; }
+.base-demo .bd-layer[data-level="1"] { left: 17%; top: 32px; }
+.base-demo .bd-layer[data-level="2"] { left: 34%; top: 64px; }
+
+/* Table on a rimmed plate */
+.base-demo .bd-table { overflow: hidden; }
+.base-demo .bd-sorted { justify-content: flex-end; gap: 4px; color: var(--chrome-cobalt-text); }
+.base-demo .bd-drop-or { font-weight: 400; color: var(--chrome-text-2); }
+.base-demo .bd-drop-or .link { color: var(--chrome-cobalt-text); }

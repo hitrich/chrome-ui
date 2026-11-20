@@ -1,11 +1,14 @@
 import * as React from "react";
 import {
-  ArrowLeftIcon,
+  AlertIcon,
   ArrowRightIcon,
   CheckIcon,
+  ChevronLeftIcon,
   ChevronRightIcon,
   CloseIcon,
   CopyIcon,
+  EmblemIcon,
+  InfoIcon,
   SearchIcon,
   UploadIcon
 } from "./icons";
@@ -16,9 +19,13 @@ export type ChromeTone = "neutral" | "accent" | "success" | "warning" | "danger"
 export interface AlertProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   tone?: Exclude<ChromeTone, "neutral">;
   title: React.ReactNode;
+  /** Glyph inside the chrome emblem; defaults to one per tone. */
   icon?: React.ReactNode;
+  /** Links or buttons under the description. */
   action?: React.ReactNode;
 }
+
+const alertGlyph = { accent: <InfoIcon />, success: <CheckIcon />, warning: <AlertIcon />, danger: <AlertIcon /> };
 
 export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   { tone = "accent", title, icon, action, children, className, role, ...props },
@@ -32,12 +39,12 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert
       role={role ?? (tone === "danger" ? "alert" : "status")}
       {...props}
     >
-      <span className="chrome-alert__signal" aria-hidden="true">{icon}</span>
+      <span className="chrome-alert__signal" aria-hidden="true">{icon ?? alertGlyph[tone]}</span>
       <div className="chrome-alert__content">
         <strong className="chrome-alert__title">{title}</strong>
         {children ? <div className="chrome-alert__description">{children}</div> : null}
+        {action ? <div className="chrome-alert__action">{action}</div> : null}
       </div>
-      {action ? <div className="chrome-alert__action">{action}</div> : null}
     </div>
   );
 });
@@ -155,6 +162,7 @@ export const Divider = React.forwardRef<HTMLDivElement, DividerProps>(function D
 export interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
   title: React.ReactNode;
   description?: React.ReactNode;
+  /** Shown unframed above the title. Defaults to the chrome emblem; pass `null` for none. */
   icon?: React.ReactNode;
   action?: React.ReactNode;
   compact?: boolean;
@@ -166,7 +174,7 @@ export const EmptyState = React.forwardRef<HTMLElement, EmptyStateProps>(functio
 ) {
   return (
     <section ref={ref} className={cx("chrome-empty-state", className)} data-compact={compact || undefined} {...props}>
-      {icon ? <div className="chrome-empty-state__icon" aria-hidden="true">{icon}</div> : null}
+      {icon !== null && icon !== false ? <div className="chrome-empty-state__icon" aria-hidden="true">{icon ?? <EmblemIcon />}</div> : null}
       <h3>{title}</h3>
       {description ? <p>{description}</p> : null}
       {children}
@@ -296,12 +304,7 @@ export const KeyHint = React.forwardRef<HTMLSpanElement, KeyHintProps>(function 
   const values = keys?.length ? keys : children != null ? [String(children)] : [];
   return (
     <span ref={ref} className={cx("chrome-key-hint", className)} {...props}>
-      {values.map((key, index) => (
-        <React.Fragment key={`${key}-${index}`}>
-          {index > 0 ? <span aria-hidden="true">+</span> : null}
-          <kbd>{key}</kbd>
-        </React.Fragment>
-      ))}
+      {values.map((key, index) => <kbd key={`${key}-${index}`}>{key}</kbd>)}
     </span>
   );
 });
@@ -314,6 +317,8 @@ export interface MeterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   tone?: ChromeTone;
   showValue?: boolean;
   formatValue?: (value: number) => React.ReactNode;
+  /** Render this many recessed cells instead of a continuous track. */
+  segments?: number;
 }
 
 export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(function Meter(
@@ -325,6 +330,7 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(function Meter
     tone = "accent",
     showValue = true,
     formatValue = (nextValue) => `${Math.round(nextValue)}%`,
+    segments,
     className,
     "aria-label": ariaLabel,
     ...props
@@ -351,7 +357,13 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(function Meter
           {showValue ? <output>{formatValue(bounded)}</output> : null}
         </span>
       ) : null}
-      <span className="chrome-meter__track"><span style={{ width: `${percentage}%` }} /></span>
+      {segments ? (
+        <span className="chrome-meter__cells" aria-hidden="true">
+          {Array.from({ length: segments }, (_, index) => <i key={index} data-on={(index + 0.5) * (100 / segments) < percentage || undefined} />)}
+        </span>
+      ) : (
+        <span className="chrome-meter__track"><span style={{ width: `${percentage}%` }} /></span>
+      )}
     </div>
   );
 });
@@ -398,7 +410,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(functio
   return (
     <nav ref={ref} className={cx("chrome-pagination", className)} aria-label={ariaLabel} {...props}>
       <button type="button" aria-label={previousLabel} disabled={currentPage === 1} onClick={() => onPageChange?.(currentPage - 1)}>
-        <ArrowLeftIcon />
+        <ChevronLeftIcon />
       </button>
       <ol>
         {tokens.map((token) => typeof token === "number" ? (
@@ -412,10 +424,10 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(functio
               {token}
             </button>
           </li>
-        ) : <li className="chrome-pagination__ellipsis" key={token} aria-hidden="true">···</li>)}
+        ) : <li className="chrome-pagination__ellipsis" key={token} aria-hidden="true">…</li>)}
       </ol>
       <button type="button" aria-label={nextLabel} disabled={currentPage === pageCount} onClick={() => onPageChange?.(currentPage + 1)}>
-        <ArrowRightIcon />
+        <ChevronRightIcon />
       </button>
     </nav>
   );
@@ -583,14 +595,16 @@ export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(function
 export interface SpinnerProps extends React.HTMLAttributes<HTMLSpanElement> {
   size?: "sm" | "md" | "lg";
   label?: string;
+  /** "line" is a ring in the current colour (12/14/18 px); "cobalt" and "silver" are chrome comets in a recessed groove (16/24/32 px). */
+  finish?: "line" | "cobalt" | "silver";
 }
 
 export const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(function Spinner(
-  { size = "md", label = "Loading", className, "aria-label": ariaLabel, ...props },
+  { size = "md", label = "Loading", finish = "line", className, "aria-label": ariaLabel, ...props },
   ref
 ) {
   return (
-    <span ref={ref} className={cx("chrome-spinner", className)} data-size={size} role="status" aria-label={ariaLabel ?? label} {...props}>
+    <span ref={ref} className={cx("chrome-spinner", className)} data-size={size} data-finish={finish} role="status" aria-label={ariaLabel ?? label} {...props}>
       <span aria-hidden="true" />
       <span className="chrome-visually-hidden">{label}</span>
     </span>
@@ -614,26 +628,38 @@ export const Stat = React.forwardRef<HTMLElement, StatProps>(function Stat(
     <article ref={ref} className={cx("chrome-stat", className)} data-trend={trend} data-sentiment={sentiment} {...props}>
       <span className="chrome-stat__label">{label}</span>
       <strong className="chrome-stat__value">{value}</strong>
-      {delta ? <span className="chrome-stat__delta">{trend === "up" ? "↗" : trend === "down" ? "↘" : "—"} {delta}</span> : null}
+      {delta ? <span className="chrome-stat__delta">{delta}</span> : null}
       {description ? <span className="chrome-stat__description">{description}</span> : null}
     </article>
   );
 });
 
 export interface StatusIndicatorProps extends React.HTMLAttributes<HTMLSpanElement> {
-  tone?: ChromeTone;
-  label: React.ReactNode;
+  /** Design names ok · info · warn · bad · off, or the ChromeTone names they alias. */
+  tone?: ChromeTone | "ok" | "info" | "warn" | "bad" | "off";
+  /** Without a label only the lamp renders (decorative, next to text that names the state). */
+  label?: React.ReactNode;
+  /** Live: a soft halo outside the bezel. */
   pulse?: boolean;
 }
 
 export const StatusIndicator = React.forwardRef<HTMLSpanElement, StatusIndicatorProps>(function StatusIndicator(
-  { tone = "neutral", label, pulse = false, className, role = "status", ...props },
+  { tone = "neutral", label, pulse = false, className, role, ...props },
   ref
 ) {
+  const hasLabel = label != null && label !== false && label !== "";
   return (
-    <span ref={ref} className={cx("chrome-status", className)} data-tone={tone} data-pulse={pulse || undefined} role={role} {...props}>
+    <span
+      ref={ref}
+      className={cx("chrome-status", className)}
+      data-tone={tone}
+      data-pulse={pulse || undefined}
+      role={role ?? (hasLabel ? "status" : undefined)}
+      aria-hidden={hasLabel ? undefined : true}
+      {...props}
+    >
       <i aria-hidden="true" />
-      <span>{label}</span>
+      {hasLabel ? <span>{label}</span> : null}
     </span>
   );
 });
@@ -663,7 +689,7 @@ export const Stepper = React.forwardRef<HTMLOListElement, StepperProps>(function
         const state = index < current ? "complete" : index === current ? "current" : "upcoming";
         const content = (
           <>
-            <span className="chrome-stepper__index" aria-hidden="true">{state === "complete" ? <CheckIcon /> : String(index + 1).padStart(2, "0")}</span>
+            <span className="chrome-stepper__index" aria-hidden="true">{state === "complete" ? <CheckIcon /> : index + 1}</span>
             <span className="chrome-stepper__copy">
               <strong>{step.label}</strong>
               {step.description ? <small>{step.description}</small> : null}
@@ -814,7 +840,8 @@ export const ToggleButton = React.forwardRef<HTMLButtonElement, ToggleButtonProp
   return (
     <button
       ref={ref}
-      className={cx("chrome-toggle-button", className)}
+      className={cx("chrome-button", "chrome-toggle-button", className)}
+      data-finish="graphite"
       data-size={size}
       type={type ?? "button"}
       aria-pressed={currentPressed}

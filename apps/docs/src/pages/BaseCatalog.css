@@ -1,0 +1,57 @@
+/* Base catalog (/components/base). The page header, section rows and catalog tiles here are shared with the
+   Components overview (/components), which imports this file; every rule is scoped to those two page roots. */
+
+:is(.pg-base, .pg-components) .pb-hd { display: flex; flex-direction: column; gap: 16px; padding: 40px 0 32px; }
+:is(.pg-base, .pg-components) .pb-hd .h1 { font-size: 56px; }
+:is(.pg-base, .pg-components) .pb-hd .lead { max-width: none; font-size: 17px; line-height: 27px; }
+
+:is(.pg-base, .pg-components) .pb-filters { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+:is(.pg-base, .pg-components) .pb-filter { width: 240px; max-width: 100%; }
+:is(.pg-base, .pg-components) .pb-scroll { min-width: 0; }
+
+:is(.pg-base, .pg-components) .pb-sec {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-bottom: 16px;
+  padding: 48px 0 16px;
+  border-bottom: 1px solid var(--chrome-line);
+}
+:is(.pg-base, .pg-components) .pb-sh { margin: 0; display: flex; align-items: baseline; gap: 8px; font-size: 18px; line-height: 24px; font-weight: 500; color: var(--chrome-text); }
+
+:is(.pg-base, .pg-components) .pb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(232px, 100%), 1fr)); gap: 16px; }
+:is(.pg-base, .pg-components) .pb-empty { margin-top: 48px; }
+
+/* Tile: the name is a stretched link over the whole card; the live preview stage sits above it, and clicks on
+   anything that is not a control (or on an inert overlay sample) fall through to the link. */
+:is(.pg-base, .pg-components) .tile { position: relative; display: flex; flex-direction: column; overflow: hidden; transition: box-shadow 0.15s; }
+:is(.pg-base, .pg-components) .tile:hover { box-shadow: var(--docs-card-shadow), 0 16px 32px -20px rgba(40, 60, 56, 0.45); }
+:is(.pg-base, .pg-components) .tile:has(.meta a:focus-visible) { outline: 2px solid var(--chrome-focus); outline-offset: 2px; }
+:is(.pg-base, .pg-components) .tile .pv {
+  position: relative;
+  z-index: 1;
+  height: 192px;
+  margin: 6px 6px 0;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--chrome-well);
+  box-shadow: var(--chrome-well-shadow);
+  pointer-events: none;
+}
+:is(.pg-base, .pg-components) .tile .pv .base-demo > * { pointer-events: auto; }
+:is(.pg-base, .pg-components) .tile .meta { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px 16px; }
+:is(.pg-base, .pg-components) .tile .meta h3 { display: flex; align-items: center; gap: 8px; }
+:is(.pg-base, .pg-components) .tile .meta h3 a { color: var(--chrome-text); }
+:is(.pg-base, .pg-components) .tile .meta h3 a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+:is(.pg-base, .pg-components) .tile .meta h3 a:focus-visible { outline: 0; }
+:is(.pg-base, .pg-components) .tile .meta p { margin: 0; min-height: 38px; font-size: 13px; line-height: 19px; color: var(--chrome-text-2); text-wrap: pretty; }
+
+@media (max-width: 640px) {
+  :is(.pg-base, .pg-components) .pb-hd { padding: 24px 0 24px; }
+  :is(.pg-base, .pg-components) .pb-hd .h1 { font-size: 40px; }
+  :is(.pg-base, .pg-components) .pb-scroll { max-width: 100%; overflow-x: auto; padding: 2px; margin: -2px; }
+  :is(.pg-base, .pg-components) .pb-filter { width: 100%; }
+}
+:is(.pg-base, .pg-components) .tile .meta .nowrap { white-space: nowrap; }

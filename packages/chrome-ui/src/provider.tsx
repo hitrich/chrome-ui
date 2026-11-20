@@ -1,7 +1,8 @@
 import * as React from "react";
 import { cx } from "./utils";
 
-export type ChromeTheme = "ink" | "arctic";
+/** "arctic" is the 0.1 name for Satin and renders identically. */
+export type ChromeTheme = "ink" | "satin" | "arctic";
 export type ChromeMotion = "system" | "full" | "reduced";
 
 type ChromeContextValue = {

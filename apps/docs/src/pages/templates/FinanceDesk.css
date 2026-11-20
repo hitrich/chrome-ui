@@ -1,0 +1,112 @@
+/* Finance desk template — ported from the FinanceDesk artboard helmet, scoped to the page. */
+
+/* Cash position */
+.pg-finance .fd-cash { padding: 20px 24px; display: flex; flex-direction: column; gap: 6px; }
+.pg-finance .fd-total { margin-top: 6px; font-size: 34px; line-height: 40px; font-weight: 500; letter-spacing: -0.025em; color: var(--chrome-text); }
+.pg-finance .fd-cash__split { margin: 12px 0 6px; }
+.pg-finance .fd-acct { display: flex; flex-direction: column; gap: 8px; padding: 16px 0; border-top: var(--d1-rule); }
+.pg-finance .fd-cash__foot { margin-top: auto; padding-top: 14px; border-top: var(--d1-rule); }
+
+/* Cash in and out */
+.pg-finance .fd-flow { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.pg-finance .fd-legend { font-size: 13px; line-height: 18px; gap: 4px 16px; }
+/* week to date: the satin bar etched with fine diagonal grooves */
+.pg-finance .fd-etched {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0 1.2px, transparent 1.2px 3px), linear-gradient(180deg, #f4f5f5, #a3aaaa);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.25);
+}
+.pg-finance .fd-plot {
+  padding: 8px 16px 6px 8px;
+  --chrome-chart-font-size: 13px;
+  --chrome-chart-tick-gap: 10px;
+  --chrome-chart-label-gap: 16px;
+}
+.pg-finance .fd-plot .chrome-chart { line-height: 18px; }
+.pg-finance .fd-xl { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 13px; line-height: 18px; }
+.pg-finance .fd-xl__now { color: var(--chrome-text); font-weight: 500; }
+.pg-finance .fd-flow__foot { display: flex; gap: 6px 24px; flex-wrap: wrap; padding-top: 14px; border-top: var(--d1-rule); }
+.pg-finance .fd-flow__note { margin-left: auto; }
+
+/* card footers share one height so their rules and text line up across a row */
+.pg-finance .fd-foot { min-height: 69px; box-sizing: border-box; padding: 14px 0 18px; display: flex; align-items: center; border-top: var(--d1-rule); }
+
+/* Payment approvals */
+.pg-finance .fd-approvals { display: flex; flex-direction: column; }
+.pg-finance .fd-approvals__head { padding: 18px 20px 14px; }
+.pg-finance .fd-ap { display: grid; grid-template-columns: 16px minmax(0, 1fr) 92px 112px; gap: 14px; align-items: center; padding: 12px 20px; border-top: var(--d1-rule); font-size: 13px; line-height: 20px; }
+.pg-finance .fd-ap--sel { background: rgba(20, 71, 230, 0.05); }
+/* header row: the same satin band and 36px height as the table header */
+.pg-finance .fd-ap--th {
+  height: 36px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--chrome-text-3);
+  background: var(--chrome-th-fill);
+  box-shadow: var(--chrome-th-shadow);
+}
+.pg-finance .fd-approvals__foot { padding: 14px 20px 18px; margin-top: auto; }
+/* narrow: the due date moves under the amount */
+@media (max-width: 639.98px) {
+  .pg-finance .fd-ap { grid-template-columns: 16px minmax(0, 1fr) auto; grid-template-areas: "cb payee amount" "cb payee due"; row-gap: 0; }
+  .pg-finance .fd-ap > :nth-child(1) { grid-area: cb; }
+  .pg-finance .fd-ap > :nth-child(2) { grid-area: payee; }
+  .pg-finance .fd-ap > :nth-child(3) { grid-area: due; text-align: right; }
+  .pg-finance .fd-ap > :nth-child(4) { grid-area: amount; }
+  .pg-finance .fd-ap--th { grid-template-areas: "cb payee amount"; }
+  .pg-finance .fd-ap--th > :nth-child(3) { display: none; }
+  .pg-finance .fd-ap .d1-row { flex-wrap: wrap; row-gap: 2px; }
+}
+.fd-rules { width: 280px; gap: 6px; }
+
+/* Upcoming payouts */
+.pg-finance .fd-payouts { padding: 18px 20px 0; display: flex; flex-direction: column; gap: 14px; }
+/* a recessed satin well; the selected day is the raised tile */
+.pg-finance .fd-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 16px; background: var(--ch-well); box-shadow: var(--ch-well-sh); overflow-x: auto; }
+@media (max-width: 519.98px) { .pg-finance .fd-strip { grid-template-columns: repeat(5, minmax(76px, 1fr)); } }
+.pg-finance .fd-cal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: left;
+  color: var(--chrome-text-2);
+  cursor: pointer;
+}
+.pg-finance button.fd-cal:hover { background: rgba(255, 255, 255, 0.45); }
+.pg-finance .fd-cal[aria-pressed="true"] { background: linear-gradient(180deg, #fafafa, #ecedee); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15); }
+.pg-finance .fd-cal--holiday { cursor: default; background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0 3px, transparent 3px 7px); }
+.pg-finance .fd-cal__value { color: var(--chrome-text); font-weight: 500; }
+.pg-finance .fd-cal__value--on { color: var(--chrome-cobalt-text); font-weight: 600; }
+.pg-finance .fd-cal__day--on { color: var(--chrome-text); font-weight: 600; }
+.pg-finance .fd-day { display: flex; flex-direction: column; flex: 1; }
+.pg-finance .fd-day__row { padding: 10px 0; border-top: var(--d1-rule); }
+.pg-finance .fd-day__label { gap: 6px; font-size: 13px; white-space: normal; }
+
+/* Transactions today */
+.pg-finance .fd-txns { display: flex; flex-direction: column; }
+.pg-finance .fd-txns__head { padding: 18px 20px 14px; }
+.pg-finance .fd-txns__table { border-top: var(--d1-rule); }
+
+/* Team budgets */
+.pg-finance .fd-budgets { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 16px; }
+.pg-finance .fd-bm { display: flex; flex-direction: column; gap: 8px; }
+.pg-finance .fd-pace { position: absolute; top: -3px; bottom: -3px; left: 53%; width: 2px; margin-left: -1px; border-radius: 1px; background: linear-gradient(180deg, #5f6363, #202222); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7); }
+.pg-finance .fd-pace-key { width: 2px; height: 12px; border-radius: 1px; background: linear-gradient(180deg, #5f6363, #202222); }
+.pg-finance .fd-budgets__foot { margin-top: auto; padding-top: 12px; border-top: var(--d1-rule); }
+
+.fd-form { gap: 14px; }

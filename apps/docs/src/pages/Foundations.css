@@ -1,0 +1,189 @@
+/* Foundations (Ink artboard). Every rule is scoped under .pg-foundations. */
+
+.pg-foundations .fd-stack2 { display: flex; flex-direction: column; gap: 2px; }
+.pg-foundations .fd-stack8 { display: flex; flex-direction: column; gap: 8px; }
+.pg-foundations .fd-stack10 { display: flex; flex-direction: column; gap: 10px; }
+.pg-foundations .fd-center { text-align: center; }
+.pg-foundations .fd-nowrap { white-space: nowrap; }
+
+/* slim way back: the artboard has no header, so the brand and two links sit in its top padding */
+.pg-foundations .fd-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1440px;
+  height: 80px;
+  margin: 0 auto;
+  padding: 0 72px 0 80px;
+}
+.pg-foundations .fd-top__brand { display: flex; align-items: center; gap: 10px; }
+.pg-foundations .fd-top__brand .logo { width: 24px; height: 24px; }
+.pg-foundations .fd-top__brand .disp { font-size: 14px; letter-spacing: 0.14em; color: var(--chrome-text); }
+.pg-foundations .fd-top__links { display: flex; align-items: center; gap: 2px; }
+
+.pg-foundations .fd-page { display: flex; flex-direction: column; gap: 20px; max-width: 1440px; margin: 0 auto; padding: 0 80px 80px; }
+.pg-foundations .panel { display: flex; flex-direction: column; gap: 24px; padding: 32px; }
+.pg-foundations .panel h2.h3 { font-size: 18px; line-height: 24px; }
+.pg-foundations .fd-panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; }
+.pg-foundations .fd-panel-head .eyebrow { white-space: nowrap; }
+
+/* ---------- header + rules ---------- */
+.pg-foundations .fd-head { display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 64px; padding-bottom: 28px; }
+.pg-foundations .fd-head__title { display: flex; flex-direction: column; gap: 24px; }
+.pg-foundations .fd-head .h1 { font-size: clamp(52px, 6.1vw, 88px); }
+.pg-foundations .fd-head .lead { font-size: 16px; line-height: 26px; }
+.pg-foundations .fd-rules { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.pg-foundations .fd-rule { display: flex; flex-direction: column; gap: 14px; padding: 28px 32px; border-right: 1px solid rgba(255, 255, 255, 0.07); }
+.pg-foundations .fd-rule:last-child { border-right: 0; }
+.pg-foundations .fd-rule__n { font: 500 40px/1 var(--chrome-font-sans); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.pg-foundations .fd-rule__n[data-tone="cobalt"] { color: var(--chrome-cobalt-text); }
+.pg-foundations .fd-rule__n[data-tone="enamel"] { color: var(--chrome-enamel-text); }
+
+/* ---------- color + semantic tokens ---------- */
+.pg-foundations .fd-two { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; }
+.pg-foundations .fd-build { display: block; height: 96px; padding: 0; border-radius: 10px; cursor: default; }
+.pg-foundations .fd-build__stops { display: flex; justify-content: space-between; gap: 16px; font-size: 11px; line-height: 16px; white-space: nowrap; }
+.pg-foundations .fd-swatches { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.pg-foundations .sw { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.pg-foundations .sw > i { display: block; height: 56px; border-radius: 8px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08); }
+.pg-foundations .sw b { font-size: 13px; font-weight: 500; }
+.pg-foundations .sw span { font: 400 11.5px/1 var(--chrome-font-mono); color: var(--chrome-text-3); }
+
+.pg-foundations .fd-semantic { gap: 0; }
+.pg-foundations .fd-semantic .fd-panel-head { padding-bottom: 16px; }
+.pg-foundations .fd-scroll { min-width: 0; overflow-x: auto; }
+.pg-foundations .fd-scroll:focus-visible { outline-offset: 2px; border-radius: 4px; }
+.pg-foundations .fd-tokens { width: 100%; min-width: 380px; border-collapse: collapse; table-layout: fixed; font-size: 12.5px; }
+.pg-foundations .fd-tokens th,
+.pg-foundations .fd-tokens td { height: 36px; padding: 0 12px 0 0; border-bottom: 1px solid rgba(255, 255, 255, 0.07); text-align: left; font-weight: 400; white-space: nowrap; }
+.pg-foundations .fd-tokens thead th { height: 37px; padding-bottom: 0; font: inherit; }
+/* the design's 1.3fr 1fr 1fr columns with 12px gaps */
+.pg-foundations .fd-tokens :is(th, td):first-child { width: 40%; }
+.pg-foundations .fd-tokens :is(th, td):nth-child(2) { width: 31.4%; }
+.pg-foundations .fd-tokens :is(th, td):last-child { padding-right: 0; }
+.pg-foundations .fd-tokens td > span { vertical-align: middle; }
+.pg-foundations .fd-chip { display: inline-block; width: 14px; height: 14px; margin-right: 8px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14); }
+.pg-foundations .fd-note { margin: 16px 0 0; text-wrap: pretty; }
+.pg-foundations .fd-note .mono { font-size: 12px; }
+
+/* ---------- chrome tokens ---------- */
+.pg-foundations .fd-chrome { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px; }
+.pg-foundations .fd-chrome__grid { display: grid; grid-template-columns: minmax(0, 1fr) 112px 112px; column-gap: 12px; min-width: 600px; }
+.pg-foundations .fd-chrome__grid > .eyebrow { padding-bottom: 10px; }
+.pg-foundations .fd-chrome__names { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.pg-foundations .fd-chrome__names li {
+  display: grid;
+  grid-template-columns: 174px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  height: 36px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 12.5px;
+}
+.pg-foundations .fd-chrome__names li > .t3 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg-foundations .fd-samples { display: flex; flex-direction: column; border-radius: 12px; }
+.pg-foundations .fd-samples--ink { background: #050506; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+.pg-foundations .fd-samples--satin { background: #e1e2e2; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6); }
+.pg-foundations .fd-samples__cell { display: flex; align-items: center; justify-content: center; height: 36px; }
+.pg-foundations .fd-chrome__live { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.pg-foundations .fd-chrome__live > .eyebrow { margin-bottom: -6px; }
+.pg-foundations .fd-chrome__live > .fd-note { margin: 0; }
+.pg-foundations .fd-live {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  border-radius: 16px;
+  background: #050506;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.pg-foundations .fd-live[data-chrome-theme="satin"] { background: #e1e2e2; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6); }
+.pg-foundations .fd-live__row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.pg-foundations .fd-live__radios { display: flex; flex-direction: row; gap: 20px; }
+.pg-foundations .fd-live__switch { margin-left: auto; }
+.pg-foundations .fd-live__slider { flex: 1; min-width: 140px; }
+.pg-foundations .fd-live__fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+/* ---------- typography ---------- */
+.pg-foundations .panel.fd-type { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 48px; }
+.pg-foundations .fd-type__intro { display: flex; flex-direction: column; gap: 14px; }
+.pg-foundations .fd-type__intro p { margin: 0; line-height: 20px; }
+.pg-foundations .fd-type__scale { margin-top: auto; }
+.pg-foundations .fd-scale { display: grid; grid-template-columns: 1fr auto; gap: 4px 24px; max-width: 200px; margin: 0; font-size: 12px; line-height: 18px; color: #c8c8cc; }
+.pg-foundations .fd-scale dd { margin: 0; text-align: right; }
+.pg-foundations .fd-specimens { display: flex; flex-direction: column; min-width: 0; }
+.pg-foundations .fd-specimens > div {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.pg-foundations .fd-specimens > div:last-child { border-bottom: 0; }
+.pg-foundations .fd-sp-h1 { font-size: clamp(40px, 5vw, 72px); line-height: 1; letter-spacing: -0.02em; }
+.pg-foundations .fd-sp-h2 { font-size: clamp(30px, 3.1vw, 44px); line-height: 1; letter-spacing: -0.015em; }
+.pg-foundations .fd-sp-satin { font-size: clamp(30px, 3.1vw, 44px); line-height: 1; font-weight: 500; letter-spacing: -0.035em; color: #d5d8d8; }
+.pg-foundations .fd-sp-readout { font-size: 34px; line-height: 1; font-weight: 500; letter-spacing: -0.03em; }
+.pg-foundations .fd-sp-readout .t3 { font-size: 15px; letter-spacing: 0; }
+.pg-foundations .fd-sp-body { font-size: 14px; line-height: 20px; }
+
+/* ---------- finishes ---------- */
+.pg-foundations .fd-finishes { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px; }
+.pg-foundations .fd-finish { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.pg-foundations .fd-finish__slab { display: block; height: 96px; padding: 0; border-radius: 12px; cursor: default; }
+.pg-foundations .fd-finish__ghost { border: 1px dashed rgba(255, 255, 255, 0.16); }
+.pg-foundations .fd-finish__notes { font-size: 11.5px; line-height: 18px; }
+
+/* ---------- shape, depth, motion ---------- */
+.pg-foundations .fd-three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.pg-foundations .fd-radii { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.pg-foundations .fd-corner { height: 56px; border-top: 1px solid rgba(255, 255, 255, 0.16); border-left: 1px solid rgba(255, 255, 255, 0.16); }
+.pg-foundations .fd-caption { font-size: 11.5px; line-height: 16px; }
+.pg-foundations .fd-sizes { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; }
+.pg-foundations .fd-depth { display: flex; flex-direction: column; gap: 18px; }
+.pg-foundations .fd-depth__row { display: flex; align-items: center; gap: 16px; }
+.pg-foundations .fd-depth__sample { flex: none; width: 96px; height: 56px; }
+.pg-foundations .fd-well { border: 1px solid transparent; border-radius: 8px; background: var(--chrome-well) padding-box, var(--chrome-rim) border-box; box-shadow: var(--chrome-well-shadow); }
+.pg-foundations .fd-curve { width: 100%; height: 110px; overflow: visible; }
+.pg-foundations .fd-curve__caption { margin-top: -12px; font-size: 11.5px; }
+.pg-foundations .fd-motion { display: flex; flex-direction: column; gap: 10px; margin: 0; font-size: 13px; }
+.pg-foundations .fd-motion > div { display: flex; justify-content: space-between; gap: 16px; }
+.pg-foundations .fd-motion dd { margin: 0; font-size: 12px; text-align: right; }
+
+/* ---------- smaller screens ---------- */
+@media (max-width: 1180px) {
+  .pg-foundations .fd-two,
+  .pg-foundations .fd-chrome { grid-template-columns: minmax(0, 1fr); }
+  .pg-foundations .fd-finishes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .pg-foundations .fd-three { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 1024px) {
+  .pg-foundations .fd-top { padding: 0 32px 0 40px; }
+  .pg-foundations .fd-page { padding: 0 40px 64px; }
+  .pg-foundations .fd-head { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .pg-foundations .panel.fd-type { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .pg-foundations .fd-rules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pg-foundations .fd-rule:nth-child(2) { border-right: 0; }
+  .pg-foundations .fd-rule:nth-child(-n + 2) { border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
+}
+@media (max-width: 760px) {
+  .pg-foundations .fd-top { height: 64px; padding: 0 12px 0 20px; }
+  .pg-foundations .fd-page { padding: 8px 20px 48px; }
+  .pg-foundations .panel { padding: 24px 20px; }
+  .pg-foundations .fd-swatches { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .pg-foundations .fd-build__stops { flex-wrap: wrap; white-space: normal; }
+  .pg-foundations .fd-finishes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pg-foundations .fd-specimens > div { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .pg-foundations .fd-live { padding: 16px; }
+  .pg-foundations .fd-live__fields { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  .pg-foundations .fd-rules { grid-template-columns: minmax(0, 1fr); }
+  .pg-foundations .fd-rule { border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
+  .pg-foundations .fd-rule:last-child { border-bottom: 0; }
+  .pg-foundations .fd-top__links .chrome-button:first-child { display: none; }
+}

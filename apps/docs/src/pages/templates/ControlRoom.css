@@ -1,0 +1,136 @@
+/* Control room (Ink) — ported from the ControlRoom artboard helmet, scoped to the page. */
+.pg-control .hd { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.pg-control .row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.pg-control .up { color: var(--chrome-mint); }
+.pg-control .dn { color: var(--chrome-enamel-text); }
+.pg-control .am { color: var(--chrome-amber); }
+.pg-control .co { color: var(--chrome-cobalt-text); }
+.pg-control .cr-m12 { font-size: 12px; }
+.pg-control .cr-m125 { font-size: 12.5px; }
+.pg-control .cr-f1 { flex: 1; min-width: 0; }
+.pg-control .cr-gap12 { gap: 12px; }
+.pg-control .cr-hi { color: var(--chrome-text); }
+
+/* sidebar card */
+.pg-control .cr-cardline { display: flex; justify-content: space-between; }
+.pg-control .cr-cardsub { display: flex; flex-direction: column; gap: 2px; }
+
+/* top bar incident link */
+.pg-control .cr-inc { padding: 0; border: 0; background: none; cursor: pointer; border-radius: 4px; }
+.pg-control .cr-inc:hover .chrome-status > span { text-decoration: underline; text-underline-offset: 3px; }
+
+/* page head */
+.pg-control .cr-head { align-items: flex-end; }
+.pg-control .cr-title { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.pg-control .cr-title--4 { gap: 4px; }
+.pg-control .cr-h1 { margin: 0; font-size: 28px; line-height: 34px; font-weight: 500; letter-spacing: -0.025em; color: var(--chrome-text); }
+.pg-control .cr-tools { flex-wrap: wrap; }
+
+/* key metrics */
+/* 4 across, 2 across on tablets, 1 on phones; hairlines between cells via --l (left) and --t (top) */
+.pg-control .cr-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.pg-control .cr-kpi { --l: 0 0 transparent; --t: 0 0 transparent; display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 20px 24px; box-shadow: var(--l), var(--t); }
+.pg-control .cr-kpi + .cr-kpi { --l: inset 1px 0 0 var(--chrome-line); }
+@media (max-width: 1171.98px) {
+  .pg-control .cr-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pg-control .cr-kpi:nth-child(odd) { --l: 0 0 transparent; }
+  .pg-control .cr-kpi:nth-child(n + 3) { --t: inset 0 1px 0 var(--chrome-line); }
+}
+.pg-control .cr-kv-row { display: flex; align-items: baseline; gap: 8px; }
+.pg-control .cr-kv { font-size: 28px; line-height: 32px; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--chrome-text); }
+.pg-control .cr-end { margin-left: auto; }
+.pg-control .cr-kpi-pill { display: flex; align-items: center; height: 32px; }
+.pg-control .cr-kpi-pill > .d2-sp { flex: 1; }
+
+/* panels */
+.pg-control .cr-panel { display: flex; flex-direction: column; gap: 16px; padding: 20px 24px; }
+.pg-control .cr-top { align-items: flex-start; }
+.pg-control .cr-legend { gap: 16px; }
+
+/* traffic plot: the well is 16/16/4 with a 40 px label column + 10 px gap in the artboard */
+.pg-control .cr-plot {
+  padding: 16px 16px 4px;
+  --chrome-chart-font-size: 13px;
+  --chrome-chart-tick-gap: 10px;
+  --chrome-chart-label-gap: 8px;
+}
+.pg-control .cr-plot .chrome-chart { line-height: 18px; }
+.pg-control .cr-plot > .chrome-chart + .chrome-chart { margin-top: 12px; }
+@media (min-width: 641px) { .pg-control .cr-plot .chrome-chart__tooltip { min-width: 196px; } }
+/* the 5xx bars share the area plot's time axis: hour labels sit on the hour marks (bar edges), not on bar centres */
+.pg-control .cr-plot [data-chart="bar"] .chrome-chart__label[data-axis="x"] { margin-left: calc((50px - 100%) / 48); }
+.pg-control .cr-plot [data-chart="bar"] { --chrome-chart-label-gap: 11.5px; }
+.pg-control .cr-plot [data-chart="bar"] .chrome-chart__label:nth-last-child(1 of [data-axis="x"]) { margin-left: calc((100% - 50px) / 48); transform: translateX(-100%); }
+.pg-control .cr-stats { display: flex; flex-wrap: wrap; gap: 24px; padding-top: 14px; border-top: 1px solid var(--chrome-line); }
+.pg-control .cr-alert {
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--chrome-enamel-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.pg-control .cr-alert:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* traffic by region */
+.pg-control .cr-regions { gap: 20px; }
+.pg-control .cr-region-list { display: flex; flex-direction: column; gap: 20px; }
+.pg-control .cr-rg { display: grid; grid-template-columns: minmax(0, 1fr) 56px 52px 40px; gap: 8px; align-items: center; }
+.pg-control .cr-rg .r { text-align: right; }
+.pg-control .cr-rg > .row { flex-wrap: wrap; row-gap: 4px; }
+.pg-control .cr-rg .mono { white-space: nowrap; }
+.pg-control .cr-rg-head { font-size: 12px; }
+.pg-control .cr-rl-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 20px; }
+.pg-control .cr-rl { display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+.pg-control .cr-budget { display: flex; align-items: center; gap: 18px; margin-top: auto; padding-top: 18px; border-top: 1px solid var(--chrome-line); }
+.pg-control .cr-budget > .chrome-gauge { flex: none; }
+
+/* open incidents */
+.pg-control .cr-incidents { display: flex; flex-direction: column; }
+.pg-control .cr-inc-head { padding: 20px 24px 14px; }
+.pg-control .cr-linkbtn { padding: 0; border: 0; background: none; font: inherit; font-size: 13px; cursor: pointer; border-radius: 4px; }
+.pg-control .cr-incidents .chrome-table-frame { border-top: 1px solid var(--chrome-line); }
+.pg-control .cr-tbl :is(th, td) { padding: 0 14px; }
+.pg-control .cr-tbl :is(th, td):first-child { padding-left: 24px; }
+.pg-control .cr-tbl :is(th, td):last-child { padding-right: 24px; }
+.pg-control .cr-tbl td { height: 60px; }
+.pg-control .cr-cell { display: flex; flex-direction: column; gap: 2px; }
+.pg-control .cr-inc-title {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--chrome-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.pg-control .cr-inc-title:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pg-control .cr-av { width: 22px; height: 22px; }
+.pg-control .cr-av > span { font-size: 9.5px; font-weight: 600; }
+.pg-control .cr-oncall { margin-top: auto; padding: 12px 24px; border-top: 1px solid var(--chrome-line); }
+
+/* agent run */
+.pg-control .cr-stepof { margin-top: 2px; }
+.pg-control .cr-run-foot { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--chrome-line); }
+
+/* overlays (portaled out of .pg-control) */
+.pg-control-dialog .cr-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+.pg-control-drawer .cr-drawer-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 20px; }
+.pg-control-drawer .cr-drawer-list > li + li { padding-top: 20px; border-top: 1px solid var(--chrome-line); }
+.pg-control-drawer .cr-inc-title { display: block; margin-bottom: 10px; padding: 0; border: 0; background: none; color: var(--chrome-text); font: inherit; font-size: 14px; text-align: left; cursor: pointer; border-radius: 4px; }
+.pg-control-drawer .cr-inc-title:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pg-control-drawer .cr-dl { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 8px 12px; margin: 0; }
+.pg-control-drawer .cr-dl dd { margin: 0; min-width: 0; }
+.pg-control-drawer .cr-m12 { font-size: 12px; }
+
+@media (max-width: 640px) {
+  .pg-control .cr-alert { margin-left: 0; }
+  .pg-control .cr-kpis { grid-template-columns: minmax(0, 1fr); }
+  .pg-control .cr-kpi:nth-child(n) { --l: 0 0 transparent; }
+  .pg-control .cr-kpi + .cr-kpi { --t: inset 0 1px 0 var(--chrome-line); }
+}

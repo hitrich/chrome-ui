@@ -10,7 +10,7 @@
     "onlyBuiltDependencies": ["esbuild"]
   },
   "scripts": {
-    "dev": "pnpm --filter @loreanai/chrome-ui build && pnpm --filter chrome-docs dev",
+    "dev": "pnpm --filter chrome-docs dev",
     "build": "pnpm --filter @loreanai/chrome-ui build && pnpm --filter chrome-docs build",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",

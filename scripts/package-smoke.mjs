@@ -88,7 +88,12 @@ const expected = [
   "FileDropzone", "IconButton", "KeyHint", "Meter", "Pagination", "Progress", "RadioGroup",
   "SearchField", "SegmentedControl", "Select", "Skeleton", "Slider", "Spinner", "Stat",
   "StatusIndicator", "Stepper", "Surface", "Switch", "Table", "Tabs", "TextField",
-  "Timeline", "Toast", "ToggleButton", "Toolbar", "Tooltip", "useChrome"
+  "Timeline", "Toast", "ToggleButton", "Toolbar", "Tooltip", "useChrome",
+  "ButtonGroup", "Calendar", "Chip", "ColorPicker", "Combobox", "DatePicker", "InputOTP",
+  "NumberField", "TagInput", "Textarea",
+  "Accordion", "CommandPalette", "ContextMenu", "Drawer", "HoverCard", "Popover", "TreeView",
+  "AreaChart", "LineChart", "BarChart", "BarList", "Gauge", "RadialRings", "Heatmap",
+  "Sparkline", "DonutChart", "ScatterChart", "FunnelChart", "Waveform"
 ];
 const missing = expected.filter((name) => !Chrome[name]);
 if (missing.length) throw new Error(\`Missing runtime exports: \${missing.join(", ")}\`);

@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "Reactive metal components for premium product interfaces.",
   "license": "MIT",
-  "keywords": ["react", "components", "design-system", "ui", "typescript", "chrome"],
+  "keywords": [
+    "react",
+    "components",
+    "design-system",
+    "ui",
+    "typescript",
+    "chrome"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hitrich/chrome-ui.git",
@@ -15,8 +22,12 @@
     "access": "public"
   },
   "type": "module",
-  "sideEffects": ["**/*.css"],
-  "files": ["dist"],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -37,9 +48,13 @@
     "react-dom": ">=18"
   },
   "dependencies": {
+    "@radix-ui/react-accordion": "^1.3.1",
     "@radix-ui/react-checkbox": "^1.3.7",
+    "@radix-ui/react-context-menu": "^2.4.1",
     "@radix-ui/react-dialog": "^1.1.19",
     "@radix-ui/react-dropdown-menu": "^2.1.20",
+    "@radix-ui/react-hover-card": "^1.2.1",
+    "@radix-ui/react-popover": "^1.3.1",
     "@radix-ui/react-radio-group": "^1.4.3",
     "@radix-ui/react-select": "^2.3.3",
     "@radix-ui/react-slider": "^1.4.3",
