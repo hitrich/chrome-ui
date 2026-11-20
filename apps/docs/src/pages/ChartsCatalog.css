@@ -1,0 +1,42 @@
+/* /components/charts (work/canvas/project/Charts.dc.html helmet: header, filter row, tiles, chart well, sparkline table). */
+.pg-charts .pg-charts__hd { display: flex; flex-direction: column; gap: 16px; padding: 40px 0 32px; }
+.pg-charts .pg-charts__hd .h1 { font-size: 56px; }
+.pg-charts .pg-charts__hd .lead { max-width: 760px; font-size: 17px; line-height: 27px; }
+.pg-charts .pg-charts__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--chrome-line);
+}
+/* the category control scrolls in place rather than widening the page on a phone */
+.pg-charts .pg-charts__scroll { max-width: 100%; overflow-x: auto; scrollbar-width: none; padding: 3px; margin: -3px; }
+.pg-charts .pg-charts__theme { display: flex; align-items: center; gap: 10px; }
+.pg-charts .pg-charts__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 16px; }
+.pg-charts .pg-charts__tile { position: relative; display: flex; flex-direction: column; overflow: hidden; scroll-margin-top: 24px; }
+
+/* the nested ChromeProvider carries the preview theme; the well inside it is the recessed instrument stage */
+.pg-charts .pg-charts__island { margin: 6px 6px 0; background: none; color: var(--chrome-text); }
+.pg-charts .pg-charts__pv { height: 220px; padding: 16px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.pg-charts .pg-charts__pv > .chrome-chart { width: 100%; }
+
+.pg-charts .pg-charts__meta { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px 16px; }
+.pg-charts .pg-charts__meta h2 { display: flex; align-items: baseline; gap: 8px; }
+.pg-charts .pg-charts__meta h2 a { color: var(--chrome-text); }
+.pg-charts .pg-charts__meta p { margin: 0; font-size: 13px; line-height: 19px; color: var(--chrome-text-2); }
+.pg-charts .pg-charts__meta :is(.chrome-chart-legend, .chrome-heatmap-legend) { margin-top: 6px; }
+.pg-charts .pg-charts__cat { margin-left: auto; font-size: 12px; font-weight: 400; color: var(--chrome-text-3); }
+
+/* sparkline table: service, wire, value */
+.pg-charts .pg-charts__spark { width: 100%; padding-top: 8px; }
+.pg-charts .pg-charts__spr { display: grid; grid-template-columns: 104px minmax(0, 1fr) 52px; align-items: center; gap: 12px; height: 38px; border-bottom: 1px solid var(--chrome-line); }
+.pg-charts .pg-charts__spr:last-child { border-bottom: 0; }
+.pg-charts .pg-charts__spr--head { height: 22px; font-size: 11px; color: var(--chrome-text-3); }
+.pg-charts .pg-charts__r { text-align: right; }
+.pg-charts .pg-charts__svc { font: 400 12px/16px var(--chrome-font-mono); }
+.pg-charts .pg-charts__now { font-size: 12.5px; font-variant-numeric: tabular-nums; text-align: right; }
+.pg-charts .pg-charts__spr[data-focus] .pg-charts__svc { font-weight: 500; color: var(--chrome-text); }
+.pg-charts .pg-charts__spr[data-focus] .pg-charts__now { font-weight: 600; color: var(--chrome-cobalt-text); }

@@ -3,10 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#050608" />
-    <meta name="description" content="Chrome is a reactive metal component library for premium React interfaces." />
+    <meta name="description" content="Chrome UI: satin chrome React components, blocks, charts and templates, in Ink and Satin." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>Chrome — Reactive Metal UI</title>
+    <title>Chrome UI · Satin chrome React components</title>
+    <style>
+      html { background: #e8e9e9; color-scheme: light; }
+      html[data-theme="ink"] { background: #050506; color-scheme: dark; }
+    </style>
+    <script>
+      // Paint the page in its theme before React mounts. Mirrors App.tsx: these routes are Ink, toggle routes use the stored choice.
+      try {
+        var path = location.pathname;
+        var stored = localStorage.getItem("chrome-theme");
+        if (/^\/(foundations|templates\/(control-room|agent-console))\/?$/.test(path) || (/^\/(components|dev)(\/|$)/.test(path) && stored === "ink")) {
+          document.documentElement.dataset.theme = "ink";
+        }
+      } catch (error) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

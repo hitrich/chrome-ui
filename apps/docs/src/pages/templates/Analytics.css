@@ -1,0 +1,44 @@
+/* Storefront analytics template — ported from the Analytics artboard helmet, scoped to the page. */
+
+/* Sessions */
+.pg-analytics .an-sessions { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.pg-analytics .an-plot {
+  flex: 1;
+  padding: 16px 28px 6px 12px;
+  --chrome-chart-font-size: 13px;
+  --chrome-chart-tick-gap: 10px;
+  --chrome-chart-label-gap: 16px;
+}
+.pg-analytics .an-plot .chrome-chart { line-height: 18px; }
+.pg-analytics .an-stats { display: flex; gap: 6px 24px; flex-wrap: wrap; padding-top: 14px; border-top: var(--d1-rule); }
+
+/* Traffic sources */
+.pg-analytics .an-sources { padding: 20px 24px; display: flex; flex-direction: column; gap: 11px; }
+.pg-analytics .an-src { display: grid; grid-template-columns: minmax(0, 1fr) 64px 40px; gap: 12px; align-items: center; font-size: 13px; line-height: 20px; }
+.pg-analytics .an-src > :not(:first-child) { text-align: right; }
+.pg-analytics .an-src-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+.pg-analytics .an-fs { display: flex; flex-direction: column; gap: 6px; }
+.pg-analytics .an-src__focus { color: var(--chrome-cobalt-text); font-weight: 600; }
+.pg-analytics .an-foot { margin-top: auto; padding-top: 14px; border-top: var(--d1-rule); text-wrap: pretty; }
+
+/* Conversion funnel and returning customers */
+.pg-analytics .an-funnel,
+.pg-analytics .an-cohorts { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+.pg-analytics .an-heat-legend { line-height: 24px; gap: 6px; font-size: 13px; color: var(--chrome-text-3); }
+.pg-analytics .an-heat-legend > span { margin: 0; }
+/* the artboard's drop-off notes sit on the page's 20px line, not the chart kit's 18px */
+.pg-analytics .an-funnel .chrome-funnel-rows__drop { line-height: 20px; }
+.pg-analytics .an-heat-scroll { overflow-x: auto; }
+.pg-analytics .an-heat { min-width: 520px; font-size: 13px; }
+.pg-analytics .an-heat .chrome-heatmap__rows { font-size: 12px; }
+/* the artboard grid: an 18px label row and 4px gaps */
+.pg-analytics .an-heat .chrome-heatmap { line-height: 18px; row-gap: 4px; }
+
+/* Top products */
+.pg-analytics .an-products { grid-column: 1 / -1; display: flex; flex-direction: column; }
+.pg-analytics .an-products__head { padding: 18px 20px 14px; }
+.pg-analytics .an-products__table { border-top: var(--d1-rule); }
+.pg-analytics .an-product { display: block; max-width: 340px; }
+.pg-analytics .an-share-pct { width: 36px; text-align: right; }
+
+.an-share { width: 280px; gap: 6px; }

@@ -1,0 +1,141 @@
+/* Component pages (/components/:slug): the Button artboard's helmet, scoped to .pg-doc. Controls are package parts. */
+.pg-doc {
+  --doc-dots: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px) 0 0 / 14px 14px;
+  --doc-stage-fill: #08080a;
+  --doc-stage-edge: rgba(255, 255, 255, 0.06);
+  --doc-stage-shadow: none;
+  --doc-ink-shadow: none;
+}
+/* Satin: the catalog's recessed satin well under the dots; code panels stay Ink and get a soft drop */
+.chrome-root:is([data-chrome-theme="satin"], [data-chrome-theme="arctic"]) .pg-doc {
+  --doc-dots: radial-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px) 0 0 / 14px 14px;
+  --doc-stage-fill: linear-gradient(180deg, #d9dbdb 0%, #e4e5e5 38%, #e9eaea 100%);
+  --doc-stage-edge: transparent;
+  --doc-stage-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.14), inset 0 -1px 0 rgba(255, 255, 255, 0.85);
+  --doc-ink-shadow: 0 1px 2px rgba(20, 28, 27, 0.18), 0 14px 30px -18px rgba(20, 30, 28, 0.55);
+}
+
+.pg-doc .doc { display: flex; flex-direction: column; gap: 64px; }
+
+/* header */
+.pg-doc .doc-hd { display: flex; flex-direction: column; gap: 16px; padding-top: 40px; }
+.pg-doc .doc-title { font-size: 56px; }
+.pg-doc .doc-lead { max-width: 680px; font-size: 17px; line-height: 27px; }
+.pg-doc .doc-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.pg-doc .doc-tags .chrome-badge { height: 24px; padding: 0 8px; }
+
+/* stages */
+.pg-doc .doc-stage {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  min-width: 0;
+  padding: 40px 28px;
+  border: 1px solid var(--doc-stage-edge);
+  border-radius: 12px;
+  background: var(--doc-stage-fill);
+  box-shadow: var(--doc-stage-shadow);
+}
+.pg-doc .doc-stage.dots { background: var(--doc-dots), var(--doc-stage-fill); }
+.pg-doc .doc-stage[hidden] { display: none; }
+.pg-doc .doc-cap { display: flex; flex-direction: column; align-items: center; gap: 14px; min-width: 0; max-width: 100%; }
+.pg-doc .doc-cap > .mono { font-size: 11.5px; line-height: 16px; color: var(--chrome-text-3); white-space: nowrap; }
+
+/* preview card */
+.pg-doc .doc-preview { padding: 8px; scroll-margin-top: 24px; }
+.pg-doc .doc-preview__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; min-height: 46px; padding: 4px 4px 12px; }
+.pg-doc .doc-stage--preview { min-height: 320px; border-radius: 8px; }
+.pg-doc .doc-demo { display: flex; align-items: center; justify-content: center; min-width: 0; max-width: 100%; }
+.pg-doc .doc-codeview {
+  min-height: 320px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  background: #08080a;
+}
+.pg-doc .doc-codeview pre { padding: 20px; overflow-x: auto; }
+.pg-doc .doc-preview__controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; padding: 16px 4px 8px; }
+.pg-doc .doc-control { display: inline-flex; align-items: center; gap: 10px; min-width: 0; max-width: 100%; }
+.pg-doc .doc-control--switch { gap: 8px; }
+.pg-doc .doc-control label { cursor: pointer; }
+/* the six finishes are wider than a phone: the control scrolls inside its own strip, focus ring included */
+.pg-doc .doc-control .chrome-segmented { flex: none; }
+.pg-doc .doc-control:has(.chrome-segmented) { overflow-x: auto; margin: -4px; padding: 4px; scrollbar-width: none; }
+
+/* sections */
+.pg-doc .doc-sec { display: flex; flex-direction: column; gap: 16px; min-width: 0; scroll-margin-top: 24px; }
+.pg-doc .doc-sec > h2 { margin: 0; font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: -0.01em; color: var(--chrome-text); }
+.pg-doc .doc-sec > p { margin: 0; max-width: 620px; line-height: 22px; text-wrap: pretty; }
+
+/* installation: code is always on a dark panel, an Ink island on Satin */
+.pg-doc .doc-line,
+.pg-doc .doc-file { box-shadow: var(--docs-card-shadow), var(--doc-ink-shadow); }
+.pg-doc .doc-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 6px 6px 20px; }
+.pg-doc .doc-line > .code { min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.pg-doc .doc-file { overflow: hidden; }
+.pg-doc .doc-file__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 6px 6px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
+.pg-doc .doc-file__head .mono { font-size: 12px; }
+.pg-doc .doc-file pre { padding: 20px; overflow-x: auto; }
+.pg-doc [data-copy="copied"] { color: var(--chrome-mint); }
+
+/* usage */
+.pg-doc .doc-usage { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; }
+.pg-doc .doc-usage__card { overflow: hidden; }
+.pg-doc .doc-usage__stage { gap: 10px; padding: 36px 20px; border: 0; border-radius: 0; box-shadow: none; }
+.pg-doc .doc-verdict { display: flex; align-items: flex-start; gap: 10px; padding: 16px 20px; border-top: 1px solid var(--chrome-line); }
+.pg-doc .doc-verdict strong { font-weight: 500; }
+.pg-doc .doc-verdict__do { color: var(--chrome-mint); }
+.pg-doc .doc-verdict__dont { color: var(--chrome-enamel-text); }
+
+/* props: first lines align across cells when a type wraps */
+.pg-doc .doc-props { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.pg-doc .doc-props + .doc-props { margin-top: 12px; }
+.pg-doc .doc-props__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0; }
+.pg-doc .doc-props__part { font-size: 13px; color: var(--chrome-text); }
+.pg-doc .doc-props__card { overflow: hidden; }
+.pg-doc .doc-props__table { min-width: 640px; border-collapse: separate; border-spacing: 0; }
+.pg-doc .doc-props__table td { height: auto; padding: 12px 16px; vertical-align: top; line-height: 20px; }
+.pg-doc .doc-props__table .mono { font-size: 12.5px; }
+.pg-doc .doc-props__table td.doc-props__type { color: var(--chrome-cobalt-text); white-space: normal; }
+.pg-doc .doc-props__type > span { white-space: nowrap; }
+.pg-doc .doc-props__table td.doc-props__desc { min-width: 220px; white-space: normal; text-wrap: pretty; }
+.pg-doc .doc-props__table td.doc-props__default { white-space: normal; }
+.pg-doc .doc-props__desc .mono { font-size: 12px; line-height: 14px; }
+.pg-doc .doc-nw { white-space: nowrap; }
+
+/* accessibility */
+.pg-doc .doc-a11y { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px; }
+.pg-doc .doc-a11y__card { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
+.pg-doc .doc-a11y__keys { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.pg-doc .doc-a11y__keys .chrome-badge { height: 20px; }
+.pg-doc .doc-a11y__card p { margin: 0; text-wrap: pretty; }
+
+/* sample helpers for the docs data */
+.pg-doc .doc-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; }
+.pg-doc .doc-col { display: flex; flex-direction: column; gap: 10px; }
+.pg-doc .doc-target {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 280px;
+  max-width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px dashed var(--chrome-line-2);
+  border-radius: 10px;
+  font-size: 12.5px;
+  cursor: context-menu;
+}
+.pg-doc .doc-target > .mono { flex: 1; min-width: 0; }
+.pg-doc .doc-box { position: relative; width: 280px; max-width: 100%; height: 220px; overflow: hidden; border-radius: 12px; }
+
+@media (max-width: 640px) {
+  .pg-doc .doc { gap: 48px; }
+  .pg-doc .doc-title { font-size: 44px; }
+  .pg-doc .doc-stage { padding: 32px 16px; }
+  .pg-doc .doc-stage--preview,
+  .pg-doc .doc-codeview { min-height: 260px; }
+}

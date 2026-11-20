@@ -14,7 +14,7 @@
     "baseUrl": ".",
     "paths": {
       "@loreanai/chrome-ui": ["packages/chrome-ui/src/index.ts"],
-      "@loreanai/chrome-ui/styles.css": ["packages/chrome-ui/src/styles.css"]
+      "@loreanai/chrome-ui/styles.css": ["packages/chrome-ui/src/index.css"]
     },
     "resolveJsonModule": true,
     "isolatedModules": true,

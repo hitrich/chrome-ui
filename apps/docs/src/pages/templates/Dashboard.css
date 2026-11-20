@@ -1,0 +1,76 @@
+/* Home dashboard template — ported from the Dashboard artboard helmet, scoped to the page. */
+.pg-dashboard .pg-nocalt { font-feature-settings: "calt" 0; }
+
+/* Billable usage */
+.pg-dashboard .db-usage { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.pg-dashboard .db-plot {
+  flex: 1;
+  padding: 16px 28px 6px 12px;
+  --chrome-chart-font-size: 13px;
+  --chrome-chart-tick-gap: 10px;
+  --chrome-chart-label-gap: 12px;
+}
+.pg-dashboard .db-plot .chrome-chart { line-height: 18px; }
+.pg-dashboard .db-mix { display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: var(--d1-rule); }
+.pg-dashboard .db-mix__legend { font-size: 13px; line-height: 18px; gap: 4px 20px; color: var(--chrome-text); }
+
+/* Needs attention */
+.pg-dashboard .db-attn { padding: 20px 0 6px; display: flex; flex-direction: column; }
+.pg-dashboard .db-attn__head { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 0 20px 14px; }
+.pg-dashboard .db-attn__head > .d1-hd { align-self: stretch; }
+.pg-dashboard .db-attn__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.pg-dashboard .db-att { display: flex; gap: 12px; align-items: flex-start; padding: 11px 20px; border-top: var(--d1-rule); }
+.pg-dashboard .db-att__lamp { margin-top: 7px; }
+.pg-dashboard .db-att__body { flex: 1; gap: 5px; }
+.pg-dashboard .db-att__title { flex: 1; color: var(--chrome-text); font-weight: 500; }
+.pg-dashboard .db-att__title:hover { color: var(--chrome-cobalt-text); }
+.pg-dashboard .db-att__meta { min-height: 24px; }
+.pg-dashboard .db-review { height: 24px; padding: 0 10px; font-size: 12.5px; }
+
+/* Agent activity */
+.pg-dashboard .db-agents { grid-column: 1 / -1; display: flex; flex-direction: column; }
+.pg-dashboard .db-agents__head { padding: 18px 20px 14px; border-bottom: var(--d1-rule); }
+.pg-dashboard .db-runs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); border-bottom-left-radius: inherit; border-bottom-right-radius: inherit; }
+.pg-dashboard .db-run { padding: 16px 20px 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.pg-dashboard .db-run__desc { min-height: 36px; text-wrap: balance; }
+.pg-dashboard .db-run .d1-track { margin-top: 4px; }
+.pg-dashboard .db-run__foot { min-height: 24px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pg-dashboard .db-retry { height: 24px; padding: 0 8px; margin-right: -8px; }
+
+/* Deployments */
+.pg-dashboard .db-deploys { display: flex; flex-direction: column; }
+.pg-dashboard .db-deploys__head { padding: 18px 20px 14px; }
+.pg-dashboard .db-deploys__table { border-top: var(--d1-rule); }
+.pg-dashboard .db-deploys__foot { padding: 10px 20px 12px; margin-top: auto; border-top: var(--d1-rule); }
+
+/* On-call */
+.pg-dashboard .db-oncall { padding: 18px 20px 0; display: flex; flex-direction: column; gap: 12px; }
+.pg-dashboard .db-people { display: flex; flex-direction: column; }
+.pg-dashboard .db-oc { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: var(--d1-rule); }
+/* week strip: recessed well; today = the small satin chrome pill (same build as a pressed segmented item) */
+.pg-dashboard .db-days {
+  list-style: none;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: var(--ch-well) padding-box, var(--ch-rim) border-box;
+  box-shadow: var(--ch-well-sh);
+}
+.pg-dashboard .db-day { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 0; border-radius: 10px; font-size: 12px; }
+.pg-dashboard .db-day[aria-current] { isolation: isolate; background: var(--ch-pill-s); box-shadow: var(--ch-pill-sh); }
+.pg-dashboard .db-day[aria-current]::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: 9px;
+  border: 2px solid transparent;
+  background: var(--ch-pill-i) padding-box, var(--ch-pill-r) border-box;
+}
+.pg-dashboard .db-day__today { font-weight: 600; }
+.pg-dashboard .db-handoff { margin: auto -20px 0; padding: 8px 20px; border-top: var(--d1-rule); flex-wrap: nowrap; }
+.db-sched { width: 260px; gap: 6px; }

@@ -1,40 +1,27 @@
 # Chrome UI
 
-![Chrome UI — Reactive Metal interface system](apps/docs/src/assets/chrome-landing-desktop-source.png)
+![Chrome UI landing page](.github/chrome-ui-landing.png)
 
-Chrome UI is an open-source React component library built around **Reactive Chrome**: an opaque metal interface language shaped by polished silver, deep ink, cobalt focus, enamel-red state, hard seams, and responsive light.
+Chrome UI is an open-source React component library finished in **satin chrome**: every chrome part is built like the real thing — a pill frame with a gradient stroke, a bezel ring, a satin inner pill and a tinted glow underneath — on quiet satin and ink surfaces. Chrome marks edges, selection, knobs and the one action that matters; everything else stays calm.
 
-It is fully original and does not use Shadcn, Tailwind, glass blur, or translucent card styling. Radix primitives provide accessible behavior for complex controls while every visual layer and component anatomy is custom.
+It is fully original and does not use Shadcn, Tailwind or glass blur. Radix primitives provide accessible behaviour for complex controls; every visual layer is custom CSS.
 
 ## What is included
 
 - `@loreanai/chrome-ui`, an ESM React and TypeScript package with generated declarations
-- Ink and arctic themes with system, full, and reduced motion modes
-- ChromeProvider and `useChrome()` theme APIs
-- 37 documented UI components plus `ChromeProvider`, spanning controls, navigation, feedback, data display, overlays, and surfaces
-- A responsive Vite documentation app with foundations, component explorer, playground, and Control Room pattern
-- Self-hosted Space Grotesk, JetBrains Mono, and Oxanium typography
-- Unit, accessibility, package-consumer, and browser test coverage
+- 54 base components across inputs, navigation, feedback, overlays and data display
+- 12 chrome charts in pure SVG (area, line, bar, bar list, gauge, radial rings, heatmap, sparkline, donut, scatter, funnel, waveform)
+- Two themes, Satin (light) and Ink (dark), switchable per subtree, with system, full and reduced motion
+- A documentation site with foundations, a component catalog and a page per component, 12 blocks assembled from the components, and 6 full templates (dashboard, control room, finance desk, agent console, analytics, settings)
+- Unit, accessibility, package-consumer and browser tests
 
 ## Quick start
-
-Install the public package from npm:
 
 ```sh
 npm install @loreanai/chrome-ui
 ```
 
-To run the documentation and package workspace locally:
-
-```sh
-corepack enable
-pnpm install
-pnpm dev
-```
-
-Then open the local URL shown by Vite.
-
-Import the library stylesheet once and wrap your application with `ChromeProvider`:
+Import the stylesheet once and wrap your application in `ChromeProvider`:
 
 ```tsx
 import { Button, ChromeProvider } from "@loreanai/chrome-ui";
@@ -42,23 +29,30 @@ import "@loreanai/chrome-ui/styles.css";
 
 export function App() {
   return (
-    <ChromeProvider defaultTheme="ink" motion="system">
-      <Button variant="primary">Create project</Button>
+    <ChromeProvider defaultTheme="satin" motion="system">
+      <Button finish="graphite">Cancel</Button>
+      <Button finish="polished">Deploy</Button>
     </ChromeProvider>
   );
 }
 ```
 
-## Component catalog
+The styles use Plus Jakarta Sans, Oxanium and JetBrains Mono through `--chrome-font-sans`, `--chrome-font-display` and `--chrome-font-mono`; load them (for example from Fontsource) or override the tokens. See [the package README](packages/chrome-ui/README.md) for the Button API, themes and the full component list.
 
-Core controls include `Surface`, `Button`, `IconButton`, `TextField`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `Slider`, `Tabs`, `Badge`, `Tooltip`, `DropdownMenu`, `Dialog`, `Toast`, `Progress`, and `Avatar`.
+To run the workspace locally:
 
-The extended set adds `Alert`, `Breadcrumb`, `CodeBlock`, `Divider`, `EmptyState`, `FileDropzone`, `KeyHint`, `Meter`, `Pagination`, `SearchField`, `SegmentedControl`, `Skeleton`, `Spinner`, `Stat`, `StatusIndicator`, `Stepper`, `Table`, `Timeline`, `ToggleButton`, and `Toolbar`.
+```sh
+corepack enable
+pnpm install
+pnpm dev
+```
+
+The docs app reads the package source directly, so package edits hot-reload.
 
 ## Workspace
 
 ```text
-apps/docs              Documentation and interactive examples
+apps/docs              Documentation site, blocks and templates
 packages/chrome-ui     Installable @loreanai/chrome-ui package
 scripts                Package-consumer smoke validation
 ```
@@ -66,23 +60,23 @@ scripts                Package-consumer smoke validation
 ## Development
 
 ```sh
-pnpm dev          # build the package and start the docs app
-pnpm build        # build package and documentation
+pnpm dev          # start the docs app on the package source
+pnpm build        # build the package and the documentation
 pnpm typecheck    # typecheck every workspace package
 pnpm lint         # lint the workspace
 pnpm test         # unit and accessibility tests
 pnpm test:package # pack and test an isolated package consumer
-pnpm test:e2e     # browser interaction tests
+pnpm test:e2e     # browser tests against the built docs
 pnpm validate     # full non-browser validation suite
 ```
 
 ## Design principles
 
-- Opaque surfaces only—no backdrop blur or glass transparency
-- Silver for primary actions, cobalt for focus and progress, and enamel red for destructive or live state
-- Hard seams, clipped corners, narrow highlights, and restrained depth
-- Keyboard access, visible focus, reduced-motion support, and 44px mobile targets
-- Open rails, dividers, lists, and canvases instead of generic card grids
+- One polished part per panel. Everyday actions are graphite or ghost; cobalt confirms, focuses and shows progress; enamel destroys or flags failure.
+- Wells read recessed, pills read raised, and light always comes from above.
+- Chrome at the edges, the selection, the knobs and the primary action; large areas stay quiet satin.
+- Real controls with keyboard access, a visible focus ring, 4.5:1 text contrast and reduced-motion support.
+- Every theme difference lives in tokens, so an Ink panel can sit on a Satin page.
 
 ## Contributing
 

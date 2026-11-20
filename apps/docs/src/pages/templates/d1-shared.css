@@ -1,0 +1,61 @@
+/* Shared by the Dashboard, Analytics and Finance desk templates (Satin). Ported from their artboard helmets. */
+:is(.pg-dashboard, .pg-analytics, .pg-finance) {
+  --d1-rule: 1px solid rgba(0, 0, 0, 0.07);
+}
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-ph { margin: 0; font-size: 28px; line-height: 34px; font-weight: 500; letter-spacing: -0.025em; color: #2a2c2c; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-hd { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-hd--end { align-items: flex-end; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-hd--start { align-items: flex-start; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-wrap { flex-wrap: wrap; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-col { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-up { color: var(--chrome-mint); }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-dn { color: var(--chrome-enamel-text); }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-am { color: var(--chrome-amber); }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-trunc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-nw { white-space: nowrap; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-lg { display: flex; align-items: center; gap: 6px; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-link { font-size: 13px; line-height: 18px; color: var(--chrome-cobalt-text); border: 0; padding: 0; background: none; font-family: inherit; cursor: pointer; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-link:hover { color: var(--chrome-text); }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-mono12 { font-family: var(--chrome-font-mono); font-size: 12px; }
+
+/* key metrics */
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-kpi { padding: 20px 24px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+@media (max-width: 1099.98px) { :is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 519.98px) { :is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-kpis { grid-template-columns: minmax(0, 1fr); } }
+/* hairlines between cells in any column count: every cell draws a left and a top line, the clipped grid hides the outer ones */
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-cells { overflow: hidden; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-cells > * { margin: -1px 0 0 -1px; border-top: 1px solid rgba(0, 0, 0, 0.07); border-left: 1px solid rgba(0, 0, 0, 0.07); }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-kpi__row { display: flex; align-items: baseline; gap: 8px; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-kpi__row > :last-child { margin-left: auto; text-align: right; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-kv { font-size: 28px; line-height: 32px; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--chrome-text); }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-spark { display: block; width: 100%; height: 32px; overflow: visible; }
+
+/* thin satin pills: bezel ring (border-box) around a polished core (padding-box) */
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-track { display: block; height: 8px; border-radius: 999px; background: #d2d5d5; box-shadow: inset 0 1px 1.5px rgba(0, 0, 0, 0.16), 0 1px 0 rgba(255, 255, 255, 0.8); }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-pl { display: block; height: 8px; box-sizing: border-box; border: 1.5px solid transparent; border-radius: 999px; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-pl--co { background: linear-gradient(180deg, #4f7bff, #1c44d6) padding-box, linear-gradient(180deg, #eef2ff, #1a37a8 50%, #7f9cff) border-box; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-pl--si { background: linear-gradient(180deg, #d5d8d8, #818c8a) padding-box, linear-gradient(180deg, #f4f4f4, #565656 50%, #93b3ae) border-box; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-pl--sk { background: linear-gradient(180deg, #6b7072, #25282a) padding-box, linear-gradient(180deg, #8a8f90, #2c2f30 50%, #4f6b66) border-box; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-pl--fl { border: 0; background: #cfd2d2; box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12); }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-pl--en { background: linear-gradient(180deg, #ec5548, #b8241b) padding-box, linear-gradient(180deg, #ffe6e2, #a3231a 50%, #ff8a80) border-box; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-pl--am { background: linear-gradient(180deg, #e3a03a, #a36700) padding-box, linear-gradient(180deg, #fff0d4, #8a5600 50%, #f5c77e) border-box; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-split { display: flex; gap: 3px; }
+
+/* the templates' tables line their first and last columns up with the card's 20px padding */
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .chrome-table :is(th, td) { padding: 0 14px; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .chrome-table :is(th, td):first-child { padding-left: 20px; }
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .chrome-table :is(th, td):last-child { padding-right: 20px; }
+
+/* legends at the templates' 13px reading size */
+:is(.pg-dashboard, .pg-analytics, .pg-finance) .d1-legend { font-size: 13px; line-height: 24px; gap: 0 16px; }
+
+/* overlays are portalled out of the page root, so these carry their own prefix */
+.d1-ntf { width: min(340px, calc(100vw - 32px)); }
+.d1-ntf__head { padding: 12px 14px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--chrome-line); }
+.d1-ntf__row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; font-size: 13px; line-height: 18px; }
+.d1-ntf__row + .d1-ntf__row { border-top: 1px solid var(--chrome-line); }
+.d1-ntf__row > :last-child { flex: none; }
+.d1-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+

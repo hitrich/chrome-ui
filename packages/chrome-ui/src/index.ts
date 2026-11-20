@@ -1,5 +1,4 @@
-import "./styles.css";
-import "./extended.css";
+import "./index.css";
 
 export { ChromeProvider, ChromePortalLayer, useChrome } from "./provider";
 export type { ChromeMotion, ChromeProviderProps, ChromeTheme } from "./provider";
@@ -22,6 +21,7 @@ export type {
   BadgeProps,
   ButtonProps,
   ButtonElement,
+  ButtonFinish,
   ButtonSize,
   ButtonVariant,
   IconButtonProps,
@@ -80,3 +80,7 @@ export type {
   ToggleButtonProps,
   ToolbarProps
 } from "./extended";
+
+export * from "./inputs";
+export * from "./layers";
+export * from "./charts";

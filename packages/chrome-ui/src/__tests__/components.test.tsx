@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "vitest-axe";
 import { describe, expect, it, vi } from "vitest";
@@ -133,73 +133,112 @@ describe("Chrome public API", () => {
     expect(onMotionChange).toHaveBeenCalledWith("system");
   });
 
-  it("applies button variants and native disabled behavior", () => {
-    render(<><Button variant="danger" size="lg" disabled>Delete project</Button><Button static>Static action</Button></>);
-    const button = screen.getByRole("button", { name: "Delete project" });
+  it("applies button finishes, sizes and native disabled behavior", () => {
+    render(<><Button finish="cobalt" size="xl" disabled>Approve</Button><Button>Preview</Button><Button static>Static action</Button></>);
+    const button = screen.getByRole("button", { name: "Approve" });
     expect(button).toBeDisabled();
-    expect(button).toHaveAttribute("data-variant", "danger");
-    expect(button).toHaveAttribute("data-size", "lg");
+    expect(button).toHaveAttribute("data-finish", "cobalt");
+    expect(button).toHaveAttribute("data-size", "xl");
+    expect(screen.getByRole("button", { name: "Preview" })).toHaveAttribute("data-finish", "graphite");
+    expect(screen.getByRole("button", { name: "Preview" })).toHaveAttribute("data-size", "md");
     expect(screen.getByRole("button", { name: "Static action" })).toHaveAttribute("data-static", "true");
   });
 
-  it("tracks responsive button light without swallowing consumer pointer handlers", () => {
-    const onPointerMove = vi.fn();
-    const onPointerLeave = vi.fn();
-    const onDisabledPointerMove = vi.fn();
+  it("maps the deprecated variant prop to a finish, with finish winning", () => {
     render(
       <>
-        <Button onPointerMove={onPointerMove} onPointerLeave={onPointerLeave}>Responsive light</Button>
-        <Button asChild aria-disabled="true" onPointerMove={onDisabledPointerMove}>
-          <a href="/unavailable">Unavailable light</a>
-        </Button>
+        <Button variant="primary">Primary</Button>
+        <Button variant="secondary">Secondary</Button>
+        <Button variant="quiet">Quiet</Button>
+        <Button variant="danger">Danger</Button>
+        <Button variant="danger" finish="smoked">Both</Button>
       </>
     );
-    const button = screen.getByRole("button", { name: "Responsive light" });
-    const boundsSpy = vi.spyOn(button, "getBoundingClientRect").mockReturnValue({
-      x: 0,
-      y: 0,
-      top: 0,
-      right: 200,
-      bottom: 100,
-      left: 0,
-      width: 200,
-      height: 100,
-      toJSON: () => ({})
-    });
+    expect(screen.getByRole("button", { name: "Primary" })).toHaveAttribute("data-finish", "polished");
+    expect(screen.getByRole("button", { name: "Secondary" })).toHaveAttribute("data-finish", "graphite");
+    expect(screen.getByRole("button", { name: "Quiet" })).toHaveAttribute("data-finish", "ghost");
+    expect(screen.getByRole("button", { name: "Danger" })).toHaveAttribute("data-finish", "enamel");
+    expect(screen.getByRole("button", { name: "Danger" })).toHaveAttribute("data-variant", "danger");
+    expect(screen.getByRole("button", { name: "Both" })).toHaveAttribute("data-finish", "smoked");
+  });
 
-    fireEvent.pointerMove(button, { clientX: 150, clientY: 25, pointerType: "mouse" });
-    expect(button.style.getPropertyValue("--chrome-light-x")).toBe("75.00%");
-    expect(button.style.getPropertyValue("--chrome-light-y")).toBe("25.00%");
-    expect(onPointerMove).toHaveBeenCalledOnce();
+  it("keeps a loading button focusable and busy while ignoring presses", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    const onLinkClick = vi.fn();
+    render(
+      <>
+        <Button loading onClick={onClick}>Deploy</Button>
+        <Button asChild loading><a href="/deploy" onClick={onLinkClick}>Open</a></Button>
+      </>
+    );
+    const button = screen.getByRole("button", { name: "Deploy" });
+    expect(button).toHaveAttribute("aria-busy", "true");
+    expect(button).toHaveAttribute("data-loading", "true");
+    expect(button).not.toBeDisabled();
+    expect(button.querySelector(".chrome-button__spinner")).toHaveAttribute("aria-hidden", "true");
+    await user.click(button);
+    expect(onClick).not.toHaveBeenCalled();
+    button.focus();
+    expect(button).toHaveFocus();
+    const link = screen.getByRole("link", { name: "Open" });
+    expect(link).toHaveAttribute("aria-busy", "true");
+    await user.click(link);
+    expect(onLinkClick).not.toHaveBeenCalled();
+  });
 
-    fireEvent.pointerMove(button, { clientX: 50, clientY: 75, pointerType: "mouse" });
-    expect(button.style.getPropertyValue("--chrome-light-x")).toBe("25.00%");
-    expect(button.style.getPropertyValue("--chrome-light-y")).toBe("75.00%");
-    expect(onPointerMove).toHaveBeenCalledTimes(2);
-    expect(boundsSpy).toHaveBeenCalledOnce();
+  it("renders leading and trailing icons as hidden decoration, also through asChild", () => {
+    render(
+      <>
+        <Button leadingIcon={<svg data-testid="lead" />} trailingIcon={<svg data-testid="trail" />}>New service</Button>
+        <Button asChild leadingIcon={<svg data-testid="link-lead" />}><a href="/new">New link</a></Button>
+      </>
+    );
+    const button = screen.getByRole("button", { name: "New service" });
+    expect(screen.getByTestId("lead").parentElement).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByTestId("trail").parentElement).toHaveAttribute("aria-hidden", "true");
+    expect(button.firstElementChild).toContainElement(screen.getByTestId("lead"));
+    expect(button.lastElementChild).toContainElement(screen.getByTestId("trail"));
+    const link = screen.getByRole("link", { name: "New link" });
+    expect(link).toHaveClass("chrome-button");
+    expect(link).toContainElement(screen.getByTestId("link-lead"));
+  });
 
-    fireEvent.pointerLeave(button, { pointerType: "mouse" });
-    expect(button.style.getPropertyValue("--chrome-light-x")).toBe("");
-    expect(button.style.getPropertyValue("--chrome-light-y")).toBe("");
-    expect(onPointerLeave).toHaveBeenCalledOnce();
+  it("sets the satin theme on the root and treats arctic as its alias", () => {
+    const { container, rerender } = render(<ChromeProvider theme="satin"><span>Satin</span></ChromeProvider>);
+    expect(container.firstElementChild).toHaveClass("chrome-root");
+    expect(container.firstElementChild).toHaveAttribute("data-chrome-theme", "satin");
+    // arctic is kept as the 0.1 name: the satin token block matches both attribute values
+    rerender(<ChromeProvider theme="arctic"><ThemeProbe /></ChromeProvider>);
+    expect(container.firstElementChild).toHaveAttribute("data-chrome-theme", "arctic");
+    expect(screen.getByRole("button", { name: "arctic" })).toBeVisible();
+  });
 
-    const disabledLink = screen.getByRole("link", { name: "Unavailable light" });
-    const disabledBoundsSpy = vi.spyOn(disabledLink, "getBoundingClientRect").mockReturnValue({
-      x: 0,
-      y: 0,
-      top: 0,
-      right: 200,
-      bottom: 100,
-      left: 0,
-      width: 200,
-      height: 100,
-      toJSON: () => ({})
-    });
-    fireEvent.pointerMove(disabledLink, { clientX: 100, clientY: 50, pointerType: "mouse" });
-    expect(disabledLink.style.getPropertyValue("--chrome-light-x")).toBe("");
-    expect(disabledLink.style.getPropertyValue("--chrome-light-y")).toBe("");
-    expect(onDisabledPointerMove).toHaveBeenCalledOnce();
-    expect(disabledBoundsSpy).not.toHaveBeenCalled();
+  it("renders the additive display props: meter cells, indeterminate progress, bare lamps, text affixes", () => {
+    const { container } = render(
+      <>
+        <Meter label="CPU quota" value={46} segments={10} />
+        <Progress indeterminate aria-label="Preparing canary" />
+        <StatusIndicator tone="ok" data-testid="lamp" />
+        <TextField label="Repository" leading="orbital-ops/" />
+      </>
+    );
+    expect(container.querySelectorAll(".chrome-meter__cells > i")).toHaveLength(10);
+    expect(container.querySelectorAll(".chrome-meter__cells > i[data-on]")).toHaveLength(5);
+    expect(screen.getByRole("progressbar", { name: "Preparing canary" })).not.toHaveAttribute("aria-valuenow");
+    expect(screen.getByTestId("lamp")).not.toHaveAttribute("role");
+    expect(screen.getByTestId("lamp")).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByText("orbital-ops/")).toHaveAttribute("data-kind", "text");
+  });
+
+  it("nests an Ink island inside a Satin page", () => {
+    render(
+      <ChromeProvider theme="satin">
+        <ChromeProvider theme="ink" data-testid="island"><Button>Inside</Button></ChromeProvider>
+      </ChromeProvider>
+    );
+    expect(screen.getByTestId("island")).toHaveAttribute("data-chrome-theme", "ink");
+    expect(screen.getByRole("button", { name: "Inside" }).closest(".chrome-root")).toBe(screen.getByTestId("island"));
   });
 
   it("forwards refs, merges class names, and passes native props on direct controls", async () => {
